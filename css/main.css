@@ -480,7 +480,9 @@ strong {
   padding-top: 100px;
   padding-bottom: 100px;
 }
-
+.medalha{
+  width: 30px;
+}
 .price-list-thumb-wrap {
   padding-right: 50px;
 }
@@ -758,5 +760,8 @@ strong {
 
   .booking-form {
     padding: 35px;
+  }
+  .modal-body{
+    padding: 5rem!important;
   }
 }
