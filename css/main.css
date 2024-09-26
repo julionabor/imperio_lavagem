@@ -451,12 +451,12 @@ strong {
 }
 
 .services-thumb-price {
-  background: var(--primary-color);
-  color: #eff0f2;
+  background: var(--secondary-color);
+  color: var(--primary-color);
   border-radius: var(--border-radius-medium);
   font-size: var(--copyright-font-size);
   margin-left: auto;
-  padding: 5px 10px;
+  padding: 10px 15px;
 }
 
 .services-info {
@@ -474,6 +474,11 @@ strong {
 
 .services-info h4 {
   color: var(--white-color);
+  text-shadow:
+    2px 2px 2px #222121,
+    -2px 2px 2px #222121,
+    -2px -2px 0 #222121,
+    2px -2px 0 #222121;
 }
 
 .price-list-section {
@@ -703,10 +708,37 @@ strong {
   .section-padding,
   .hero-section {
     padding: 50px 25px;
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .custom-block {
-    display: none;
+    height: 50%;
+    width: 70%;
+    bottom: unset;
+    right: unset;
+    position: relative;
+    padding: 0;
+    border: none;
+    font-size: 0.5rem;
+    /* display: none; */
+  }
+  .custom-block img{
+    width: 15%;
+    height: 15%;
+    position: unset;
+    top: unset;
+    right: unset;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+
+  }
+  .custom-block h4{
+    font-size: 1rem;
+  }
+  .custom-block .custom-btn{
+    background-color: var(--border-color);
   }
   
   .navbar {
