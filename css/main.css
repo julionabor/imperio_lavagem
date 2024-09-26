@@ -353,7 +353,8 @@ strong {
 }
 
 .custom-block .custom-btn {
-  background: var(--primary-color);
+  background: var(--secondary-color);
+  color: var(--primary-color);
 }
 
 .custom-block .custom-btn:hover {
