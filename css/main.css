@@ -443,7 +443,8 @@ strong {
   display: block;
   margin: auto;
   transition: all 0.3s;
-  max-height: 400px;
+  max-width: 28rem;
+  height: 20rem;
 }
 .description-service{
   font-size: 12px;
