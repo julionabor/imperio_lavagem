@@ -1,0 +1,683 @@
+/* =========================================================
+   CarDiagnose Widget — Styles
+   Império da Lavagem Auto
+   ========================================================= */
+
+/* ─── Design Tokens ─────────────────────────────────────── */
+:root {
+  --cor-primaria:    #0C1C33;
+  --cor-destaque:    #F2CC47;
+  --cor-apoio:       #C9CFD8;
+  --cor-superficie:  #F4F5F7;
+  --cor-texto:       #1A2535;
+  --cor-branco:      #FFFFFF;
+  --cor-erro:        #C0392B;
+
+  --raio-borda:      12px;
+  --raio-sm:         8px;
+  --sombra-card:     0 4px 24px rgba(12, 28, 51, 0.12);
+  --sombra-elevada:  0 8px 32px rgba(12, 28, 51, 0.18);
+  --transicao:       300ms ease-in-out;
+  --transicao-rapida: 150ms ease-in-out;
+
+  --font-display: 'Unbounded', sans-serif;
+  --font-corpo:   'Unbounded', sans-serif;
+}
+
+/* ─── Reset & Base ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-corpo);
+  background: var(--cor-primaria);
+  color: var(--cor-texto);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* ─── Widget Shell ──────────────────────────────────────── */
+#cardiagnose-root {
+  width: 100%;
+  max-width: 1200px;
+  background: var(--cor-branco);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--sombra-elevada);
+  min-height: 560px;
+}
+
+/* ─── Header ────────────────────────────────────────────── */
+.cd-header {
+  background: var(--cor-primaria);
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cd-header__logo {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: var(--cor-destaque);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cd-header__title {
+  font-size: 0.85rem;
+  color: var(--cor-apoio);
+  font-weight: 400;
+}
+
+/* ─── Progress Bar ──────────────────────────────────────── */
+.cd-progress {
+  background: var(--cor-superficie);
+  padding: 1rem 2rem 0;
+}
+
+.cd-progress__track {
+  display: flex;
+  gap: 6px;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.cd-progress__segment {
+  flex: 1;
+  background: var(--cor-apoio);
+  border-radius: 2px;
+  transition: background var(--transicao);
+}
+
+.cd-progress__segment.active {
+  background: var(--cor-destaque);
+}
+
+.cd-progress__labels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0 0.75rem;
+  font-size: 0.6rem;
+  color: var(--cor-apoio);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cd-progress__labels span.active {
+  color: var(--cor-texto);
+  font-weight: 700;
+}
+
+/* ─── Layout: Step Area ─────────────────────────────────── */
+.cd-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 440px;
+}
+
+@media (min-width: 1024px) {
+  .cd-body {
+    grid-template-columns: 55% 45%;
+  }
+}
+
+.cd-form-panel {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── 3D Panel ──────────────────────────────────────────── */
+.cd-3d-panel {
+  background: linear-gradient(135deg, #1a2e4a 0%, #0C1C33 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem 1rem;
+  position: relative;
+  min-height: 200px;
+}
+
+@media (max-width: 1023px) {
+  .cd-3d-panel {
+    display: none;
+  }
+  .cd-3d-panel.visible {
+    display: flex;
+  }
+}
+
+model-viewer {
+  width: 100%;
+  height: 300px;
+  background: transparent;
+  --poster-color: transparent;
+}
+
+.cd-3d-panel .cd-car-label {
+  font-size: 0.65rem;
+  color: var(--cor-apoio);
+  text-align: center;
+  margin-top: 0.5rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ─── Step Container ────────────────────────────────────── */
+.cd-step { display: none; flex: 1; }
+.cd-step.active { display: flex; flex-direction: column; }
+
+.cd-step__heading {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+
+.cd-step__sub {
+  font-size: 0.72rem;
+  color: var(--cor-apoio);
+  margin-bottom: 1.5rem;
+}
+
+/* ─── Pain Category Cards (Step 1) ─────────────────────── */
+.cd-pain-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  flex: 1;
+}
+
+@media (min-width: 600px) {
+  .cd-pain-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.cd-pain-card {
+  background: var(--cor-superficie);
+  border: 2px solid transparent;
+  border-radius: var(--raio-borda);
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform var(--transicao-rapida), border-color var(--transicao-rapida), background var(--transicao-rapida);
+  text-align: center;
+}
+
+.cd-pain-card:hover {
+  transform: scale(1.03);
+  border-color: var(--cor-destaque);
+}
+
+.cd-pain-card.selected {
+  background: var(--cor-primaria);
+  border-color: var(--cor-destaque);
+}
+
+.cd-pain-card.selected .cd-pain-card__title,
+.cd-pain-card.selected .cd-pain-card__desc {
+  color: var(--cor-branco);
+}
+
+.cd-pain-card__icon {
+  width: 40px;
+  height: 40px;
+  color: var(--cor-primaria);
+}
+
+.cd-pain-card.selected .cd-pain-card__icon {
+  color: var(--cor-destaque);
+}
+
+.cd-pain-card__title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  line-height: 1.2;
+}
+
+.cd-pain-card__desc {
+  font-size: 0.6rem;
+  color: var(--cor-apoio);
+  line-height: 1.4;
+}
+
+/* ─── Vehicle Type Cards (Step 2) ──────────────────────── */
+.cd-vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  flex: 1;
+}
+
+@media (min-width: 600px) {
+  .cd-vehicle-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.cd-vehicle-card {
+  background: var(--cor-superficie);
+  border: 2px solid transparent;
+  border-radius: var(--raio-borda);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: transform var(--transicao-rapida), border-color var(--transicao-rapida), background var(--transicao-rapida);
+  text-align: center;
+}
+
+.cd-vehicle-card:hover {
+  transform: scale(1.03);
+  border-color: var(--cor-destaque);
+}
+
+.cd-vehicle-card.selected {
+  background: var(--cor-primaria);
+  border-color: var(--cor-destaque);
+}
+
+.cd-vehicle-card.selected .cd-vehicle-card__label {
+  color: var(--cor-branco);
+}
+
+.cd-vehicle-card__icon {
+  width: 100%;
+  height: 44px;
+  color: var(--cor-primaria);
+}
+
+.cd-vehicle-card.selected .cd-vehicle-card__icon {
+  color: var(--cor-destaque);
+}
+
+.cd-vehicle-card__label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
+.cd-brand-field {
+  margin-top: 1rem;
+}
+
+.cd-brand-field label {
+  font-size: 0.65rem;
+  color: var(--cor-apoio);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.cd-brand-field input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--cor-apoio);
+  border-radius: var(--raio-sm);
+  font-family: var(--font-corpo);
+  font-size: 0.72rem;
+  outline: none;
+  transition: border-color var(--transicao-rapida);
+}
+
+.cd-brand-field input:focus {
+  border-color: var(--cor-primaria);
+}
+
+/* ─── Colour Palette (Step 3) ───────────────────────────── */
+.cd-color-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.cd-color-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transicao-rapida), border-color var(--transicao-rapida);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.cd-color-swatch:hover { transform: scale(1.15); }
+.cd-color-swatch.selected { border-color: var(--cor-destaque); transform: scale(1.1); }
+
+.cd-color-custom {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  color: var(--cor-apoio);
+}
+
+.cd-color-custom input[type="color"] {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+}
+
+.cd-color-label {
+  font-size: 0.65rem;
+  color: var(--cor-apoio);
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+/* ─── Diagnostic Questions (Step 4) ────────────────────── */
+.cd-question-progress {
+  font-size: 0.65rem;
+  color: var(--cor-apoio);
+  margin-bottom: 1rem;
+}
+
+.cd-question-progress strong {
+  color: var(--cor-primaria);
+}
+
+.cd-question-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-bottom: 1.25rem;
+  line-height: 1.4;
+}
+
+.cd-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.cd-option {
+  background: var(--cor-superficie);
+  border: 2px solid transparent;
+  border-radius: var(--raio-sm);
+  padding: 0.75rem 1rem;
+  font-size: 0.72rem;
+  color: var(--cor-texto);
+  cursor: pointer;
+  text-align: left;
+  transition: transform var(--transicao-rapida), border-color var(--transicao-rapida), background var(--transicao-rapida);
+  font-family: var(--font-corpo);
+}
+
+.cd-option:hover {
+  border-color: var(--cor-destaque);
+  transform: translateX(4px);
+}
+
+.cd-option.selected {
+  background: var(--cor-primaria);
+  border-color: var(--cor-destaque);
+  color: var(--cor-branco);
+}
+
+/* ─── Result Screen (Step 5) ────────────────────────────── */
+.cd-result-intro {
+  font-size: 0.7rem;
+  color: var(--cor-apoio);
+  margin-bottom: 1rem;
+}
+
+.cd-result-card {
+  background: var(--cor-superficie);
+  border-radius: var(--raio-borda);
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+  box-shadow: var(--sombra-card);
+  animation: cd-fadeUp 400ms ease both;
+}
+
+.cd-result-card.primary {
+  border: 2px solid var(--cor-destaque);
+}
+
+.cd-result-card.alt {
+  border: 2px solid var(--cor-apoio);
+  animation-delay: 100ms;
+}
+
+@keyframes cd-fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cd-result-badge {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  margin-bottom: 0.6rem;
+}
+
+.cd-result-badge.gold {
+  background: var(--cor-destaque);
+  color: var(--cor-primaria);
+}
+
+.cd-result-badge.grey {
+  background: var(--cor-apoio);
+  color: var(--cor-primaria);
+}
+
+.cd-result-pack-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-bottom: 0.25rem;
+}
+
+.cd-result-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cor-destaque);
+  margin-bottom: 0.15rem;
+}
+
+.cd-result-surcharge {
+  font-size: 0.6rem;
+  color: var(--cor-apoio);
+  margin-bottom: 0.75rem;
+}
+
+.cd-result-items {
+  list-style: none;
+  margin-bottom: 0.75rem;
+}
+
+.cd-result-items li {
+  font-size: 0.65rem;
+  color: var(--cor-texto);
+  padding: 0.2rem 0;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.cd-result-items li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--cor-destaque);
+  font-weight: 700;
+}
+
+.cd-result-justification {
+  font-size: 0.65rem;
+  color: var(--cor-apoio);
+  line-height: 1.5;
+  font-style: italic;
+  border-left: 3px solid var(--cor-destaque);
+  padding-left: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cd-installment {
+  font-size: 0.65rem;
+  background: #fff8e1;
+  border: 1px solid #f0e08a;
+  border-radius: var(--raio-sm);
+  padding: 0.5rem 0.75rem;
+  color: var(--cor-texto);
+  margin-bottom: 0.75rem;
+}
+
+/* ─── Buttons ───────────────────────────────────────────── */
+.cd-nav {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+  align-items: center;
+}
+
+.cd-btn {
+  font-family: var(--font-corpo);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transicao-rapida), transform var(--transicao-rapida);
+  letter-spacing: 0.03em;
+}
+
+.cd-btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
+.cd-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+.cd-btn--primary {
+  background: var(--cor-destaque);
+  color: var(--cor-primaria);
+}
+
+.cd-btn--ghost {
+  background: transparent;
+  color: var(--cor-apoio);
+  border: 1.5px solid var(--cor-apoio);
+}
+
+.cd-btn--cta {
+  background: var(--cor-destaque);
+  color: var(--cor-primaria);
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 0.75rem;
+  border-radius: var(--raio-sm);
+  animation: cd-pulse 2s ease-in-out infinite;
+}
+
+.cd-btn--cta-alt {
+  background: transparent;
+  color: var(--cor-primaria);
+  border: 1.5px solid var(--cor-apoio);
+  width: 100%;
+  padding: 0.65rem;
+  font-size: 0.7rem;
+  border-radius: var(--raio-sm);
+}
+
+@keyframes cd-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(242, 204, 71, 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(242, 204, 71, 0); }
+}
+
+/* ─── Contact + Restart ─────────────────────────────────── */
+.cd-contact {
+  font-size: 0.62rem;
+  color: var(--cor-apoio);
+  text-align: center;
+  margin-top: 0.75rem;
+  line-height: 1.6;
+}
+
+.cd-restart {
+  display: block;
+  text-align: center;
+  font-size: 0.6rem;
+  color: var(--cor-apoio);
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 0.75rem;
+  background: none;
+  border: none;
+  font-family: var(--font-corpo);
+}
+
+.cd-restart:hover { color: var(--cor-texto); }
+
+/* ─── Motorcycle Result ─────────────────────────────────── */
+.cd-moto-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.cd-moto-option {
+  background: var(--cor-superficie);
+  border: 2px solid transparent;
+  border-radius: var(--raio-sm);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: border-color var(--transicao-rapida), background var(--transicao-rapida);
+  font-family: var(--font-corpo);
+  text-align: left;
+}
+
+.cd-moto-option:hover { border-color: var(--cor-destaque); }
+.cd-moto-option.selected {
+  background: var(--cor-primaria);
+  border-color: var(--cor-destaque);
+  color: var(--cor-branco);
+}
+
+.cd-moto-option__label { font-size: 0.75rem; font-weight: 700; }
+.cd-moto-option__price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cor-destaque);
+  margin-top: 0.2rem;
+}
+.cd-moto-option.selected .cd-moto-option__price { color: var(--cor-destaque); }
+
+/* ─── Step Transition ───────────────────────────────────── */
+.cd-step-enter {
+  animation: cd-slideIn 300ms ease-in-out both;
+}
+
+@keyframes cd-slideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────── */
+.cd-form-panel::-webkit-scrollbar { width: 4px; }
+.cd-form-panel::-webkit-scrollbar-thumb { background: var(--cor-apoio); border-radius: 2px; }
+
+/* ─── Responsive ────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .cd-form-panel { padding: 1.25rem; }
+  .cd-step__heading { font-size: 0.85rem; }
+  .cd-pain-grid, .cd-vehicle-grid { grid-template-columns: repeat(2, 1fr); }
+}
