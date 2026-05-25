@@ -5,17 +5,19 @@
 
 /* ─── Design Tokens ─────────────────────────────────────── */
 :root {
-  --cor-primaria:    #0C1C33;
-  --cor-destaque:    #F2CC47;
-  --cor-apoio:       #C9CFD8;
-  --cor-superficie:  #F4F5F7;
-  --cor-texto:       #1A2535;
-  --cor-branco:      #FFFFFF;
-  --cor-erro:        #C0392B;
+  --cor-primaria:       #0C1C33;
+  --cor-destaque:       #F2CC47;
+  --cor-apoio:          #C9CFD8;
+  --cor-texto-sec:      #5B6B7D;  /* secondary text — contraste adequado em bg branco */
+  --cor-superficie:     #F4F5F7;
+  --cor-superficie-alt: #ECEEF2;
+  --cor-texto:          #1A2535;
+  --cor-branco:         #FFFFFF;
+  --cor-erro:           #C0392B;
 
   --raio-borda:      12px;
   --raio-sm:         8px;
-  --sombra-card:     0 4px 24px rgba(12, 28, 51, 0.12);
+  --sombra-card:     0 4px 24px rgba(12, 28, 51, 0.10);
   --sombra-elevada:  0 8px 32px rgba(12, 28, 51, 0.18);
   --transicao:       300ms ease-in-out;
   --transicao-rapida: 150ms ease-in-out;
@@ -33,9 +35,14 @@ body {
   color: var(--cor-texto);
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 1rem;
+  overflow-x: hidden;
+}
+
+@media (min-width: 600px) {
+  body { align-items: center; }
 }
 
 /* ─── Widget Shell ──────────────────────────────────────── */
@@ -52,30 +59,44 @@ body {
 /* ─── Header ────────────────────────────────────────────── */
 .cd-header {
   background: var(--cor-primaria);
-  padding: 1.25rem 2rem;
+  padding: 1rem 1.25rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+@media (min-width: 600px) {
+  .cd-header { padding: 1.25rem 2rem; }
 }
 
 .cd-header__logo {
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--cor-destaque);
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .cd-header__title {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--cor-apoio);
   font-weight: 400;
+  line-height: 1.4;
+  /* permite quebra de linha no mobile */
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 /* ─── Progress Bar ──────────────────────────────────────── */
 .cd-progress {
   background: var(--cor-superficie);
-  padding: 1rem 2rem 0;
+  padding: 1rem 1.25rem 0;
+}
+
+@media (min-width: 600px) {
+  .cd-progress { padding: 1rem 2rem 0; }
 }
 
 .cd-progress__track {
@@ -101,14 +122,14 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 0.4rem 0 0.75rem;
-  font-size: 0.6rem;
-  color: var(--cor-apoio);
+  font-size: 0.62rem;
+  color: var(--cor-texto-sec);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .cd-progress__labels span.active {
-  color: var(--cor-texto);
+  color: var(--cor-primaria);
   font-weight: 700;
 }
 
@@ -126,9 +147,15 @@ body {
 }
 
 .cd-form-panel {
-  padding: 2rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  min-width: 0; /* evita overflow em grid */
+}
+
+@media (min-width: 600px) {
+  .cd-form-panel { padding: 2rem; }
 }
 
 /* ─── 3D Panel ──────────────────────────────────────────── */
@@ -152,20 +179,43 @@ body {
   }
 }
 
-model-viewer {
+.cd-car-preview {
   width: 100%;
-  height: 300px;
-  background: transparent;
-  --poster-color: transparent;
+  max-width: 340px;
+  transition: color 300ms ease-in-out;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Placeholder quando nenhum veículo está selecionado */
+.cd-car-preview:empty::before {
+  content: 'Seleciona o tipo de veículo';
+  font-size: 0.65rem;
+  color: rgba(201, 207, 216, 0.55);
+  text-align: center;
+  font-family: var(--font-corpo);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1.5rem;
+}
+
+.cd-car-preview svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.55));
 }
 
 .cd-3d-panel .cd-car-label {
-  font-size: 0.65rem;
+  font-size: 0.66rem;
   color: var(--cor-apoio);
   text-align: center;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  min-height: 1em;
 }
 
 /* ─── Step Container ────────────────────────────────────── */
@@ -174,16 +224,16 @@ model-viewer {
 
 .cd-step__heading {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--cor-primaria);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
   line-height: 1.3;
 }
 
 .cd-step__sub {
-  font-size: 0.72rem;
-  color: var(--cor-apoio);
+  font-size: 0.76rem;
+  color: var(--cor-texto-sec);
   margin-bottom: 1.5rem;
 }
 
@@ -229,26 +279,28 @@ model-viewer {
 }
 
 .cd-pain-card__icon {
-  width: 40px;
-  height: 40px;
-  color: var(--cor-primaria);
+  width: 44px;
+  height: 44px;
+  /* SVG carregado como img herda currentColor apenas inline;
+     usamos filter para colorir no estado selecionado */
 }
 
 .cd-pain-card.selected .cd-pain-card__icon {
-  color: var(--cor-destaque);
+  /* negro → branco/amarelo no fundo escuro */
+  filter: invert(1) brightness(1.8) sepia(0.3);
 }
 
 .cd-pain-card__title {
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--cor-primaria);
   line-height: 1.2;
 }
 
 .cd-pain-card__desc {
-  font-size: 0.6rem;
-  color: var(--cor-apoio);
-  line-height: 1.4;
+  font-size: 0.66rem;
+  color: var(--cor-texto-sec);
+  line-height: 1.45;
 }
 
 /* ─── Vehicle Type Cards (Step 2) ──────────────────────── */
@@ -293,16 +345,16 @@ model-viewer {
 
 .cd-vehicle-card__icon {
   width: 100%;
-  height: 44px;
-  color: var(--cor-primaria);
+  height: 48px;
+  object-fit: contain;
 }
 
 .cd-vehicle-card.selected .cd-vehicle-card__icon {
-  color: var(--cor-destaque);
+  filter: invert(1) brightness(1.8) sepia(0.3);
 }
 
 .cd-vehicle-card__label {
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--cor-primaria);
 }
@@ -312,25 +364,32 @@ model-viewer {
 }
 
 .cd-brand-field label {
-  font-size: 0.65rem;
-  color: var(--cor-apoio);
+  font-size: 0.68rem;
+  color: var(--cor-texto-sec);
   display: block;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
 }
 
 .cd-brand-field input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.6rem 0.85rem;
   border: 1.5px solid var(--cor-apoio);
   border-radius: var(--raio-sm);
   font-family: var(--font-corpo);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
+  color: var(--cor-texto);
+  background: var(--cor-superficie);
   outline: none;
-  transition: border-color var(--transicao-rapida);
+  transition: border-color var(--transicao-rapida), background var(--transicao-rapida);
 }
 
 .cd-brand-field input:focus {
   border-color: var(--cor-primaria);
+  background: var(--cor-branco);
+}
+
+.cd-brand-field input::placeholder {
+  color: var(--cor-apoio);
 }
 
 /* ─── Colour Palette (Step 3) ───────────────────────────── */
@@ -342,47 +401,54 @@ model-viewer {
 }
 
 .cd-color-swatch {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 3px solid transparent;
   cursor: pointer;
   transition: transform var(--transicao-rapida), border-color var(--transicao-rapida);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  /* inset ring para cores claras/brancas ficarem visíveis */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(0,0,0,0.08);
 }
 
-.cd-color-swatch:hover { transform: scale(1.15); }
-.cd-color-swatch.selected { border-color: var(--cor-destaque); transform: scale(1.1); }
+.cd-color-swatch:hover { transform: scale(1.18); }
+.cd-color-swatch.selected {
+  border-color: var(--cor-destaque);
+  transform: scale(1.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(0,0,0,0.08);
+}
 
 .cd-color-custom {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.65rem;
-  color: var(--cor-apoio);
+  font-size: 0.68rem;
+  color: var(--cor-texto-sec);
+  margin-top: 0.25rem;
 }
 
 .cd-color-custom input[type="color"] {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   padding: 0;
   background: none;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
 }
 
 .cd-color-label {
-  font-size: 0.65rem;
-  color: var(--cor-apoio);
-  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  color: var(--cor-texto-sec);
+  margin-top: 0.5rem;
   font-style: italic;
 }
 
 /* ─── Diagnostic Questions (Step 4) ────────────────────── */
 .cd-question-progress {
-  font-size: 0.65rem;
-  color: var(--cor-apoio);
+  font-size: 0.68rem;
+  color: var(--cor-texto-sec);
   margin-bottom: 1rem;
 }
 
@@ -391,17 +457,17 @@ model-viewer {
 }
 
 .cd-question-text {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--cor-primaria);
   margin-bottom: 1.25rem;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .cd-options {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.65rem;
   flex: 1;
 }
 
@@ -409,17 +475,19 @@ model-viewer {
   background: var(--cor-superficie);
   border: 2px solid transparent;
   border-radius: var(--raio-sm);
-  padding: 0.75rem 1rem;
-  font-size: 0.72rem;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.76rem;
   color: var(--cor-texto);
   cursor: pointer;
   text-align: left;
   transition: transform var(--transicao-rapida), border-color var(--transicao-rapida), background var(--transicao-rapida);
   font-family: var(--font-corpo);
+  line-height: 1.4;
 }
 
 .cd-option:hover {
   border-color: var(--cor-destaque);
+  background: var(--cor-superficie-alt);
   transform: translateX(4px);
 }
 
@@ -431,9 +499,10 @@ model-viewer {
 
 /* ─── Result Screen (Step 5) ────────────────────────────── */
 .cd-result-intro {
-  font-size: 0.7rem;
-  color: var(--cor-apoio);
+  font-size: 0.74rem;
+  color: var(--cor-texto-sec);
   margin-bottom: 1rem;
+  line-height: 1.5;
 }
 
 .cd-result-card {
@@ -496,8 +565,8 @@ model-viewer {
 }
 
 .cd-result-surcharge {
-  font-size: 0.6rem;
-  color: var(--cor-apoio);
+  font-size: 0.64rem;
+  color: var(--cor-texto-sec);
   margin-bottom: 0.75rem;
 }
 
@@ -507,11 +576,12 @@ model-viewer {
 }
 
 .cd-result-items li {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--cor-texto);
-  padding: 0.2rem 0;
-  padding-left: 1rem;
+  padding: 0.25rem 0;
+  padding-left: 1.2rem;
   position: relative;
+  line-height: 1.4;
 }
 
 .cd-result-items li::before {
@@ -523,9 +593,9 @@ model-viewer {
 }
 
 .cd-result-justification {
-  font-size: 0.65rem;
-  color: var(--cor-apoio);
-  line-height: 1.5;
+  font-size: 0.7rem;
+  color: var(--cor-texto-sec);
+  line-height: 1.55;
   font-style: italic;
   border-left: 3px solid var(--cor-destaque);
   padding-left: 0.75rem;
@@ -533,13 +603,14 @@ model-viewer {
 }
 
 .cd-installment {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   background: #fff8e1;
   border: 1px solid #f0e08a;
   border-radius: var(--raio-sm);
-  padding: 0.5rem 0.75rem;
+  padding: 0.6rem 0.85rem;
   color: var(--cor-texto);
   margin-bottom: 0.75rem;
+  line-height: 1.5;
 }
 
 /* ─── Buttons ───────────────────────────────────────────── */
@@ -553,18 +624,18 @@ model-viewer {
 
 .cd-btn {
   font-family: var(--font-corpo);
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 0.65rem 1.25rem;
+  padding: 0.7rem 1.35rem;
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: opacity var(--transicao-rapida), transform var(--transicao-rapida);
+  transition: opacity var(--transicao-rapida), transform var(--transicao-rapida), background var(--transicao-rapida);
   letter-spacing: 0.03em;
 }
 
-.cd-btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
-.cd-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.cd-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+.cd-btn:disabled { opacity: 0.32; cursor: not-allowed; transform: none; }
 
 .cd-btn--primary {
   background: var(--cor-destaque);
@@ -573,17 +644,23 @@ model-viewer {
 
 .cd-btn--ghost {
   background: transparent;
-  color: var(--cor-apoio);
+  color: var(--cor-texto-sec);
   border: 1.5px solid var(--cor-apoio);
+}
+
+.cd-btn--ghost:hover:not(:disabled) {
+  border-color: var(--cor-texto-sec);
+  color: var(--cor-texto);
 }
 
 .cd-btn--cta {
   background: var(--cor-destaque);
   color: var(--cor-primaria);
   width: 100%;
-  padding: 0.85rem;
-  font-size: 0.75rem;
+  padding: 0.9rem;
+  font-size: 0.78rem;
   border-radius: var(--raio-sm);
+  margin-top: 0.5rem;
   animation: cd-pulse 2s ease-in-out infinite;
 }
 
@@ -592,9 +669,16 @@ model-viewer {
   color: var(--cor-primaria);
   border: 1.5px solid var(--cor-apoio);
   width: 100%;
-  padding: 0.65rem;
-  font-size: 0.7rem;
+  padding: 0.7rem;
+  font-size: 0.74rem;
   border-radius: var(--raio-sm);
+  margin-top: 0.25rem;
+  transition: background var(--transicao-rapida), border-color var(--transicao-rapida);
+}
+
+.cd-btn--cta-alt:hover {
+  background: var(--cor-superficie);
+  border-color: var(--cor-texto-sec);
 }
 
 @keyframes cd-pulse {
@@ -604,24 +688,29 @@ model-viewer {
 
 /* ─── Contact + Restart ─────────────────────────────────── */
 .cd-contact {
-  font-size: 0.62rem;
-  color: var(--cor-apoio);
+  font-size: 0.68rem;
+  color: var(--cor-texto-sec);
   text-align: center;
   margin-top: 0.75rem;
-  line-height: 1.6;
+  line-height: 1.65;
+}
+
+.cd-contact strong {
+  color: var(--cor-primaria);
 }
 
 .cd-restart {
   display: block;
   text-align: center;
-  font-size: 0.6rem;
-  color: var(--cor-apoio);
+  font-size: 0.65rem;
+  color: var(--cor-texto-sec);
   text-decoration: underline;
   cursor: pointer;
   margin-top: 0.75rem;
   background: none;
   border: none;
   font-family: var(--font-corpo);
+  transition: color var(--transicao-rapida);
 }
 
 .cd-restart:hover { color: var(--cor-texto); }
@@ -652,12 +741,12 @@ model-viewer {
   color: var(--cor-branco);
 }
 
-.cd-moto-option__label { font-size: 0.75rem; font-weight: 700; }
+.cd-moto-option__label { font-size: 0.78rem; font-weight: 700; }
 .cd-moto-option__price {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--cor-destaque);
-  margin-top: 0.2rem;
+  margin-top: 0.25rem;
 }
 .cd-moto-option.selected .cd-moto-option__price { color: var(--cor-destaque); }
 
@@ -677,7 +766,13 @@ model-viewer {
 
 /* ─── Responsive ────────────────────────────────────────── */
 @media (max-width: 480px) {
-  .cd-form-panel { padding: 1.25rem; }
-  .cd-step__heading { font-size: 0.85rem; }
+  .cd-form-panel { padding: 1rem; }
+  .cd-step__heading { font-size: 0.9rem; }
+  .cd-step__sub { font-size: 0.7rem; }
   .cd-pain-grid, .cd-vehicle-grid { grid-template-columns: repeat(2, 1fr); }
+  .cd-btn { padding: 0.65rem 1rem; font-size: 0.7rem; }
+  .cd-result-price { font-size: 1.2rem; }
+  .cd-result-card { padding: 1rem; }
+  /* evitar que o nav de botões fique apertado */
+  .cd-nav { gap: 0.5rem; }
 }

@@ -9,6 +9,121 @@
 import { PAIN_CATEGORIES, VEHICLE_TYPES, COLOR_PALETTE } from './data/questions.js';
 import { recommend, MOTO_OPTIONS, MOTO_INCLUDES } from './data/packs.js';
 
+// ─── Car silhouette SVGs ──────────────────────────────────────────────────────
+// Body fill uses currentColor — set `color` CSS prop on #car-preview to repaint.
+
+const CAR_SVGS = {
+  berlina: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 100">
+    <path fill="currentColor" stroke="#00000022" stroke-width="1.5"
+      d="M12,88 L12,74 Q16,62 28,54 L50,40 L70,26 L88,22 L172,22 L198,30 L220,52 Q232,66 238,76 L244,82 L244,88
+         L215,88 A17,17 0 0,0 181,88 L79,88 A17,17 0 0,0 45,88 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M72,26 L88,22 L112,22 L112,54 L72,54 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M115,22 L154,22 L154,54 L115,54 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M157,22 L172,22 L198,30 L218,52 L157,52 Z"/>
+    <circle cx="62" cy="88" r="17" fill="#1a1a1a"/>
+    <circle cx="62" cy="88" r="10" fill="#555"/>
+    <circle cx="62" cy="88" r="4"  fill="#aaa"/>
+    <circle cx="198" cy="88" r="17" fill="#1a1a1a"/>
+    <circle cx="198" cy="88" r="10" fill="#555"/>
+    <circle cx="198" cy="88" r="4"  fill="#aaa"/>
+    <path fill="#fff8cc" opacity="0.95" d="M12,68 Q12,60 18,57 L24,57 Q26,60 26,66 L26,72 Q18,74 12,70 Z"/>
+    <rect fill="#e53935" opacity="0.9" x="238" y="62" width="6" height="16" rx="1"/>
+  </svg>`,
+
+  suv: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 100">
+    <path fill="currentColor" stroke="#00000022" stroke-width="1.5"
+      d="M10,88 L10,68 Q14,56 24,46 L44,30 L62,16 L84,12 L176,12 L200,18 Q218,32 230,54 L238,70 L244,80 L244,88
+         L214,88 A19,19 0 0,0 176,88 L84,88 A19,19 0 0,0 46,88 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M64,16 L84,12 L114,12 L114,56 L62,50 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M117,12 L174,12 L174,56 L117,56 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M177,12 L200,18 L220,54 L177,54 Z"/>
+    <circle cx="65" cy="88" r="19" fill="#1a1a1a"/>
+    <circle cx="65" cy="88" r="11" fill="#555"/>
+    <circle cx="65" cy="88" r="5"  fill="#aaa"/>
+    <circle cx="195" cy="88" r="19" fill="#1a1a1a"/>
+    <circle cx="195" cy="88" r="11" fill="#555"/>
+    <circle cx="195" cy="88" r="5"  fill="#aaa"/>
+    <path fill="#fff8cc" opacity="0.95" d="M10,65 Q10,56 16,52 L22,52 Q25,56 25,63 L25,70 Q17,72 10,68 Z"/>
+    <rect fill="#e53935" opacity="0.9" x="238" y="58" width="6" height="18" rx="1"/>
+  </svg>`,
+
+  citadino: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 100">
+    <path fill="currentColor" stroke="#00000022" stroke-width="1.5"
+      d="M18,88 L18,76 Q22,66 30,58 L46,44 L64,30 L82,24 L166,24 L186,34 Q205,52 218,68 L224,78 L226,88
+         L197,88 A15,15 0 0,0 167,88 L73,88 A15,15 0 0,0 43,88 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M66,30 L82,24 L108,24 L108,56 L66,56 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M111,24 L157,24 L157,56 L111,56 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M160,24 L166,24 L186,34 L210,60 L160,58 Z"/>
+    <circle cx="58" cy="88" r="15" fill="#1a1a1a"/>
+    <circle cx="58" cy="88" r="9"  fill="#555"/>
+    <circle cx="58" cy="88" r="4"  fill="#aaa"/>
+    <circle cx="182" cy="88" r="15" fill="#1a1a1a"/>
+    <circle cx="182" cy="88" r="9"  fill="#555"/>
+    <circle cx="182" cy="88" r="4"  fill="#aaa"/>
+    <path fill="#fff8cc" opacity="0.95" d="M18,72 Q18,64 24,61 L29,61 Q31,64 31,70 L31,76 Q23,78 18,74 Z"/>
+    <rect fill="#e53935" opacity="0.9" x="220" y="66" width="6" height="14" rx="1"/>
+  </svg>`,
+
+  carrinha: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 100">
+    <path fill="currentColor" stroke="#00000022" stroke-width="1.5"
+      d="M12,88 L12,74 Q16,62 28,54 L50,40 L70,26 L88,22 L206,22 L228,50 Q238,64 242,76 L244,84 L244,88
+         L219,88 A17,17 0 0,0 185,88 L79,88 A17,17 0 0,0 45,88 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M72,26 L88,22 L112,22 L112,54 L72,54 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M115,22 L196,22 L196,54 L115,54 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M199,22 L206,22 L228,52 L233,50 L214,22 Z"/>
+    <circle cx="62" cy="88" r="17" fill="#1a1a1a"/>
+    <circle cx="62" cy="88" r="10" fill="#555"/>
+    <circle cx="62" cy="88" r="4"  fill="#aaa"/>
+    <circle cx="202" cy="88" r="17" fill="#1a1a1a"/>
+    <circle cx="202" cy="88" r="10" fill="#555"/>
+    <circle cx="202" cy="88" r="4"  fill="#aaa"/>
+    <path fill="#fff8cc" opacity="0.95" d="M12,68 Q12,60 18,57 L24,57 Q26,60 26,66 L26,72 Q18,74 12,70 Z"/>
+    <rect fill="#e53935" opacity="0.9" x="238" y="60" width="6" height="18" rx="1"/>
+  </svg>`,
+
+  monovolume: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 100">
+    <path fill="currentColor" stroke="#00000022" stroke-width="1.5"
+      d="M20,88 L20,70 Q24,58 32,48 L48,32 L66,18 L90,12 L182,12 L204,20 Q222,38 232,60 L238,74 L242,84 L242,88
+         L211,88 A16,16 0 0,0 179,88 L84,88 A16,16 0 0,0 52,88 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M68,18 L90,12 L116,12 L116,56 L66,50 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M119,12 L175,12 L175,56 L119,56 Z"/>
+    <path fill="#1e3a5f" opacity="0.58" d="M178,12 L204,20 L225,58 L178,58 Z"/>
+    <circle cx="68" cy="88" r="16" fill="#1a1a1a"/>
+    <circle cx="68" cy="88" r="10" fill="#555"/>
+    <circle cx="68" cy="88" r="4"  fill="#aaa"/>
+    <circle cx="195" cy="88" r="16" fill="#1a1a1a"/>
+    <circle cx="195" cy="88" r="10" fill="#555"/>
+    <circle cx="195" cy="88" r="4"  fill="#aaa"/>
+    <path fill="#fff8cc" opacity="0.95" d="M20,66 Q20,56 26,52 L32,52 Q34,56 34,64 L34,72 Q26,74 20,68 Z"/>
+    <rect fill="#e53935" opacity="0.9" x="236" y="58" width="6" height="20" rx="1"/>
+  </svg>`,
+
+  mota: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 100">
+    <circle cx="75" cy="78" r="22" fill="#1a1a1a"/>
+    <circle cx="75" cy="78" r="13" fill="#555"/>
+    <circle cx="75" cy="78" r="5"  fill="#aaa"/>
+    <circle cx="192" cy="80" r="20" fill="#1a1a1a"/>
+    <circle cx="192" cy="80" r="12" fill="#555"/>
+    <circle cx="192" cy="80" r="5"  fill="#aaa"/>
+    <line x1="75" y1="70" x2="122" y2="64" stroke="#666" stroke-width="4" stroke-linecap="round"/>
+    <line x1="106" y1="62" x2="146" y2="44" stroke="currentColor" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+    <path fill="currentColor" stroke="#00000020" stroke-width="1"
+      d="M106,44 Q120,34 150,36 L160,44 Q152,56 132,57 Q112,57 106,50 Z"/>
+    <path fill="currentColor" stroke="#00000020" stroke-width="1" opacity="0.8"
+      d="M88,50 Q100,44 106,46 Q113,54 132,56 L86,58 Z"/>
+    <rect fill="currentColor" opacity="0.75" stroke="#00000020" stroke-width="1" x="107" y="58" width="42" height="18" rx="4"/>
+    <line x1="162" y1="44" x2="180" y2="64" stroke="currentColor" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+    <line x1="168" y1="46" x2="188" y2="66" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.65"/>
+    <path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"
+      d="M158,40 Q165,32 173,36 Q179,38 181,44"/>
+    <path fill="none" stroke="#888" stroke-width="4" stroke-linecap="round"
+      d="M120,76 Q148,79 168,74 L185,76"/>
+    <circle cx="205" cy="64" r="12" fill="#fff8cc" opacity="0.92"/>
+    <circle cx="205" cy="64" r="7"  fill="#fff" opacity="0.65"/>
+    <rect fill="#e53935" opacity="0.9" x="57" y="54" width="8" height="12" rx="2"/>
+  </svg>`,
+};
+
 // ─── State ────────────────────────────────────────────────────────────────────
 
 const state = {
@@ -35,30 +150,17 @@ function fmt(price) {
   return price.toFixed(2).replace('.', ',') + ' €';
 }
 
-function hexToHueRotation(hex) {
-  // Convert hex to RGB then to HSL; return hue in degrees.
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h = 0;
-  if (max !== min) {
-    const d = max - min;
-    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-    else if (max === g) h = ((b - r) / d + 2) / 6;
-    else h = ((r - g) / d + 4) / 6;
-  }
-  // Base model hue is grey (≈0°). Rotate to target hue.
-  return Math.round(h * 360);
+function applyCarColor(hex) {
+  const panel = document.getElementById('car-preview');
+  if (panel) panel.style.color = hex;
 }
 
-function applyColorFilter(hex) {
-  const mv = document.getElementById('car3d');
-  if (!mv) return;
-  const hue = hexToHueRotation(hex);
-  // Neutral colours (grey, silver, white, black) — reduce saturation boost
-  const sat = ['#8A8A8A', '#C0C0C0', '#F5F5F5', '#1A1A1A'].includes(hex) ? 1 : 1.4;
-  mv.style.filter = `hue-rotate(${hue}deg) saturate(${sat})`;
+function showCarSilhouette(vehicleTypeId) {
+  const panel = document.getElementById('car-preview');
+  if (!panel) return;
+  panel.innerHTML = CAR_SVGS[vehicleTypeId] || '';
+  applyCarColor(state.vehicleColor);
+  updateCarLabel();
 }
 
 function updateCarLabel() {
@@ -242,12 +344,7 @@ function renderStep2() {
 }
 
 function loadVehicleModel(vt) {
-  const mv = document.getElementById('car3d');
-  if (!mv) return;
-  mv.setAttribute('src', vt.modelFile);
-  mv.setAttribute('poster', `icons/${vt.id}.svg`);
-  applyColorFilter(state.vehicleColor);
-  updateCarLabel();
+  showCarSilhouette(vt.id);
 }
 
 // ─── Step 3 — Colour ──────────────────────────────────────────────────────────
@@ -286,7 +383,7 @@ function renderStep3() {
     state.colorLabel = label;
     container.querySelectorAll('.cd-color-swatch').forEach(s =>
       s.classList.toggle('selected', s.dataset.hex === hex));
-    applyColorFilter(hex);
+    applyCarColor(hex);
     const lbl = container.querySelector('#color-label-text');
     const vtNow = VEHICLE_TYPES.find(v => v.id === state.vehicleType);
     if (lbl) lbl.textContent = vtNow ? `O teu ${vtNow.label} em ${label}` : label;
@@ -540,12 +637,9 @@ function resetWidget() {
     motoClass: null,
   });
 
-  // Reset 3D model
-  const mv = document.getElementById('car3d');
-  if (mv) {
-    mv.removeAttribute('src');
-    mv.style.filter = '';
-  }
+  // Reset car preview
+  const panel = document.getElementById('car-preview');
+  if (panel) { panel.innerHTML = ''; panel.style.color = ''; }
 
   renderStep1();
   showStep(1);
@@ -581,16 +675,7 @@ function buildShell() {
       </div>
 
       <div class="cd-3d-panel">
-        <model-viewer
-          id="car3d"
-          auto-rotate
-          camera-controls
-          shadow-intensity="0.5"
-          exposure="0.8"
-          ar-modes="none"
-          style="width:100%;height:320px;background:transparent;--poster-color:transparent"
-          aria-label="Modelo 3D do veículo seleccionado">
-        </model-viewer>
+        <div id="car-preview" class="cd-car-preview" aria-label="Silhueta do veículo seleccionado"></div>
         <p class="cd-car-label" id="car-label"></p>
       </div>
     </div>
