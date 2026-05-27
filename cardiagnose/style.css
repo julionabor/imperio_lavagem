@@ -26,23 +26,9 @@
   --font-corpo:   'Unbounded', sans-serif;
 }
 
-/* ─── Reset & Base ──────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: var(--font-corpo);
-  background: var(--cor-primaria);
-  color: var(--cor-texto);
-  min-height: 100vh;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 1rem;
-  overflow-x: hidden;
-}
-
-@media (min-width: 600px) {
-  body { align-items: center; }
+/* ─── Reset & Base (scoped ao widget) ──────────────────── */
+#cardiagnose-root *, #cardiagnose-root *::before, #cardiagnose-root *::after {
+  box-sizing: border-box;
 }
 
 /* ─── Widget Shell ──────────────────────────────────────── */

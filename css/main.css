@@ -650,7 +650,7 @@ strong {
 /* ─── Contact links ─────────────────────────────────────── */
 /* Força cor visível independentemente do .text-white no <p> pai */
 .site-footer-link {
-	color: var(--white-color);
+	color: #c3953b;
 	font-weight: var(--font-weight-bold);
 }
 

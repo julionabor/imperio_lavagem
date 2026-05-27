@@ -522,7 +522,7 @@ function renderStep5() {
       <p class="cd-result-justification">${justification}</p>
       ${installmentAmount ? `
         <div class="cd-installment">
-          💳 Disponível em <strong>4× de ${fmt(installmentAmount)} sem juros</strong> — solicita na marcação.
+          💳 Disponível desde <strong>4× de ${fmt(installmentAmount)} sem juros</strong> — solicita na marcação.
         </div>
       ` : ''}
       <button class="cd-btn cd-btn--cta" id="btn-book-primary">
