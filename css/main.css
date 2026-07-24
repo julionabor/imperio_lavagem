@@ -476,6 +476,108 @@ strong {
 	font-weight: 200;
 }
 
+/* ─── Tabela Serviços Avulsos ──────────────────────────────────────────────── */
+
+.precos-avulsos-section {
+	background-color: var(--primary-color);
+}
+
+.precos-avulsos-section h2 {
+	color: var(--secondary-color);
+}
+
+.precos-avulsos-subtitulo {
+	color: rgba(255, 255, 255, 0.65);
+	font-size: 14px;
+	margin-bottom: 0;
+}
+
+.precos-avulsos-table {
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: var(--border-radius-small);
+	overflow: hidden;
+}
+
+.precos-avulsos-table thead th {
+	background-color: var(--secondary-color);
+	color: var(--primary-color);
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	padding: 14px 20px;
+	border: none;
+}
+
+.precos-avulsos-table tbody tr {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	transition: background-color 0.2s;
+}
+
+.precos-avulsos-table tbody tr:last-child {
+	border-bottom: none;
+}
+
+.precos-avulsos-table tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+.precos-avulsos-table tbody td {
+	background-color: transparent;
+	padding: 18px 20px;
+	border: none;
+	vertical-align: middle;
+}
+
+.precos-avulsos-nome {
+	display: block;
+	color: var(--white-color);
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.precos-avulsos-desc {
+	display: block;
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 11px;
+	font-weight: 300;
+	margin-top: 3px;
+	line-height: 1.4;
+}
+
+.precos-avulsos-valor {
+	color: var(--secondary-color);
+	font-size: 17px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.precos-avulsos-unidade {
+	font-size: 12px;
+	font-weight: 400;
+	color: rgba(242, 204, 71, 0.75);
+}
+
+.precos-avulsos-nota {
+	background-color: rgba(195, 149, 59, 0.12);
+	color: rgba(255, 255, 255, 0.65);
+	font-size: 12px;
+	padding: 14px 20px;
+	border-top: 1px solid rgba(195, 149, 59, 0.3) !important;
+	border: none;
+}
+
+.precos-avulsos-nota strong {
+	color: var(--secondary-color);
+}
+
+.precos-avulsos-nota .bi {
+	color: var(--secondary-color);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 .services-thumb-price {
 	background: var(--secondary-color);
 	color: var(--primary-color);
