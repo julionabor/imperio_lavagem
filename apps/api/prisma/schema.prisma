@@ -1,0 +1,816 @@
+// Private Motors — schema completo (SPEC §3.1–3.4)
+// Valores monetários em cêntimos (Int); taxas em pontos base (Int, 1 % = 100).
+// Todas as tabelas têm id UUID, createdAt, updatedAt.
+// Entidades editáveis têm createdById e updatedById.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ══════════════════════════════════════════════════════════════════════════════
+
+enum VehicleStatus {
+  DRAFT
+  PUBLISHED
+  RESERVED
+  SOLD
+  ARCHIVED
+}
+
+enum VehicleCondition {
+  NEW
+  USED
+  NEARLY_NEW
+}
+
+enum Fuel {
+  PETROL
+  DIESEL
+  HYBRID
+  PHEV
+  ELECTRIC
+  LPG
+}
+
+enum Transmission {
+  MANUAL
+  AUTOMATIC
+}
+
+enum BodyType {
+  SUV
+  ESTATE
+  SEDAN
+  CITY
+  COUPE
+  CABRIO
+  MPV
+  VAN
+}
+
+enum EquipmentCategory {
+  SAFETY
+  COMFORT
+  MULTIMEDIA
+  EXTERIOR
+  INTERIOR
+  DRIVING
+}
+
+enum BadgeKind {
+  MANUAL
+  AUTO_NEW
+  AUTO_PRICE_DROP
+  AUTO_WARRANTY
+  AUTO_FEATURED
+  AUTO_RESERVED
+}
+
+enum PlacementZone {
+  HOME_FEATURED
+  BUDGET_SUGGESTIONS
+  ASSISTANT_BOOST
+}
+
+enum RateMode {
+  TAEG_INPUT
+  TAN_AND_FEES
+}
+
+enum LeadType {
+  QUOTE
+  TEST_DRIVE
+  CONTACT
+  TRADE_IN
+  FINANCING
+  SOURCING
+}
+
+enum LeadSource {
+  VEHICLE_PAGE
+  HOME_SEARCH
+  BUDGET_SEARCH
+  EMPTY_STATE
+  QUOTE_FORM
+  CONTACT_PAGE
+  WHATSAPP
+  ASSISTANT
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  WON
+  LOST
+}
+
+enum LostReason {
+  PRICE
+  FINANCING_REJECTED
+  BOUGHT_ELSEWHERE
+  NO_RESPONSE
+  VEHICLE_SOLD
+  OTHER
+}
+
+enum PipelineStageKind {
+  OPEN
+  WON
+  LOST
+}
+
+enum ActivityType {
+  CALL
+  WHATSAPP
+  EMAIL
+  SMS
+  VISIT
+  TEST_DRIVE
+  NOTE
+  STAGE_CHANGE
+  SYSTEM
+}
+
+enum ActivityDirection {
+  IN
+  OUT
+}
+
+enum ContactLifecycle {
+  LEAD
+  PROSPECT
+  CUSTOMER
+  INACTIVE
+}
+
+enum TaskStatus {
+  OPEN
+  DONE
+  CANCELLED
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  SALES
+}
+
+enum TradeInCondition {
+  EXCELLENT
+  GOOD
+  FAIR
+  POOR
+}
+
+enum PreferredContact {
+  PHONE
+  WHATSAPP
+  EMAIL
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// UTILIZADORES E AUTENTICAÇÃO
+// ══════════════════════════════════════════════════════════════════════════════
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  email       String    @unique
+  passwordHash String
+  role        UserRole  @default(SALES)
+  active      Boolean   @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  refreshTokens  RefreshToken[]
+  leads          Lead[]         @relation("AssignedLeads")
+  activities     Activity[]
+  tasks          Task[]
+  auditLogs      AuditLog[]
+  contacts       Contact[]      @relation("ContactOwner")
+
+  vehiclesCreated  Vehicle[] @relation("VehicleCreatedBy")
+  vehiclesUpdated  Vehicle[] @relation("VehicleUpdatedBy")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CATÁLOGO (MARCAS, MODELOS, EQUIPAMENTO, BADGES)
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Brand {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  slug    String   @unique
+  logoUrl String?
+  aliases String[]
+  active  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  models  Model[]
+  vehicles Vehicle[]
+}
+
+model Model {
+  id      String   @id @default(uuid())
+  brandId String
+  name    String
+  slug    String
+  aliases String[]
+  active  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  brand    Brand     @relation(fields: [brandId], references: [id])
+  vehicles Vehicle[]
+
+  @@unique([brandId, slug])
+  @@index([brandId])
+}
+
+model EquipmentItem {
+  id       String            @id @default(uuid())
+  name     String
+  category EquipmentCategory
+  active   Boolean           @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vehicleEquipment VehicleEquipment[]
+}
+
+model Badge {
+  id     String    @id @default(uuid())
+  label  String
+  style  String    // token CSS, ex.: "red"
+  kind   BadgeKind
+  active Boolean   @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vehicleBadges VehicleBadge[]
+}
+
+model SearchSynonym {
+  id        String   @id @default(uuid())
+  term      String   @unique // ex.: "gasóleo"
+  maps_to   String   // ex.: "DIESEL"
+  category  String   // "fuel" | "body" | "gear" | "brand"
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// VIATURAS
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Vehicle {
+  id      String         @id @default(uuid())
+  slug    String         @unique
+  status  VehicleStatus  @default(DRAFT)
+  condition VehicleCondition @default(USED)
+
+  brandId String
+  modelId String
+  version String
+  registrationDate DateTime // mês/ano (guardamos dia 1 do mês)
+
+  mileageKm    Int
+  fuel         Fuel
+  transmission Transmission
+  bodyType     BodyType
+
+  powerHp    Int?
+  engineCc   Int?
+  doors      Int?
+  seats      Int?
+  batteryKwh Int?
+  rangeKm    Int?
+
+  color         String?
+  colorInterior String?
+
+  /// Preço de venda com IVA, em cêntimos
+  priceCents         Int
+  /// Preço anterior em cêntimos (badge "Baixa de preço")
+  previousPriceCents Int?
+  vatDeductible      Boolean @default(false)
+  warrantyMonths     Int     @default(0)
+
+  description String?
+
+  financingEnabled   Boolean @default(true)
+  financingProductId String?
+
+  seoTitle       String?
+  seoDescription String?
+
+  publishedAt DateTime?
+  reservedAt  DateTime?
+  soldAt      DateTime?
+
+  viewCount     Int @default(0)
+  favoriteCount Int @default(0)
+
+  externalRef String? // Standvirtual (fase 2)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+  updatedById String?
+
+  brand Brand @relation(fields: [brandId], references: [id])
+  model Model @relation(fields: [modelId], references: [id])
+
+  createdBy User? @relation("VehicleCreatedBy", fields: [createdById], references: [id])
+  updatedBy User? @relation("VehicleUpdatedBy", fields: [updatedById], references: [id])
+
+  financingProduct FinancingProduct? @relation(fields: [financingProductId], references: [id])
+
+  images           VehicleImage[]
+  equipment        VehicleEquipment[]
+  badges           VehicleBadge[]
+  featuredPlacements FeaturedPlacement[]
+  leads            Lead[]
+  vehicleInterests VehicleInterest[]
+
+  @@index([status, publishedAt])
+  @@index([brandId])
+  @@index([modelId])
+  @@index([fuel])
+  @@index([bodyType])
+  @@index([priceCents])
+}
+
+model VehicleImage {
+  id         String @id @default(uuid())
+  vehicleId  String
+  storageKey String @unique
+  /// JSON: { thumb: string, card: string, full: string }
+  variants   Json
+  alt        String @default("")
+  position   Int
+  isCover    Boolean @default(false)
+  width      Int
+  height     Int
+  createdAt  DateTime @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId, position])
+}
+
+model VehicleEquipment {
+  vehicleId       String
+  equipmentItemId String
+
+  vehicle       Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  equipmentItem EquipmentItem @relation(fields: [equipmentItemId], references: [id])
+
+  @@id([vehicleId, equipmentItemId])
+}
+
+model VehicleBadge {
+  vehicleId String
+  badgeId   String
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  badge   Badge   @relation(fields: [badgeId], references: [id])
+
+  @@id([vehicleId, badgeId])
+}
+
+model FeaturedPlacement {
+  id        String       @id @default(uuid())
+  vehicleId String
+  placement PlacementZone
+  position  Int
+  label     String?
+  startsAt  DateTime?
+  endsAt    DateTime?
+  active    Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([placement, active, position])
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FINANCIAMENTO
+// ══════════════════════════════════════════════════════════════════════════════
+
+model FinancingProduct {
+  id         String   @id @default(uuid())
+  name       String
+  lenderName String
+  isDefault  Boolean  @default(false)
+  active     Boolean  @default(true)
+  rateMode   RateMode @default(TAEG_INPUT)
+
+  /// TAEG em pontos base (1 % = 100)
+  taegBp Int @default(1500)
+  /// TAN em pontos base
+  tanBp  Int @default(0)
+
+  allowedTerms          Int[]
+  defaultTermMonths     Int @default(96)
+  defaultDownPaymentPct Int @default(0)
+  maxDownPaymentPct     Int @default(50)
+
+  /// Montante mínimo financiado em cêntimos
+  minFinancedCents Int @default(0)
+  /// Montante máximo financiado em cêntimos
+  maxFinancedCents Int @default(0) // 0 = sem limite
+
+  openingFeeCents  Int @default(0)
+  monthlyFeeCents  Int @default(0)
+  stampDutyRateBp  Int @default(0)
+
+  maxVehicleAgeAtEndYears Int?
+
+  /// Percentagem acima do orçamento para "ficam perto"
+  budgetNearPct Int @default(15)
+
+  representativeExampleTemplate String?
+  legalNote                     String?
+
+  validFrom DateTime?
+  validTo   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vehicles Vehicle[]
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CRM — CONTACTOS E LEADS (SPEC §3.4)
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Contact {
+  id               String           @id @default(uuid())
+  name             String
+  /// Normalizado E.164, ex.: "+351912345678"
+  phone            String           @unique
+  email            String?
+  locality         String?
+  preferredContact PreferredContact?
+  tags             Tag[]
+  ownerId          String?
+  lifecycle        ContactLifecycle @default(LEAD)
+  firstSource      LeadSource?
+  lastInteractionAt DateTime?
+
+  consentPrivacy   Boolean   @default(false)
+  consentMarketing Boolean   @default(false)
+  consentAt        DateTime?
+  consentSource    String?
+
+  anonymizedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner  User?  @relation("ContactOwner", fields: [ownerId], references: [id])
+  leads  Lead[]
+  activities Activity[]
+  tasks  Task[]
+  vehicleInterests VehicleInterest[]
+
+  @@index([phone])
+  @@index([email])
+}
+
+model Tag {
+  id    String    @id @default(uuid())
+  name  String    @unique
+  color String    // token CSS
+  contacts Contact[]
+}
+
+model PipelineStage {
+  id       String           @id @default(uuid())
+  name     String
+  position Int
+  kind     PipelineStageKind @default(OPEN)
+  color    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leads Lead[]
+}
+
+model Lead {
+  id        String     @id @default(uuid())
+  type      LeadType
+  source    LeadSource
+  status    LeadStatus @default(NEW)
+
+  contactId String
+  vehicleId String?
+
+  stageId String?
+
+  name             String
+  email            String?
+  phone            String
+  preferredContact PreferredContact?
+  preferredDate    DateTime?
+  message          String?
+
+  searchSnapshot     Json?
+  simulationSnapshot Json?
+  assistantAnswers   Json?
+
+  estimatedValueCents Int?
+  expectedCloseDate   DateTime?
+  lostReason          LostReason?
+  wonVehicleId        String?
+
+  assignedToId String?
+
+  utm Json?
+
+  consentPrivacy   Boolean   @default(false)
+  consentMarketing Boolean   @default(false)
+  consentAt        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contact    Contact        @relation(fields: [contactId], references: [id])
+  vehicle    Vehicle?       @relation(fields: [vehicleId], references: [id])
+  stage      PipelineStage? @relation(fields: [stageId], references: [id])
+  assignedTo User?          @relation("AssignedLeads", fields: [assignedToId], references: [id])
+  tradeIn    TradeIn?
+  activities Activity[]
+  tasks      Task[]
+
+  @@index([contactId])
+  @@index([status])
+  @@index([assignedToId])
+}
+
+model TradeIn {
+  id        String           @id @default(uuid())
+  leadId    String           @unique
+  brand     String
+  model     String
+  version   String?
+  year      Int
+  mileageKm Int
+  fuel      String?
+  condition TradeInCondition?
+  notes     String?
+  photos    String[]         // storageKeys
+  createdAt DateTime         @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Activity {
+  id          String            @id @default(uuid())
+  contactId   String
+  leadId      String?
+  type        ActivityType
+  direction   ActivityDirection @default(OUT)
+  summary     String
+  occurredAt  DateTime          @default(now())
+  authorId    String?
+  createdAt   DateTime          @default(now())
+
+  contact Contact  @relation(fields: [contactId], references: [id])
+  lead    Lead?    @relation(fields: [leadId], references: [id])
+  author  User?    @relation(fields: [authorId], references: [id])
+
+  @@index([contactId])
+  @@index([leadId])
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  contactId   String
+  leadId      String?
+  title       String
+  dueAt       DateTime
+  assigneeId  String?
+  status      TaskStatus @default(OPEN)
+  completedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  contact  Contact  @relation(fields: [contactId], references: [id])
+  lead     Lead?    @relation(fields: [leadId], references: [id])
+  assignee User?    @relation(fields: [assigneeId], references: [id])
+
+  @@index([assigneeId, status])
+  @@index([dueAt, status])
+}
+
+model VehicleInterest {
+  id        String     @id @default(uuid())
+  contactId String
+  vehicleId String?
+  criteria  Json?      // filtros guardados
+  source    LeadSource
+  createdAt DateTime   @default(now())
+
+  contact Contact  @relation(fields: [contactId], references: [id])
+  vehicle Vehicle? @relation(fields: [vehicleId], references: [id])
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CONTEÚDO DO SITE (gerido pelo admin, nunca hardcoded)
+// ══════════════════════════════════════════════════════════════════════════════
+
+model Testimonial {
+  id           String  @id @default(uuid())
+  authorName   String
+  initials     String
+  text         String
+  vehicleLabel String
+  photoUrl     String?
+  position     Int
+  active       Boolean @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Advantage {
+  id       String  @id @default(uuid())
+  icon     String  // nome Phosphor, ex.: "shield-check"
+  title    String
+  text     String
+  position Int
+  active   Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model QuickFilter {
+  id       String  @id @default(uuid())
+  label    String
+  filters  Json    // FilterState
+  position Int
+  active   Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SearchExample {
+  id       String  @id @default(uuid())
+  text     String
+  position Int
+  active   Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NavItem {
+  id       String  @id @default(uuid())
+  label    String
+  route    String?
+  url      String?
+  position Int
+  active   Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Singleton — usar upsert
+model HomeContent {
+  id               String @id @default(uuid())
+  heroTitle        String @default("O carro certo, sem complicações.")
+  heroSubtitle     String @default("Pesquise como falaria. Simulamos o financiamento na hora.")
+  stockTagline     String @default("viaturas em stock · crédito com resposta no próprio dia")
+  searchPlaceholder String @default("SUV diesel até 250 €/mês…")
+  modeCarLabel     String @default("Procurar por carro")
+  modeBudgetLabel  String @default("Quanto posso pagar?")
+  featuredTitle    String @default("Em destaque")
+  featuredSubtitle String @default("Escolhidas pela equipa esta semana")
+  advantagesTitle  String @default("Comprar aqui é simples e fica tudo por escrito.")
+  testimonialsTitle String @default("Quem já comprou")
+  assistantCtaTitle String @default("Não sabe por onde começar?")
+  assistantCtaText  String @default("O nosso assistente faz as perguntas certas e sugere as viaturas que mais se adaptam a si.")
+  assistantCtaButton String @default("Falar com o assistente")
+  updatedAt        DateTime @updatedAt
+}
+
+/// Singleton — usar upsert
+model AboutContent {
+  id          String  @id @default(uuid())
+  title       String  @default("Sobre a Private Motors")
+  body        String  @default("")
+  images      String[]
+  teamPhotoUrl String?
+  updatedAt   DateTime @updatedAt
+}
+
+/// Singleton — usar upsert
+model SiteSettings {
+  id                  String  @id @default(uuid())
+  companyName         String  @default("Private Motors")
+  nif                 String  @default("")
+  creditIntermediaryText String @default("Intermediário de crédito a título acessório, registado no Banco de Portugal.")
+  address             String  @default("")
+  postalCode          String  @default("")
+  locality            String  @default("")
+  lat                 Float?
+  lng                 Float?
+  phones              String[]
+  email               String  @default("")
+  whatsapp            String  @default("")
+  openingHours        Json    @default("{}")
+  socialLinks         Json    @default("{}")
+  googleRating        Float   @default(4.9)
+  googleReviewCount   Int     @default(0)
+  googleReviewsUrl    String  @default("")
+  complaintsBookUrl   String  @default("https://www.livroreclamacoes.pt")
+  defaultSeo          Json    @default("{}")
+  logoUrl             String  @default("")
+  faviconUrl          String  @default("")
+  newBadgeDays        Int     @default(3)
+  updatedAt           DateTime @updatedAt
+}
+
+model LegalPage {
+  id        String   @id @default(uuid())
+  slug      String   @unique // "privacidade" | "cookies" | "termos"
+  title     String
+  body      String   // Markdown
+  updatedAt DateTime @updatedAt
+}
+
+/// Singleton — usar upsert
+model AssistantSettings {
+  id                   String  @id @default(uuid())
+  enabled              Boolean @default(true)
+  botName              String  @default("PM")
+  statusText           String  @default("Online · resposta imediata")
+  welcomeMessage       String  @default("Olá! Vou ajudá-lo a encontrar o carro certo em 4 perguntas.")
+  entryChips           Json    @default("[\"Ajudem-me a escolher\",\"Quero um orçamento\"]")
+  handoffMessage       String  @default("Óptimo! Diga-me o seu nome e telemóvel e a nossa equipa entra em contacto hoje.")
+  confirmationTemplate String  @default("Obrigado, {name}! A equipa já recebeu o seu pedido e entrará em contacto em breve.")
+  updatedAt            DateTime @updatedAt
+
+  steps AssistantStep[]
+}
+
+model AssistantStep {
+  id          String @id @default(uuid())
+  settingsId  String
+  key         String // "uso" | "fam" | "orc" | "fuel"
+  question    String
+  position    Int
+  options     Json   // [{ label: string, rules: { fuel?, body?, maxMonthly?, score: number } }]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  settings AssistantSettings @relation(fields: [settingsId], references: [id])
+
+  @@unique([settingsId, key])
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AUDITORIA
+// ══════════════════════════════════════════════════════════════════════════════
+
+model AuditLog {
+  id       String @id @default(uuid())
+  userId   String
+  action   String // "CREATE" | "UPDATE" | "DELETE"
+  entity   String // nome do modelo, ex.: "Vehicle"
+  entityId String
+  diff     Json
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([entity, entityId])
+  @@index([userId])
+}

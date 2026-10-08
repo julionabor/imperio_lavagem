@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir)",
+      "Bash(pnpm test:*)",
+      "Bash(npm test:*)",
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Bash(pnpm --version)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm approve-builds:*)",
+      "Bash(pnpm config:*)",
+      "Read(//c/Users/julio/.config/pnpm/**)",
+      "Read(//c/Users/julio/**)",
+      "Bash(npx tsc:*)",
+      "Bash(powershell -Command \"Get-Process -Id 6572,27460 | Select-Object Id,ProcessName\" 2>&1)",
+      "Bash(pnpm --filter api lint)",
+      "Bash(DATABASE_URL=\"postgresql://pm:pm@localhost:5432/pm_test\" npx prisma migrate deploy)",
+      "Bash(pnpm --filter api test --run)",
+      "Bash(pnpm --filter @pm/libs build)",
+      "Bash(pnpm --filter web test --run)",
+      "Bash(grep -v \"^$\")",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(pnpm -r lint)",
+      "Bash(pnpm -r test --run)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(pnpm --filter @pm/libs test --run)"
+    ]
+  }
+}

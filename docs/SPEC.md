@@ -19,21 +19,23 @@ O assistente do design é guiado por regras (quatro perguntas em chips e pontua�
 
 | Camada | Decisão fixada | Versão | Motivo |
 | --- | --- | --- | --- |
-| Monorepo | Nx (integrated), pnpm | Nx 21.x, pnpm 10.x | Partilha de tipos, validações e cálculo entre front e API; regras de fronteira por tags |
-| Site público | Angular standalone, signals, zoneless, `@angular/ssr` | Angular 22.x | SEO das viaturas e performance no primeiro carregamento |
-| Backoffice | Angular SPA (sem SSR) | Angular 22.x | Área autenticada, não indexável |
+| Repositório | pnpm workspaces: `apps/web`, `apps/api` e `libs/` (um só pacote `@pm/libs`) | pnpm 10.x | Partilha de código entre front e API sem ferramentas extra |
+| Front (site + admin) | Uma única app Angular CLI: site público com SSR e backoffice em `/admin` (lazy, `RenderMode.Client`) | Angular 22.x | Um build, um deploy; o admin não é indexado nem renderizado no servidor |
 | Estado | NgRx SignalStore | `@ngrx/signals` compatível com Angular 22 | Store leve baseada em signals, por feature |
 | Estilos | Tailwind CSS com tokens do design em `@theme` | Tailwind 4.x | Mapeamento direto dos tokens do Claude Design |
-| Ícones e fontes | Phosphor Icons, Archivo e Geist servidos localmente | — | Os do design |
-| API | Node.js + TypeScript + Fastify | Node 24 LTS, Fastify 5.x | Simples, rápida, validação por schema e OpenAPI automático |
+| UI acessível | Angular CDK (overlay, a11y, drag-drop) | Angular 22.x | Oficial; cobre bottom sheet, modais, foco e ordenação por arrastar |
+| API | Node.js + TypeScript + Fastify (`@fastify/jwt`, `@fastify/cookie`, `@fastify/multipart`, `@fastify/rate-limit`, `@fastify/swagger`) | Node 24 LTS, Fastify 5.x | Simples, rápida, logs (pino) incluídos |
 | Validação | Zod em `libs/contracts` | Zod 4.x | Um único contrato para front e back |
 | Base de dados | PostgreSQL + Prisma | PostgreSQL 17, Prisma 6.x | Relacional, migrações versionadas, tipos gerados |
-| Imagens | Cloudflare R2 + `sharp`; MinIO em desenvolvimento | — | S3-compatível, sem custos de saída, CDN da Cloudflare |
-| Anti-spam | Cloudflare Turnstile + honeypot + rate limit | — | Gratuito e sem desafios visuais |
-| Email | Brevo (SMTP transacional); Mailpit em desenvolvimento | — | Servidores na UE, plano gratuito suficiente para o volume |
-| Deploy | VPS (ex.: Hetzner) com Docker e Coolify: web SSR, admin estático, API e PostgreSQL; Cloudflare à frente (DNS, CDN, SSL) | — | Custo fixo baixo, tudo no mesmo sítio |
-| Testes | Vitest (unitários e componentes, com Angular Testing Library), Playwright (E2E), Supertest + Testcontainers (API) | — | Vitest é o runner por defeito do Angular desde a v21 |
-| Observabilidade | pino, Sentry, uptime monitor | — | Logs estruturados e alertas |
+| Imagens | Disco persistente (volume) + `sharp`, atrás de uma interface `Storage` | — | Sem contas extra; troca para S3/R2 mais tarde sem mexer no resto |
+| Email | Brevo por SMTP (`nodemailer`); em desenvolvimento os emails são escritos na consola | — | Uma conta, sem servidor de email local |
+| Passwords | `crypto.scrypt` nativo do Node | — | Sem dependências nativas a compilar no deploy |
+| Testes | Vitest para tudo (libs, componentes com Angular Testing Library, API com `fastify.inject()` contra a base de testes) | — | Um só runner, sem browsers nem containers extra |
+| Desenvolvimento local | Docker Compose só com PostgreSQL | — | Um serviço, um comando |
+| Deploy | Railway: serviço `web` (Node SSR), serviço `api` (Node) com volume para imagens, PostgreSQL gerido; deploy automático a cada push para `main`; Cloudflare só para DNS | — | Sem servidores para administrar; backups da base incluídos |
+| CI | GitHub Actions: install, lint, typecheck, test | — | Um workflow |
+
+Ficam de fora de propósito: Nx, Storybook, Playwright, Testcontainers, Sentry, CDN de imagens, captcha e editores de texto rico. Qualquer um pode entrar depois sem mudar a arquitetura.
 
 As versões são majors fixados à data desta spec; no arranque do projeto usar o último patch de cada major e fixá-lo no lockfile.
 
@@ -158,7 +160,7 @@ Relações: `VehicleImage[]`, `VehicleEquipment[]`, `VehicleBadge[]`, `FeaturedP
 | LegalPage | slug (`privacidade`, `cookies`, `termos`), title, body, updatedAt |  |
 | AssistantSettings | enabled, botName, statusText, welcomeMessage, entryChips\[\], handoffMessage, confirmationTemplate | MVP (guiado por regras) |
 | AssistantStep | key (`uso`, `fam`, `orc`, `fuel`), question, position, options\[\] (label + regras de pontuação JSON, ex.: `{fuel: ['DIESEL'], score: 3}`) | Editável no admin; motor de pontuação em `libs/assistant` |
-| User | name, email, passwordHash (argon2), role (`ADMIN`, `EDITOR`, `SALES`), active, lastLoginAt |  |
+| User | name, email, passwordHash (scrypt), role (`ADMIN`, `EDITOR`, `SALES`), active, lastLoginAt |  |
 | RefreshToken | userId, tokenHash, expiresAt, revokedAt | Rotação a cada uso |
 | AuditLog | userId, action, entity, entityId, diff (JSON), createdAt | Todas as escritas do admin |
 
@@ -226,9 +228,9 @@ O site público é só de leitura, exceto a criação de leads. Todos os filtros
 
 **RF-P09 Modo "Quanto posso pagar por mês".** Na homepage, o seletor de modo troca a pesquisa por: prestação (slider 100–900 €), entrada disponível opcional (0–20 000 €, "Sem entrada") e prazo (24–96). A grelha mostra primeiro as viaturas que cabem e depois as que ficam até 15 % acima (`budgetNearPct`), com os contadores "N cabem no orçamento" e "N ficam perto" e, em cada card, "Sobram X € por mês" (verde) ou "Faltam X € por mês" (âmbar). Os restantes filtros continuam disponíveis. Nota "TAEG X % · valores indicativos".
 
-**RF-P10 Orçamento e retoma.** Formulário em passos: 1) viatura de interesse (opcional, pré-preenchida pelo query param); 2) retoma (sim/não, dados e até 10 fotos); 3) contactos e consentimentos. Validação inline, proteção anti-spam (honeypot + rate limit + Cloudflare Turnstile) e ecrã de confirmação.
+**RF-P10 Orçamento e retoma.** Formulário em passos: 1) viatura de interesse (opcional, pré-preenchida pelo query param); 2) retoma (sim/não, dados e até 10 fotos); 3) contactos e consentimentos. Validação inline, proteção anti-spam (campo honeypot + rate limit por IP) e ecrã de confirmação.
 
-**RF-P11 Sobre e contactos.** Texto e imagens do `AboutContent`, mapa (embed ou Leaflet com OpenStreetMap), horário com indicação "Aberto agora", telefones com `tel:`, email, WhatsApp e formulário de contacto simples.
+**RF-P11 Sobre e contactos.** Texto e imagens do `AboutContent`, mapa (iframe do Google Maps ou OpenStreetMap, sem biblioteca), horário com indicação "Aberto agora", telefones com `tel:`, email, WhatsApp e formulário de contacto simples.
 
 **RF-P12 Rastreamento.** Cada lead guarda UTM e página de origem. Visualizações de detalhe incrementam `viewCount` (1 por sessão).
 
@@ -278,7 +280,7 @@ O backoffice gere tudo o que aparece no site, em português de Portugal, desktop
 
 **RF-A04 Formulário de viatura.** Separadores: Dados gerais, Preço e garantia, Equipamento (checklist por categoria com pesquisa), Fotos, Financiamento (ativar, produto específico, pré-visualização da prestação), SEO, Pré-visualização. Rascunho guardado automaticamente a cada 30 s. Publicar valida: ≥ 1 foto de capa, preço, campos obrigatórios. Alterar preço para baixo sugere preencher `previousPrice`.
 
-**RF-A05 Fotos.** Upload múltiplo por drag-and-drop (JPEG/PNG/HEIC, máx. 15 MB cada, até 40), barra de progresso, reordenação por arrastar, definir capa, editar texto alternativo, eliminar. A API gera as variantes e remove metadados EXIF (incluindo GPS).
+**RF-A05 Fotos.** Upload múltiplo por drag-and-drop (JPEG, PNG ou WebP, máx. 15 MB cada, até 40), barra de progresso, reordenação por arrastar, definir capa, editar texto alternativo, eliminar. A API gera as variantes e remove metadados EXIF (incluindo GPS).
 
 **RF-A06 Destaques.** Um ecrã por zona: "Em destaque" da homepage (2 viaturas por defeito, título e subtítulo editáveis), sugestões no modo orçamento e reforço nas recomendações do assistente. Adicionar viatura por pesquisa, reordenar por arrastar, rótulo opcional, período de início/fim e pré-visualização com o card de destaque real. Viaturas vendidas ou despublicadas aparecem marcadas e deixam de ser mostradas no site.
 
@@ -291,9 +293,9 @@ O backoffice gere tudo o que aparece no site, em português de Portugal, desktop
 - **Tarefas:** "As minhas tarefas" de hoje e em atraso, com conclusão num clique; o dashboard mostra as tarefas em atraso por comercial.
 - **Relatórios:** leads por origem e por semana, taxa de conversão por etapa, tempo médio até ao primeiro contacto, motivos de perda e vendas por comercial.
 
-Automatismos: email ao stand e tarefa "Ligar ao cliente" em cada lead novo; atribuição por rotação entre comerciais ativos (ou manual); alerta de lead sem contacto após 24 h; aviso ao comercial quando entra uma viatura compatível com um `VehicleInterest` aberto. Exportação CSV de contactos e leads (só com consentimento de marketing para fins de campanha) e importação CSV de contactos existentes. O perfil SALES vê e gere os seus contactos e os não atribuídos.
+Automatismos: email ao stand e tarefa "Ligar ao cliente" em cada lead novo; atribuição por rotação entre comerciais ativos (ou manual); alerta de lead sem contacto após 24 h; aviso ao comercial quando entra uma viatura compatível com um `VehicleInterest` aberto. Exportação CSV de contactos e leads (só com consentimento de marketing para fins de campanha). O perfil SALES vê e gere os seus contactos e os não atribuídos.
 
-**RF-A09 Conteúdo.** Editores para Homepage (título e subtítulo do hero, linha de stock, rótulos dos modos, títulos das secções, bloco do assistente), Atalhos (`QuickFilter`, construídos com o mesmo painel de filtros do site), Frases de exemplo da pesquisa, Vantagens (ícone Phosphor com pré-visualização, título, texto, ordem), Testemunhos (texto, nome, viatura comprada, ordem, ativo), Navegação do header/footer, Sobre e Páginas legais (editor de texto rico limitado).
+**RF-A09 Conteúdo.** Editores para Homepage (título e subtítulo do hero, linha de stock, rótulos dos modos, títulos das secções, bloco do assistente), Atalhos (`QuickFilter`, construídos com o mesmo painel de filtros do site), Frases de exemplo da pesquisa, Vantagens (ícone Phosphor com pré-visualização, título, texto, ordem), Testemunhos (texto, nome, viatura comprada, ordem, ativo), Navegação do header/footer, Sobre e Páginas legais (Markdown com pré-visualização).
 
 **RF-A10 Catálogos.** Marcas (com logótipo), modelos por marca, itens de equipamento por categoria, badges manuais. Não permite eliminar itens em uso; permite desativar.
 
@@ -301,7 +303,7 @@ Automatismos: email ao stand e tarefa "Ligar ao cliente" em cada lead novo; atri
 
 **RF-A12 Utilizadores e auditoria.** CRUD de utilizadores, convite por email, ativar/desativar, mudar perfil. Registo de auditoria filtrável por utilizador, entidade e data.
 
-**RF-A13 Invalidação de cache.** Qualquer escrita que afete o site público invalida a cache correspondente (listagens, detalhe, home) na API/CDN, para que a alteração apareça em menos de 1 minuto.
+**RF-A13 Invalidação de cache.** As respostas públicas têm cache curta (60 s), sem invalidação manual: qualquer alteração feita no admin aparece no site em menos de 1 minuto.
 
 **RF-A14 Assistente.** (ADMIN e EDITOR) Ativar/desativar, nome e estado do bot, mensagem de boas-vindas, chips de entrada, mensagem de passagem para orçamento e template de confirmação. Editor das perguntas (`AssistantStep`): texto, ordem e opções, cada opção com regras de pontuação escolhidas por formulário (combustível, carroçaria, prestação máxima, pontos). Botão "Testar" que corre o fluxo contra o stock atual e mostra as 3 viaturas recomendadas.
 
@@ -314,25 +316,26 @@ Uma única API REST, versionada em `/api/v1`, com dois grupos: `/public` (sem au
 ### 6.1 Arquitetura em camadas
 
 ```
-apps/api/src/
-  main.ts                 # bootstrap Fastify, plugins, graceful shutdown
-  config/                 # env validada com Zod (DATABASE_URL, JWT_*, S3_*, SMTP_*)
-  plugins/                # prisma, auth, cors, helmet, rate-limit, swagger, multipart
-  modules/
-    vehicles/
-      vehicles.routes.ts      # só HTTP: schema, auth, chama o controller
-      vehicles.controller.ts  # traduz request/response, sem regras de negócio
-      vehicles.service.ts     # regras de negócio, orquestração, cache
-      vehicles.repository.ts  # único ponto de acesso ao Prisma
-      vehicles.mapper.ts      # entidade -> DTO público / DTO admin
-      vehicles.test.ts
-    images/ featured/ financing/ leads/ content/ catalog/ settings/ users/ auth/ audit/
-  shared/                 # errors, pagination, slug, storage (S3), mailer, cache
-prisma/
-  schema.prisma  migrations/  seed.ts
+apps/api/
+  package.json            # scripts: dev (tsx watch), build (tsc), start, test (vitest)
+  prisma/
+    schema.prisma  migrations/  seed.ts
+  src/
+    main.ts               # bootstrap Fastify, plugins, graceful shutdown
+    config.ts             # env validada com Zod (DATABASE_URL, JWT_SECRET, UPLOAD_DIR, SMTP_*, WEB_ORIGIN)
+    plugins/              # prisma, auth, cors, rate-limit, swagger, multipart, static (uploads)
+    modules/
+      vehicles/
+        vehicles.routes.ts      # só HTTP: schema, auth, chama o service
+        vehicles.service.ts     # regras de negócio
+        vehicles.repository.ts  # único ponto de acesso ao Prisma
+        vehicles.mapper.ts      # entidade -> DTO público / DTO admin
+        vehicles.test.ts        # fastify.inject() contra a base de testes
+      images/ featured/ financing/ leads/ crm/ content/ catalog/ assistant/ settings/ users/ auth/ audit/
+    shared/               # errors, pagination, slug, storage (disco), mailer, password (scrypt)
 ```
 
-Regras: routes não tocam no Prisma; services não conhecem Fastify; repositories não têm regras de negócio. Os DTOs públicos nunca expõem campos internos (custos, notas, `createdById`).
+Sem camada de controller separada: as routes fazem a ponte HTTP e chamam o service. Regras: routes não tocam no Prisma; services não conhecem Fastify; repositories não têm regras de negócio. Os DTOs públicos nunca expõem campos internos (custos, notas, `createdById`).
 
 ### 6.2 Endpoints públicos
 
@@ -383,44 +386,54 @@ Todos em `/admin`, com `Authorization: Bearer`. Padrão REST igual para cada rec
 | `audit` | `GET /audit` |
 | `dashboard` | `GET /dashboard/summary` |
 
-CRM: `GET/POST/PATCH /contacts` (+ `POST /contacts/merge`, `POST /contacts/import`, `GET /contacts/export.csv`, `POST /contacts/:id/anonymize`), `GET/POST /contacts/:id/activities`, CRUD `/tasks` (+ `GET /tasks/mine`), CRUD `/pipeline-stages` (+ `PATCH /reorder`), CRUD `/tags`, `GET /crm/reports`. Em `POST /public/leads` a API procura ou cria o contacto, cria o lead na primeira etapa, regista a atividade e gera a tarefa inicial numa só transação.
+CRM: `GET/POST/PATCH /contacts` (+ `POST /contacts/merge`, `GET /contacts/export.csv`, `POST /contacts/:id/anonymize`), `GET/POST /contacts/:id/activities`, CRUD `/tasks` (+ `GET /tasks/mine`), CRUD `/pipeline-stages` (+ `PATCH /reorder`), CRUD `/tags`, `GET /crm/reports`. Em `POST /public/leads` a API procura ou cria o contacto, cria o lead na primeira etapa, regista a atividade e gera a tarefa inicial numa só transação.
 
 ### 6.4 Convenções
 
 - **Erros** no formato RFC 9457 (`application/problem+json`): `type`, `title`, `status`, `detail`, `errors[]` por campo. Códigos: 400 validação, 401, 403, 404, 409 conflito (slug duplicado, item em uso), 410 viatura vendida, 422 regra de negócio, 429.
 - **Concorrência**: `PATCH` aceita `If-Match` com `updatedAt`/versão; conflito devolve 409.
-- **Segurança**: helmet, CORS restrito aos domínios do site e do admin, rate limit (público: 120 req/min por IP; leads: 5/hora por IP), passwords com argon2id, JWT de acesso 15 min, refresh 30 dias em cookie `httpOnly; Secure; SameSite=Strict`.
-- **Cache**: respostas públicas com `Cache-Control: public, max-age=60, stale-while-revalidate=300` e ETag; invalidação por tags nas escritas do admin.
-- **Imagens**: upload para Cloudflare R2 (MinIO em desenvolvimento), processamento com `sharp` (WebP + AVIF, 400/800/1600 px, remoção de EXIF), servidas por CDN.
-- **Emails**: notificação de novo lead ao stand e confirmação ao cliente, via SMTP transacional (Brevo).
-- **Observabilidade**: logs estruturados (pino) com request id, `/health` e `/ready`, erros enviados para Sentry.
+- **Segurança**: headers de segurança (@fastify/helmet), CORS restrito ao domínio do site, rate limit (público: 120 req/min por IP; leads: 5/hora por IP), passwords com crypto.scrypt nativo do Node, JWT de acesso 15 min, refresh 30 dias em cookie `httpOnly; Secure; SameSite=Strict`.
+- **Cache**: respostas públicas com `Cache-Control: public, max-age=60, stale-while-revalidate=300` e ETag (nativo do Fastify); sem invalidação manual.
+- **Imagens**: gravadas em disco (UPLOAD\_DIR, volume persistente no Railway) através da interface Storage, processamento com `sharp` (WebP + AVIF, 400/800/1600 px, remoção de EXIF), servidas pela API em /uploads com cache de 1 ano (nomes de ficheiro com hash).
+- **Emails**: notificação de novo lead ao stand e confirmação ao cliente, via SMTP da Brevo com nodemailer; em desenvolvimento (EMAIL\_TRANSPORT=console) os emails são escritos no log.
+- **Observabilidade**: logs estruturados (pino) com request id, `/health` e `/ready`, logs consultados no painel do Railway.
 - **Seed**: script com catálogo de marcas/modelos comuns em Portugal, 1 admin, produto de financiamento exemplo e 20 viaturas fictícias.
 
 ## 7. Arquitetura Angular
 
-Duas aplicações (site e admin) num monorepo, organizadas por feature e por camada, com dependências só num sentido: `feature → data-access → contracts`, e `feature → ui`. Um componente de UI nunca chama HTTP; um serviço de API nunca guarda estado.
+Uma única app Angular (site + admin) organizada por feature e por camada, com dependências só num sentido: `pages → store → api client → @pm/libs/contracts`, e `pages → ui`. Um componente de UI nunca chama HTTP; um API client nunca guarda estado. A disciplina é mantida por convenção de pastas (e pelo `CLAUDE.md`), sem ferramentas de monorepo.
 
-### 7.1 Estrutura do monorepo
+### 7.1 Estrutura do repositório
 
 ```
+pnpm-workspace.yaml        # packages: ["apps/*", "libs"]
+docker-compose.yml         # só PostgreSQL (dev e testes)
 apps/
-  web/                 # site público (SSR)
-  admin/               # backoffice (SPA)
-  api/                 # Node/Fastify
-libs/
-  contracts/           # schemas Zod + tipos (Vehicle, Lead, FilterState, DTOs)
-  finance/             # prestação, TAN<->TAEG, MTIC, exemplo representativo (puro)
-  search-parser/       # texto livre -> FilterState, chips, remoção de chip (puro)
-  assistant/           # motor de pontuação das respostas do assistente (puro)
-  shared/ui/           # componentes base Tailwind (button, input, chip, slider, sheet, skeleton...)
-  shared/util/         # formatação € (pt-PT, espaço fino), km, datas, slug
-  web/data-access/     # clientes HTTP + stores do site
-  web/feature-*/       # search-home, vehicle-detail, trade-in, quote, about, contacts, assistant
-  admin/data-access/   # clientes HTTP + stores do admin
-  admin/feature-*/     # vehicles, featured, financing, leads, content, catalog, assistant, settings, users
+  web/                     # Angular CLI: site (SSR) + admin (/admin, só browser)
+    src/
+      styles/theme.css     # tokens do design (@theme)
+      app/
+        core/              # interceptors, guards, layout do site e do admin, SEO, FinanceService
+        shared/ui/         # pm-button, pm-chip, pm-slider, pm-bottom-sheet, pm-vehicle-card...
+        shared/util/       # formatação € e km, pipes
+        features/
+          search/          # homepage = pesquisa + resultados (+ modo orçamento)
+            data-access/   # search.store.ts, vehicles.api.ts
+            ui/            # componentes de apresentação da feature
+            pages/         # search.page.ts
+          vehicle-detail/  trade-in/  quote/  about/  contacts/  assistant/  favorites/
+        admin/             # rotas lazy em /admin, RenderMode.Client
+          dashboard/  vehicles/  featured/  financing/  crm/  content/  catalog/  assistant/  settings/  users/
+  api/                     # Node + Fastify (ver §6.1)
+libs/                      # um só pacote: @pm/libs (TypeScript puro, sem Angular nem Node)
+  package.json             # exports: ./contracts, ./finance, ./search-parser, ./assistant
+  contracts/               # schemas Zod + tipos (Vehicle, Lead, FilterState, DTOs)
+  finance/                 # prestação, TAN<->TAEG, MTIC, exemplo representativo
+  search-parser/           # texto livre -> FilterState, chips, remoção de chip
+  assistant/               # motor de pontuação do assistente
 ```
 
-Regras de fronteira aplicadas com tags do Nx (`scope:web`, `scope:admin`, `type:feature|ui|data-access|util`) e `@nx/enforce-module-boundaries` no ESLint.
+Front e API importam o código partilhado como pacote (`import { monthlyPayment } from '@pm/libs/finance'`), ligado pelo pnpm workspace, sem publicar nada. Regras de pastas: `shared/ui` não importa de `features/` nem de `admin/`; uma feature não importa de outra feature (o que for comum sobe para `shared/` ou `core/`); `admin/` pode usar `shared/` e `core/`, e o site nunca importa de `admin/`.
 
 ### 7.2 Camadas dentro de uma feature
 
@@ -465,7 +478,7 @@ Padrões: `withEntities` para listas, `withComputed` para derivados (ex.: chips 
 
 ### 7.5 Rotas do admin
 
-`/login`, `/recuperar-password`, `/` (dashboard), `/viaturas`, `/viaturas/nova`, `/viaturas/:id`, `/destaques/:zona`, `/financiamento`, `/financiamento/:id`, `/leads`, `/leads/:id`, `/conteudo/home`, `/conteudo/sobre`, `/conteudo/vantagens`, `/conteudo/testemunhos`, `/conteudo/filtros-rapidos`, `/conteudo/legais`, `/catalogos/:tipo`, `/definicoes`, `/utilizadores`, `/auditoria`. Todas exceto login e recuperação sob `authGuard`; módulos restritos com `roleGuard`.
+Todas sob `/admin`, carregadas em lazy e renderizadas só no browser: `/admin/login`, `/admin/recuperar-password`, `/admin` (dashboard), `/admin/viaturas`, `/admin/viaturas/nova`, `/admin/viaturas/:id`, `/admin/destaques/:zona`, `/admin/financiamento`, `/admin/financiamento/:id`, `/admin/crm` (pipeline), `/admin/crm/contactos`, `/admin/crm/contactos/:id`, `/admin/crm/tarefas`, `/admin/crm/relatorios`, `/admin/conteudo/:secao`, `/admin/catalogos/:tipo`, `/admin/assistente`, `/admin/definicoes`, `/admin/utilizadores`, `/admin/auditoria`. Todas exceto login e recuperação sob `authGuard`; módulos restritos com `roleGuard`. O `robots.txt` bloqueia `/admin`.
 
 ## 8. Tailwind e design system
 
@@ -473,7 +486,7 @@ Os tokens do design são a única fonte de cores, tipografia, espaçamentos, rai
 
 ### 8.1 Tokens
 
-Valores retirados do `Private Motors.html`. O design entrega um `tailwind.config.ts` para Tailwind 3; a implementação usa Tailwind v4 com os mesmos nomes em `@theme` (`libs/shared/ui/styles/theme.css`), o que mantém as classes do design (`bg-ink-950`, `text-red-400`, `rounded-lg`, `shadow-glow`) e resolve a nota do design sobre `font-stretch`, que no v4 já tem utilitário nativo (`font-stretch-125%`). Contrastes medidos sobre ink-950.
+Valores retirados do `Private Motors.html`. O design entrega um `tailwind.config.ts` para Tailwind 3; a implementação usa Tailwind v4 com os mesmos nomes em `@theme` (`apps/web/src/styles/theme.css`), o que mantém as classes do design (`bg-ink-950`, `text-red-400`, `rounded-lg`, `shadow-glow`) e resolve a nota do design sobre `font-stretch`, que no v4 já tem utilitário nativo (`font-stretch-125%`). Contrastes medidos sobre ink-950.
 
 ```css
 @import "tailwindcss";
@@ -544,7 +557,7 @@ Espaçamento: escala Tailwind base 4 px, usada em múltiplos de 2 (4, 8, 12, 16,
 
 Modo escuro é a experiência principal do site; o admin pode usar uma variante clara com os mesmos tokens semânticos redefinidos em `[data-theme="light"]`.
 
-### 8.2 Componentes base (`libs/shared/ui`)
+### 8.2 Componentes base (`apps/web/src/app/shared/ui`)
 
 | Componente | Responsabilidade | Notas |
 | --- | --- | --- |
@@ -562,56 +575,64 @@ Modo escuro é a experiência principal do site; o admin pode usar uma variante 
 | `<pm-empty-state>` | Recebe sugestões `{label, count, apply()}` + CTA "Pedimos o carro por si" |  |
 | `<pm-assistant>` | FAB + painel lateral 420 px / ecrã inteiro; máquina de estados da conversa | `AssistantStore` |
 | `<pm-skeleton-card>` | Placeholder com shimmer enquanto a API responde |  |
-| `pm-button`, `pm-input`, `pm-select`, `pm-slider`, `pm-badge`, `pm-bottom-sheet`, `pm-gallery`, `pm-toast` | Base de `libs/shared/ui` | Estados do design; CDK para foco e overlays |
-| Admin: `pm-data-table`, `pm-uploader`, `pm-sortable-list`, `pm-rich-text`, `pm-confirm-dialog`, `pm-icon-picker` | Só `scope:admin` |  |
+| `pm-button`, `pm-input`, `pm-select`, `pm-slider`, `pm-badge`, `pm-bottom-sheet`, `pm-gallery`, `pm-toast` | Base de `shared/ui` | Estados do design; CDK para foco e overlays |
+| Admin: `pm-data-table`, `pm-uploader`, `pm-sortable-list`, `pm-rich-text`, `pm-confirm-dialog`, `pm-icon-picker` | Só `dentro de admin/` |  |
 
 Toda a matemática de financiamento passa por um único ponto (`FinanceService` a envolver `libs/finance`), como pede o design.
 
-Cada componente tem histórias em Storybook com todos os estados (hover, focus, active, disabled, loading) e é testado com Angular Testing Library. Comportamentos acessíveis (foco, teclado, overlays) usam o Angular CDK, com o visual 100% Tailwind.
+Cada componente é testado com Vitest e Angular Testing Library, cobrindo os estados (hover, focus, active, disabled, loading). Comportamentos acessíveis (foco, teclado, overlays) usam o Angular CDK, com o visual 100% Tailwind.
 
 ## 9. Requisitos não funcionais
 
-| Área | Requisito | Como se mede |
+| Área | Requisito | Como se verifica |
 | --- | --- | --- |
-| Performance | LCP < 2,5 s, INP < 200 ms, CLS < 0,1 em mobile 4G | Lighthouse CI e dados reais (CrUX) |
-| Performance | Bundle inicial do site < 200 kB gzip | Budgets no `angular.json` |
-| Performance | Pesquisa responde em < 300 ms (p95) com 500 viaturas | Teste de carga (k6) |
-| SEO | Páginas públicas renderizadas no servidor, `sitemap.xml` dinâmico, `robots.txt`, canonical, Open Graph, `schema.org/Car` e `AutoDealer` | Search Console, Rich Results Test |
-| SEO | URLs amigáveis e estáveis; viatura vendida → 410 ou 301 para listagem do modelo | Testes E2E |
-| Acessibilidade | WCAG 2.2 AA: contraste, foco visível, navegação por teclado, labels, `aria-live` nos resultados | axe em CI + revisão manual |
-| Segurança | OWASP Top 10: validação server-side, CSP, rate limit, CSRF (SameSite + origin check), dependências auditadas | `npm audit`, Snyk/Dependabot |
-| RGPD | Consentimento explícito nos formulários, política de privacidade, retenção de leads 24 meses, anonimização a pedido | Checklist legal |
+| Performance | LCP < 2,5 s, INP < 200 ms, CLS < 0,1 em mobile 4G | Lighthouse do Chrome, manualmente, no fim das fases 4, 5 e 7 |
+| Performance | Bundle inicial do site < 200 kB gzip | Budgets no `angular.json` (falha o build) |
+| Performance | Pesquisa responde em < 300 ms com 500 viaturas | Índices na base de dados + teste com seed de 500 viaturas |
+| SEO | Páginas públicas renderizadas no servidor, `sitemap.xml` dinâmico, `robots.txt` (bloqueia `/admin`), canonical, Open Graph, `schema.org/Car` e `AutoDealer` | Search Console, Rich Results Test |
+| SEO | URLs amigáveis e estáveis; viatura vendida → 410 ou 301 para listagem do modelo | Testes da API |
+| Acessibilidade | WCAG 2.2 AA: contraste, foco visível, navegação por teclado, labels, `aria-live` nos resultados | Extensão axe DevTools, manualmente, + teclado |
+| Segurança | Validação server-side, CORS restrito, rate limit, cookies `SameSite=Strict`, dependências auditadas | `pnpm audit` no CI + Dependabot do GitHub |
+| RGPD | Consentimento explícito nos formulários, política de privacidade, retenção 24 meses, anonimização a pedido | Checklist legal |
 | Legal (crédito) | Simulações mostram TAEG, MTIC, exemplo representativo e nota de que estão sujeitas a aprovação | Validação com a financeira |
-| Fiabilidade | Backups diários da base de dados com retenção de 30 dias e restauro testado | Teste trimestral |
-| Observabilidade | Logs estruturados, Sentry no front e na API, uptime monitor | Alertas por email |
+| Fiabilidade | Backups diários da base de dados e do volume de imagens | Backups do Railway; restauro testado uma vez antes do lançamento |
+| Observabilidade | Logs estruturados (pino) e `/health` | Painel de logs do Railway + monitor de uptime gratuito (ex.: UptimeRobot) |
 
 ### 9.1 Testes
 
-- **Unitários**: `libs/finance` e `libs/search-parser` com cobertura ≥ 95 %; services da API e stores ≥ 80 %.
-- **Componentes**: Angular Testing Library para todos os componentes de `shared/ui` e features.
-- **Integração API**: Supertest contra PostgreSQL em container (Testcontainers), incluindo permissões por perfil.
-- **E2E**: Playwright para os fluxos críticos: pesquisar e filtrar, abrir detalhe e simular, pesquisa por prestação, enviar orçamento com retoma, login admin, criar e publicar viatura com fotos, reordenar destaques, alterar TAN e ver a prestação mudar no site.
-- **Contrato**: os tipos do front são gerados/importados de `libs/contracts`, por isso uma quebra de contrato falha a compilação.
+- **Um só runner (Vitest)** em todo o repositório: `pnpm -r test`.
+- **Libs** (`finance`, `search-parser`, `assistant`): cobertura ≥ 95 %, com os valores do protótipo como referência.
+- **API**: testes por módulo com `fastify.inject()` contra uma base de testes no mesmo PostgreSQL do Docker Compose (base `pm_test`, limpa antes de cada ficheiro), incluindo permissões por perfil.
+- **Front**: stores e componentes com Angular Testing Library (ambiente jsdom).
+- **Fluxos críticos**: verificação manual com a checklist do `docs/PROGRESS.md` no fim de cada fase (pesquisar e filtrar, simular, modo orçamento, enviar orçamento com retoma, criar e publicar viatura, lead a chegar ao CRM).
+- **Contrato**: front e API usam os tipos de `@pm/libs/contracts`, por isso uma quebra de contrato falha a compilação.
 
 ### 9.2 CI/CD e ambientes
 
-- GitHub Actions: lint, typecheck, testes, build afetados (`nx affected`), Lighthouse CI e E2E em cada PR.
-- Ambientes: `dev` (local com Docker Compose: API, PostgreSQL, MinIO, Mailpit), `staging` e `produção`.
-- Deploy: site SSR e API em containers numa VPS com Docker e Coolify; admin servido como estático pelo mesmo Coolify; Cloudflare à frente para DNS, CDN e SSL; migrações Prisma executadas no arranque do deploy.
-- Configuração só por variáveis de ambiente, validadas no arranque; segredos fora do repositório.
+- **Local:** `docker compose up -d` (só PostgreSQL, com as bases `pm_dev` e `pm_test`), `pnpm --filter api dev` e `pnpm --filter web start`. O front chama a API em `http://localhost:3000`; imagens gravadas em `apps/api/uploads/`; emails escritos na consola.
+- **CI (GitHub Actions, um workflow):** `pnpm install --frozen-lockfile`, `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` (com um serviço PostgreSQL do próprio GitHub Actions) e `pnpm audit --prod`.
+- **Produção (Railway, região EU):** projeto com três peças ligadas ao repositório GitHub:
+  - serviço `api`: `pnpm --filter api build`, arranque com `prisma migrate deploy && node dist/main.js`, volume persistente montado em `/data/uploads`;
+  - serviço `web`: `pnpm --filter web build`, arranque com `node dist/web/server/server.mjs` (SSR);
+  - PostgreSQL gerido pelo Railway, com backups diários.
+- **Deploy:** automático a cada push para `main`, só depois do CI passar (opção "Wait for CI" do Railway). Rollback com um clique para o deploy anterior.
+- **Domínios:** `privatemotors.pt` → `web`, `api.privatemotors.pt` → `api`, com DNS na Cloudflare (ou no registo do domínio) e SSL automático do Railway.
+- **Configuração:** só variáveis de ambiente definidas no painel do Railway e validadas no arranque; um `.env.example` no repositório lista todas; segredos nunca no Git.
+- **Ambiente de staging:** opcional; o Railway permite duplicar o ambiente de produção quando fizer falta.
 
 ## 10. Plano de entrega e critérios de aceitação
 
 A ordem abaixo põe primeiro o que desbloqueia tudo o resto (contratos, dados, cálculo) e deixa cada fase demonstrável ao cliente.
 
-1. **Fundações.** Monorepo, CI, Docker Compose, `theme.css` com os tokens do design, `libs/contracts`, `libs/finance` e `libs/search-parser` portados do protótipo com testes (as frases de exemplo do design são casos de teste), schema Prisma e seed com as 20 viaturas do protótipo. Sai quando: o cálculo bate ao cêntimo com o protótipo (TAEG 15 %, sem entrada, 96 meses) e com as simulações da financeira.
-2. **API núcleo + auth.** Viaturas, imagens, catálogos, financiamento, pesquisa com facetas, modo orçamento e sugestões do estado vazio, auth e perfis, OpenAPI. Sai quando: todos os endpoints da secção 6 têm testes de integração a passar.
-3. **Backoffice de stock.** Login, dashboard, viaturas (formulário completo e fotos), catálogos, financiamento com simulador de teste. Sai quando: o stand consegue carregar 10 viaturas reais sozinho.
-4. **Site público — homepage.** Header, footer, pesquisa inteligente, dois modos, painel de filtros, grelha com card 1a, estado vazio, destaques, vantagens, testemunhos, favoritos. Sai quando: o comportamento é igual ao protótipo em mobile e desktop e o Lighthouse mobile é ≥ 90.
-5. **Site público — restantes páginas.** Detalhe com simulador 2a/2b, retoma, orçamento, sobre e contactos (após a 2.ª ronda do design). Sai quando: o cliente aprova a revisão visual.
-6. **Leads, conteúdo e assistente.** Formulários e CTAs, leads no admin com notificações, destaques, todos os conteúdos da home, assistente guiado e o seu editor, definições, utilizadores e auditoria. Sai quando: nenhum texto ou imagem do site está no código.
-7. **Qualidade e lançamento.** E2E completos, acessibilidade, SEO, RGPD e páginas legais, backups, monitorização, formação ao stand, migração de domínio. Sai quando: todos os critérios abaixo estão marcados.
-8. **Fase 2 (opcional).** Assistente com linguagem natural por IA (substitui o parser e o motor de regras sem mudar os contratos), comparador de viaturas se não entrar no MVP e integração com o Standvirtual (`externalRef`).
+1. **Fundações.** pnpm workspace, app Angular (`apps/web`), app Fastify (`apps/api`), pacote `libs`, Docker Compose com PostgreSQL, `theme.css` com os tokens, `libs/contracts`, `libs/finance`, `libs/search-parser` e `libs/assistant` portados do protótipo com testes, schema Prisma e seed com as 20 viaturas do protótipo, workflow de CI. Sai quando: o cálculo bate ao cêntimo com o protótipo (TAEG 15 %, sem entrada, 96 meses), as frases de exemplo geram os chips esperados e `pnpm -r test` passa.
+2. **Primeiro deploy.** Projeto no Railway com `api`, `web` (uma página "em construção" com os tokens) e PostgreSQL, deploy automático a partir de `main`. Sai quando: um push para `main` fica online sozinho. Fazer isto cedo evita surpresas de ambiente no fim.
+3. **API núcleo + auth.** Viaturas, imagens, catálogos, financiamento, pesquisa com facetas, modo orçamento, sugestões do estado vazio, auth e perfis, OpenAPI. Sai quando: todos os endpoints da secção 6 (exceto CRM) têm testes a passar.
+4. **Backoffice de stock.** Login, dashboard, viaturas (formulário completo e fotos), catálogos, financiamento com simulador de teste. Sai quando: o stand consegue carregar 10 viaturas reais sozinho.
+5. **Site público — homepage.** Header, footer, pesquisa inteligente, dois modos, painel de filtros, grelha com card 1a, estado vazio, destaques, vantagens, testemunhos, favoritos. Sai quando: o comportamento é igual ao protótipo em mobile e desktop e o Lighthouse mobile é ≥ 90.
+6. **Site público — restantes páginas.** Detalhe com simulador 2a, retoma, orçamento, sobre e contactos. Sai quando: o cliente aprova a revisão visual.
+7. **Leads, CRM, conteúdo e assistente.** Fluxo transacional de leads, CRM no admin, destaques, conteúdos, definições, utilizadores, auditoria e assistente guiado. Sai quando: nenhum texto ou imagem do site está no código.
+8. **Lançamento.** SEO final, cookies e páginas legais, checklist de acessibilidade, backups verificados, domínio definitivo, formação ao stand. Sai quando: todos os critérios abaixo estão marcados.
+9. **Fase 2 (opcional).** Assistente com IA, comparador de viaturas, integração com o Standvirtual, e ferramentas deixadas de fora do MVP (E2E automáticos, monitorização de erros, CDN de imagens) se o volume o justificar.
 
 ### Critérios de aceitação globais
 
@@ -636,4 +657,4 @@ A ordem abaixo põe primeiro o que desbloqueia tudo o resto (contratos, dados, c
 - [ ] Morada, telefone e horário definitivos (os do design são provisórios).
 - [ ] Fotografias reais do stock e do stand para substituir os placeholders.
 - [ ] Quantas viaturas em stock em média e quantos utilizadores de backoffice?
-- [ ] Onde fica o alojamento e quem é o dono do domínio e das contas (Cloudflare, SMTP, Sentry)?
+- [ ] Onde fica o alojamento e quem é o dono do domínio e das contas (domínio, Railway, Brevo)?

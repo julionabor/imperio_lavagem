@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial; /* apenas a paleta da marca */
+  --color-white: #FFFFFF;
+  --color-transparent: transparent;
+
+  /* Vermelho — red-500 = marca/CTAs; red-400 = texto/links */
+  --color-red-50:  #FFF1F1;
+  --color-red-100: #FFE0E1;
+  --color-red-200: #FFC2C4;
+  --color-red-300: #FF9599;
+  --color-red-400: #FF5C62;
+  --color-red-500: #D0161F;
+  --color-red-600: #B0121A;
+  --color-red-700: #8C0F15;
+  --color-red-800: #660C11;
+  --color-red-900: #3F090C;
+  --color-red-950: #24060A;
+
+  /* Ink — preto levemente frio, nunca #000 */
+  --color-ink-100: #EDEDF0;
+  --color-ink-200: #D6D6DB;
+  --color-ink-300: #B4B4BC;
+  --color-ink-400: #8E8E98;
+  --color-ink-500: #6B6B75;
+  --color-ink-600: #45454E;
+  --color-ink-700: #2E2E35;
+  --color-ink-800: #212126;
+  --color-ink-850: #18181C;
+  --color-ink-900: #111114;
+  --color-ink-950: #09090B;
+
+  /* Estado — texto sobre fundo tint da mesma família */
+  --color-success:    #4CD38A;
+  --color-success-bg: #0D2418;
+  --color-warning:    #F5B53D;
+  --color-warning-bg: #2E2410;
+  --color-error:      #FF6B6B;
+  --color-error-bg:   #2A0F10;
+  --color-info:       #6FA8FF;
+  --color-info-bg:    #0F1B2E;
+
+  /* Tipografia */
+  --font-display: "Archivo", system-ui, sans-serif;
+  --font-sans:    "Geist", system-ui, sans-serif;
+
+  /* Escalas de texto */
+  --text-display-2xl: clamp(2.5rem, 1.6rem + 3.8vw, 5.25rem);
+  --text-display-2xl--line-height:    0.96;
+  --text-display-2xl--letter-spacing: -0.035em;
+
+  --text-display-xl: clamp(2rem, 1.6rem + 1.6vw, 3rem);
+  --text-display-xl--line-height:    1;
+  --text-display-xl--letter-spacing: -0.03em;
+
+  --text-price-xl: clamp(2.75rem, 2.4rem + 1.4vw, 3.5rem);
+  --text-price-xl--line-height:    1;
+  --text-price-xl--letter-spacing: -0.035em;
+
+  --text-h1: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+  --text-h1--line-height: 1.1;
+
+  --text-h2: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+  --text-h2--line-height: 1.15;
+
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.2;
+
+  --text-body-lg: clamp(1.0625rem, 0.975rem + 0.375vw, 1.1875rem);
+  --text-body-lg--line-height: 1.55;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+
+  --text-label: 0.875rem;
+  --text-label--line-height: 1;
+  --text-label--font-weight: 500;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+
+  --text-overline: 0.6875rem;
+  --text-overline--line-height: 1;
+  --text-overline--letter-spacing: 0.14em;
+  --text-overline--font-weight: 600;
+
+  /* Raios */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Sombras */
+  --shadow-card:    inset 0 0 0 1px rgb(237 237 240 / .07);
+  --shadow-glow:    inset 0 0 0 1px rgb(255 92 98 / .35), 0 24px 48px -24px rgb(208 22 31 / .6);
+  --shadow-overlay: 0 -20px 60px rgb(0 0 0 / .6), inset 0 0 0 1px rgb(237 237 240 / .08);
+
+  /* Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* Layout */
+  --container-page: 1280px;
+  --spacing-touch:  44px;
+}

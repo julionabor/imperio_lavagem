@@ -1,0 +1,27 @@
+{
+  "name": "@pm/libs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./contracts": "./contracts/index.ts",
+    "./finance": "./finance/index.ts",
+    "./search-parser": "./search-parser/index.ts",
+    "./assistant": "./assistant/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "test": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.7",
+    "typescript": "~5.9.0",
+    "vitest": "^3.2.7"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": false,
+    "paths": {
+      "@pm/libs": ["../../libs/dist/index.js"],
+      "@pm/libs/*": ["../../libs/dist/*/index.js"]
+    }
+  },
+  "exclude": ["**/*.spec.ts", "prisma/seed.ts"]
+}

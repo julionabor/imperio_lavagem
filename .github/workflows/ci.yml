@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: pm
+          POSTGRES_PASSWORD: pm
+          POSTGRES_DB: pm_dev
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 5432:5432
+
+    env:
+      DATABASE_URL: postgresql://pm:pm@localhost:5432/pm_dev
+      DATABASE_URL_TEST: postgresql://pm:pm@localhost:5432/pm_test
+      JWT_SECRET: ci-secret-at-least-32-chars-long!!
+      JWT_REFRESH_SECRET: ci-refresh-secret-32-chars-long!!
+      NODE_ENV: test
+      EMAIL_TRANSPORT: console
+      UPLOAD_DIR: /tmp/pm-uploads
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Criar base de dados de testes
+        run: |
+          PGPASSWORD=pm psql -h localhost -U pm -c "CREATE DATABASE pm_test;"
+
+      - name: Migrações (dev)
+        run: pnpm --filter api exec prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://pm:pm@localhost:5432/pm_dev
+
+      - name: Migrações (test)
+        run: pnpm --filter api exec prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://pm:pm@localhost:5432/pm_test
+
+      - name: Typecheck
+        run: pnpm -r typecheck
+
+      - name: Lint
+        run: pnpm -r lint
+
+      - name: Testes (libs + API)
+        run: pnpm -r test
+
+      - name: Build
+        run: pnpm -r build
