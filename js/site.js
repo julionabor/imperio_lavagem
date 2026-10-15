@@ -143,29 +143,45 @@
 		const root = document.getElementById("extras-grid");
 		if (!root) return;
 		root.innerHTML = DATA.extras
-			.map(
-				(c) => `
-			<div class="extra-card">
-				<div class="extra-card__cat">${esc(c.cat)}</div>
-				${c.items
-					.map(
-						(s) => `
-					<div class="extra-row">
-						<div class="extra-row__text">
-							<div class="extra-row__name">${esc(s.n)}</div>
-							<div class="extra-row__desc">${esc(s.d)}</div>
-							${s.pts ? `<ul class="check-list check-list--sm">${s.pts.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
-						</div>
-						<div class="extra-row__price" ${s.text ? "" : priceAttrs(s.min, s.max, s.fixed ? "fixed" : "avulso")}>${s.text ? esc(s.text) : range(s.min, s.max)}</div>
-					</div>`
-					)
-					.join("")}
-			</div>`
-			)
+			.map((c) => {
+				const priced = c.items.filter((s) => !s.text);
+				const from = Math.min(...priced.map((s) => s.min));
+				return `
+			<details class="acc-item">
+				<summary class="acc-item__summary">
+					<span class="acc-item__title">${esc(c.cat)}</span>
+					<span class="acc-item__meta">${c.items.length} ${c.items.length === 1 ? "serviço" : "serviços"} · desde ${eur(from)}</span>
+					<i class="bi bi-chevron-down acc-item__chevron" aria-hidden="true"></i>
+				</summary>
+				<div class="acc-item__body extra-rows">
+					${c.items
+						.map(
+							(s) => `
+						<div class="extra-row">
+							<div class="extra-row__text">
+								<div class="extra-row__name">${esc(s.n)}</div>
+								<div class="extra-row__desc">${esc(s.d)}</div>
+								${s.pts ? `<ul class="check-list check-list--sm">${s.pts.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
+							</div>
+							<div class="extra-row__price" ${s.text ? "" : priceAttrs(s.min, s.max, s.fixed ? "fixed" : "avulso")}>${s.text ? esc(s.text) : range(s.min, s.max)}</div>
+						</div>`
+						)
+						.join("")}
+				</div>
+			</details>`;
+			})
 			.join("");
 
 		const dirt = document.getElementById("dirt-list");
 		if (dirt) dirt.innerHTML = DATA.dirt.map((d) => `<li>${esc(d)}</li>`).join("");
+	}
+
+	// Ao navegar para #avulsos / #taxas, abre o primeiro item correspondente
+	function openAccordionTarget(hash) {
+		const target = hash && document.querySelector(hash);
+		if (!target) return;
+		const details = target.matches("details") ? target : target.querySelector("details");
+		if (details) details.open = true;
 	}
 
 	function carouselControls(label) {
@@ -179,6 +195,8 @@
 	}
 
 	// ─── Carrossel (só ativo no mobile) ─────────────────────────────────────
+	// Toque: scroll horizontal nativo com snap (fiável em iOS/Android).
+	// Rato: arrastar move o scroll e solta no cartão mais próximo.
 
 	function initCarousel(block) {
 		const viewport = block.querySelector(".carousel-viewport");
@@ -190,77 +208,90 @@
 		let page = 0;
 
 		const total = () => track.children.length;
-		const offsetFor = (p) => -p * (viewport.clientWidth + GAP);
+		const step = () => viewport.clientWidth + GAP;
+		const currentPage = () => Math.round(viewport.scrollLeft / step());
 
-		function render() {
-			if (!mobileQuery.matches) {
-				track.style.transform = "";
-				return;
-			}
+		function goTo(p, smooth = true) {
+			page = Math.max(0, Math.min(total() - 1, p));
+			viewport.scrollTo({ left: page * step(), behavior: smooth ? "smooth" : "auto" });
+			renderUi();
+		}
+
+		function renderUi() {
+			if (!mobileQuery.matches) return;
 			const n = total();
-			page = Math.max(0, Math.min(n - 1, page));
-			track.style.transform = `translate3d(${offsetFor(page)}px, 0, 0)`;
 			prev.disabled = page === 0;
 			next.disabled = page === n - 1;
 			if (counter) counter.textContent = `${page + 1} / ${n}`;
-			dotsEl.innerHTML = Array.from(
-				{ length: n },
-				(_, i) =>
-					`<button type="button" class="carousel-dot${i === page ? " is-active" : ""}" data-page="${i}" aria-label="Ir para ${i + 1} de ${n}"></button>`
-			).join("");
+			if (dotsEl.children.length !== n) {
+				dotsEl.innerHTML = Array.from(
+					{ length: n },
+					(_, i) => `<button type="button" class="carousel-dot" data-page="${i}" aria-label="Ir para ${i + 1} de ${n}"></button>`
+				).join("");
+			}
+			[...dotsEl.children].forEach((d, i) => d.classList.toggle("is-active", i === page));
 		}
 
-		prev.addEventListener("click", () => { page--; render(); });
-		next.addEventListener("click", () => { page++; render(); });
+		prev.addEventListener("click", () => goTo(page - 1));
+		next.addEventListener("click", () => goTo(page + 1));
 		dotsEl.addEventListener("click", (e) => {
 			const d = e.target.closest("[data-page]");
-			if (d) { page = Number(d.dataset.page); render(); }
+			if (d) goTo(Number(d.dataset.page));
 		});
 
-		// Arrastar com dedo, caneta ou rato
+		// Atualiza pontos/contador enquanto o utilizador desliza com o dedo
+		viewport.addEventListener(
+			"scroll",
+			() => {
+				const p = currentPage();
+				if (p !== page) { page = p; renderUi(); }
+			},
+			{ passive: true }
+		);
+
+		// Arrastar com o rato (o toque já é tratado pelo scroll nativo)
 		let drag = null;
 		let suppressClick = false;
 
 		viewport.addEventListener("pointerdown", (e) => {
-			if (!mobileQuery.matches || (e.pointerType === "mouse" && e.button !== 0)) return;
-			drag = { x: e.clientX, y: e.clientY, t: performance.now(), dx: 0, active: false, id: e.pointerId };
+			if (!mobileQuery.matches || e.pointerType !== "mouse" || e.button !== 0) return;
+			drag = { x: e.clientX, left: viewport.scrollLeft, moved: false, id: e.pointerId };
 		});
-
 		viewport.addEventListener("pointermove", (e) => {
 			if (!drag || e.pointerId !== drag.id) return;
 			const dx = e.clientX - drag.x;
-			const dy = e.clientY - drag.y;
-			if (!drag.active) {
-				if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-				// gesto vertical = scroll da página
-				if (Math.abs(dy) > Math.abs(dx)) { drag = null; return; }
-				drag.active = true;
-				try { viewport.setPointerCapture(e.pointerId); } catch (_) { /* ponteiro já libertado */ }
-				track.classList.add("is-dragging");
+			if (!drag.moved) {
+				if (Math.abs(dx) < 6) return;
+				drag.moved = true;
+				viewport.classList.add("is-dragging");
+				try { viewport.setPointerCapture(e.pointerId); } catch (_) { /* ignorar */ }
 			}
 			e.preventDefault();
-			// resistência nas pontas
-			const atEdge = (page === 0 && dx > 0) || (page === total() - 1 && dx < 0);
-			drag.dx = atEdge ? dx * 0.3 : dx;
-			track.style.transform = `translate3d(${offsetFor(page) + drag.dx}px, 0, 0)`;
+			viewport.scrollLeft = drag.left - dx;
 		});
-
-		function endDrag(e) {
-			if (!drag || (e && e.pointerId !== drag.id)) return;
-			const { dx, active, t } = drag;
+		function endMouseDrag(e) {
+			if (!drag || e.pointerId !== drag.id) return;
+			const { moved, left } = drag;
 			drag = null;
-			track.classList.remove("is-dragging");
-			if (!active) return;
+			if (!moved) return;
 			suppressClick = true;
 			setTimeout(() => { suppressClick = false; }, 60);
-			const velocity = Math.abs(dx) / Math.max(1, performance.now() - t);
-			const threshold = viewport.clientWidth * 0.2;
-			if (Math.abs(dx) > threshold || (velocity > 0.4 && Math.abs(dx) > 30)) page += dx < 0 ? 1 : -1;
-			render();
+			const startPage = Math.round(left / step());
+			const delta = viewport.scrollLeft - left;
+			const target = Math.abs(delta) > viewport.clientWidth * 0.15 ? startPage + Math.sign(delta) : startPage;
+			goTo(target);
+			// Só reativa o snap depois da animação, senão volta ao cartão de partida
+			let restored = false;
+			const restoreSnap = () => {
+				if (restored) return;
+				restored = true;
+				viewport.classList.remove("is-dragging");
+			};
+			viewport.addEventListener("scrollend", restoreSnap, { once: true });
+			setTimeout(restoreSnap, 600);
 		}
-		viewport.addEventListener("pointerup", endDrag);
-		viewport.addEventListener("pointercancel", endDrag);
-		viewport.addEventListener("lostpointercapture", endDrag);
+		viewport.addEventListener("pointerup", endMouseDrag);
+		viewport.addEventListener("pointercancel", endMouseDrag);
 
 		// Um arrasto não deve contar como clique (ex.: escolher veículo sem querer)
 		viewport.addEventListener(
@@ -275,9 +306,9 @@
 			true
 		);
 
-		mobileQuery.addEventListener("change", () => { page = 0; render(); });
-		window.addEventListener("resize", render);
-		render();
+		mobileQuery.addEventListener("change", () => { page = 0; viewport.scrollLeft = 0; renderUi(); });
+		window.addEventListener("resize", () => goTo(page, false));
+		renderUi();
 	}
 
 	// ─── Navegação ──────────────────────────────────────────────────────────
@@ -299,6 +330,8 @@
 		renderExtras();
 		document.querySelectorAll("[data-carousel]").forEach(initCarousel);
 		updatePrices(false);
+		openAccordionTarget(location.hash);
+		window.addEventListener("hashchange", () => openAccordionTarget(location.hash));
 		initNav();
 		const y = document.getElementById("year");
 		if (y) y.textContent = new Date().getFullYear();

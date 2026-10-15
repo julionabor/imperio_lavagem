@@ -359,32 +359,38 @@ a:hover { color: var(--gold-text); }
 .check-list--sm li { font-size: 13px; color: #d3d9e2; }
 .check-list--2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 6px 18px; }
 
-/* Avulsos — colunas equilibradas (sem buracos entre cartões de alturas diferentes) */
-.extras-grid {
-	column-count: 2;
-	column-gap: 18px;
-}
-.extra-card {
+/* Acordeão (avulsos e taxas) */
+.acc-list { display: flex; flex-direction: column; gap: 10px; }
+#taxas { margin-top: 10px; }
+.acc-item {
 	background: var(--navy-2);
 	border: 1px solid rgba(255, 255, 255, 0.08);
-	border-radius: 20px;
-	padding: 24px;
-	margin-bottom: 18px;
-	break-inside: avoid;
-	-webkit-column-break-inside: avoid;
-	display: inline-block; /* evita cortes do cartão entre colunas em Safari */
-	width: 100%;
+	border-radius: 16px;
+	overflow: hidden;
 }
+.acc-item[open] { border-color: rgba(242, 204, 71, 0.4); }
+.acc-item__summary {
+	list-style: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+	padding: 18px 22px;
+	min-height: 44px;
+}
+.acc-item__summary::-webkit-details-marker { display: none; }
+.acc-item__summary:hover .acc-item__title { color: var(--gold); }
+.acc-item__summary:focus-visible { outline: 3px solid rgba(242, 204, 71, 0.6); outline-offset: -3px; }
+.acc-item__title { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: #fff; }
+.acc-item__meta { font-size: 14px; color: var(--on-dark-3); flex: 1 1 auto; }
+.acc-item__chevron { margin-left: auto; color: var(--gold); font-size: 18px; transition: transform 0.2s ease; }
+.acc-item[open] .acc-item__chevron { transform: rotate(180deg); }
+.acc-item__body { padding: 0 22px 18px; }
+.acc-item__body .fees-grid { padding-top: 4px; }
+.extra-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
 @media (max-width: 991.98px) {
-	.extras-grid { column-count: 1; }
-}
-.extra-card__cat {
-	font-size: 13px;
-	font-weight: 700;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-	color: var(--gold);
-	margin-bottom: 8px;
+	.extra-rows { grid-template-columns: minmax(0, 1fr); }
 }
 .extra-row {
 	display: grid;
@@ -407,7 +413,7 @@ a:hover { color: var(--gold-text); }
 	align-items: start;
 }
 .fee-card {
-	background: var(--navy-2);
+	background: var(--navy);
 	border-radius: 18px;
 	padding: 22px;
 	display: flex;
@@ -425,17 +431,25 @@ a:hover { color: var(--gold-text); }
 .carousel-controls { display: none; }
 
 @media (max-width: 767.98px) {
-	.carousel-viewport { overflow: hidden; touch-action: pan-y; cursor: grab; }
+	.carousel-viewport {
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		overscroll-behavior-x: contain;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+		cursor: grab;
+	}
+	.carousel-viewport::-webkit-scrollbar { display: none; }
+	.carousel-viewport.is-dragging { scroll-snap-type: none; cursor: grabbing; }
+	.carousel-viewport.is-dragging * { user-select: none; }
 	.carousel-block .carousel-track {
 		display: flex;
 		gap: 12px;
 		align-items: flex-start;
-		transition: transform 0.35s ease;
-		user-select: none;
-		-webkit-user-select: none;
 	}
-	.carousel-block .carousel-track.is-dragging { transition: none; cursor: grabbing; }
-	.carousel-block .carousel-track img { -webkit-user-drag: none; pointer-events: none; }
+	.carousel-block .carousel-track img { -webkit-user-drag: none; }
+	.carousel-block .carousel-track > * { scroll-snap-align: start; scroll-snap-stop: always; }
 	.carousel-block .carousel-track > * { flex: 0 0 100%; min-width: 0; }
 	.carousel-controls {
 		display: flex;
@@ -731,7 +745,8 @@ a:hover { color: var(--gold-text); }
 	.category-nav a { white-space: nowrap; padding: 8px 14px; }
 	.pack-card__body { padding: 18px; }
 	.pack-card__price { font-size: 26px; }
-	.extra-card { padding: 16px; }
+	.acc-item__summary { padding: 16px; }
+	.acc-item__body { padding: 0 16px 16px; }
 	.extra-row { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
 	.installments__card { padding: 28px 24px; }
 	.installments__card h2 { font-size: 22px; }
