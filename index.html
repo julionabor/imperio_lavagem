@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-PT">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,7 +15,7 @@
 		/>
 		<meta name="author" content="Império da Lavagem Auto" />
 		<meta name="robots" content="index, follow" />
-
+		<meta name="theme-color" content="#0C1C33" />
 		<!-- Open Graph -->
 		<meta
 			property="og:title"
@@ -31,7 +31,6 @@
 		/>
 		<meta property="og:url" content="https://imperiodalavagem.vercel.app" />
 		<meta property="og:type" content="website" />
-		<!-- Meta Pixel Code -->
 		<!-- Meta Pixel Code -->
 		<script>
 			!(function (f, b, e, v, n, t, s) {
@@ -68,1552 +67,422 @@
 				src="https://www.facebook.com/tr?id=2321084058250480&ev=PageView&noscript=1"
 		/></noscript>
 		<!-- End Meta Pixel Code -->
-		<!-- End Meta Pixel Code -->
 
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
 		<link href="css/bootstrap.min.css" rel="stylesheet" />
 		<link href="css/bootstrap-icons.css" rel="stylesheet" />
 		<link href="css/main.css" rel="stylesheet" />
-		<!-- CarDiagnose widget -->
-		<script type="module"
-			src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"
-			crossorigin="anonymous"></script>
 		<link href="cardiagnose/style.css" rel="stylesheet" />
 	</head>
+
 	<body>
-		<div class="container-fluid">
-			<div class="row">
-				<button
-					class="navbar-toggler d-md-none collapsed"
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#sidebarMenu"
-					aria-controls="sidebarMenu"
-					aria-expanded="false"
-					aria-label="Toggle navigation"
-				>
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<nav
-					id="sidebarMenu"
-					class="col-md-4 col-lg-3 d-md-block sidebar collapse p-0"
-				>
-					<div
-						class="position-sticky sidebar-sticky d-flex flex-column justify-content-center align-items-center"
+		<a class="visually-hidden-focusable skip-link" href="#conteudo">Saltar para o conteúdo</a>
+
+		<!-- Navegação -->
+		<header class="site-header">
+			<nav class="navbar navbar-expand-xl navbar-dark" aria-label="Principal">
+				<div class="container-xl">
+					<a class="navbar-brand" href="#inicio" aria-label="Império da Lavagem Auto — início">
+						<img src="images/logo.png" alt="Império da Lavagem Auto" height="44" />
+					</a>
+					<button
+						class="navbar-toggler"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#mainNav"
+						aria-controls="mainNav"
+						aria-expanded="false"
+						aria-label="Abrir menu"
 					>
-						<a class="navbar-brand" href="index.html">
-							<img src="images/logo.png" class="logo-image img-fluid" />
-						</a>
-						<ul class="nav flex-column">
-							<li class="nav-item">
-								<a class="nav-link click-scroll" href="#section_1">Início</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link click-scroll" href="#section_2"
-									>Perguntas Frequentes</a
-								>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link click-scroll" href="#section_3">Serviços</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link click-scroll" href="#section_4">Diagnóstico</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link click-scroll" href="#section_5">Contacto</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link click-scroll" href="#section_6">Onde Estamos?</a>
-							</li>
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="mainNav">
+						<ul class="navbar-nav mx-auto">
+							<li class="nav-item"><a class="nav-link" href="#servicos">Serviços</a></li>
+							<li class="nav-item"><a class="nav-link" href="#diagnostico">Diagnóstico</a></li>
+							<li class="nav-item"><a class="nav-link" href="#faq">Perguntas frequentes</a></li>
+							<li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+							<li class="nav-item"><a class="nav-link" href="#onde-estamos">Onde estamos</a></li>
 						</ul>
-					</div>
-				</nav>
-				<div class="col-md-8 ms-sm-auto col-lg-9 p-0">
-					<section
-						class="hero-section d-flex justify-content-center align-items-center"
-						id="section_1"
-					>
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-8 col-12">
-									<h1 class="mb-lg-3 mb-4">Império da Lavagem</h1>
-									<p class="text-white text-center"><strong>Auto</strong></p>
-									<br />
-									<a
-										class="btn custom-btn custom-border-btn custom-btn-bg-white smoothscroll me-2 mb-2"
-										href="#section_2"
-										>Porque lavar seu carro conosco?</a
-									>
-									<a class="btn custom-btn smoothscroll mb-2" href="#section_3"
-										>O que nós Fazemos?</a
-									>
-									<a
-										href="#section_4"
-										class="btn mb-2 mt-2 fw-bold"
-										style="background:#F2CC47;color:#0C1C33;border:none;letter-spacing:0.03em;"
-									>Diagnosticar o meu carro</a
-									>
-								</div>
-							</div>
-						</div>
-						<div
-							class="custom-block d-lg-flex flex-column justify-content-center align-items-center"
-						>
-							<a href="https://imperiodalavagemauto.buk.pt" target="_blank"
-								><img
-									src="images/calendar.jpg"
-									class="custom-block-image img-fluid"
-									alt=""
-							/></a>
-							<h4>
-								<strong class="text-white"
-									>Corra! Nossa agenda já está quase lotada!</strong
-								>
-							</h4>
-							<a
-								href="https://imperiodalavagemauto.buk.pt"
-								target="_blank"
-								class="smoothscroll btn custom-btn custom-btn-italic mt-3"
-							>
-								Marque sua lavagem!
-							</a>
-						</div>
-					</section>
-					<section class="about-section section-padding" id="section_2">
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-12 col-12 mx-auto">
-									<h2 class="mb-4">Perguntas Frequentes:</h2>
-								</div>
-								<div
-									class="accordion accordion-flush"
-									id="accordionFlushExample"
-								>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="flush-headingOne">
-											<button
-												class="accordion-button collapsed"
-												type="button"
-												data-bs-toggle="collapse"
-												data-bs-target="#flush-collapseOne"
-												aria-expanded="false"
-												aria-controls="flush-collapseOne"
-											>
-												Qual a diferença entre lavar convosco ou em uma bomba?
-											</button>
-										</h2>
-										<div
-											id="flush-collapseOne"
-											class="accordion-collapse collapse"
-											aria-labelledby="flush-headingOne"
-											data-bs-parent="#accordionFlushExample"
-										>
-											<div class="accordion-body">
-												A lavagem manual oferece um cuidado personalizado e
-												detalhado que uma lavagem automática não consegue
-												igualar. No seu lava rápido, cada veículo é tratado com
-												atenção especial, garantindo uma limpeza profunda,
-												inclusive em áreas difíceis de alcançar, como frestas e
-												rodas. Além disso, produtos de alta qualidade são
-												aplicados de forma controlada, protegendo a pintura e o
-												acabamento do carro. Essa atenção aos detalhes resulta
-												em um veículo mais limpo, brilhante e bem cuidado,
-												valorizando o investimento do seu cliente.
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="flush-headingTwo">
-											<button
-												class="accordion-button collapsed"
-												type="button"
-												data-bs-toggle="collapse"
-												data-bs-target="#flush-collapseTwo"
-												aria-expanded="false"
-												aria-controls="flush-collapseTwo"
-											>
-												Como funciona o tratamento de ozono?
-											</button>
-										</h2>
-										<div
-											id="flush-collapseTwo"
-											class="accordion-collapse collapse"
-											aria-labelledby="flush-headingTwo"
-											data-bs-parent="#accordionFlushExample"
-										>
-											<div class="accordion-body">
-												O tratamento de ozono é um processo que elimina até 99%
-												de bactérias, vírus e odores (fumo, mofo, comida),
-												através de moléculas de ozono que desinfetam o ar e
-												superfícies sem deixar cheiro químico.
-											</div>
-										</div>
-									</div>
-
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="flush-headingFour">
-											<button
-												class="accordion-button collapsed"
-												type="button"
-												data-bs-toggle="collapse"
-												data-bs-target="#flush-collapseFour"
-												aria-expanded="false"
-												aria-controls="flush-collapseFour"
-											>
-												Para que serve a lavagem dos plásticos do interior?
-											</button>
-										</h2>
-										<div
-											id="flush-collapseFour"
-											class="accordion-collapse collapse"
-											aria-labelledby="flush-headingFour"
-											data-bs-parent="#accordionFlushExample"
-										>
-											<div class="accordion-body">
-												A lavagem dos plásticos remove poeira, manchas e
-												sujidade acumulada com antibactericida, restaurando o
-												brilho original das superfícies e deixando o interior
-												com aspecto mais limpo e cuidado.
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="flush-headingFour">
-											<button
-												class="accordion-button collapsed"
-												type="button"
-												data-bs-toggle="collapse"
-												data-bs-target="#flush-collapseFour"
-												aria-expanded="false"
-												aria-controls="flush-collapseFour"
-											>
-												O que é aspiração profunda e por que é importante?
-											</button>
-										</h2>
-										<div
-											id="flush-collapseFour"
-											class="accordion-collapse collapse"
-											aria-labelledby="flush-headingFour"
-											data-bs-parent="#accordionFlushExample"
-										>
-											<div class="accordion-body">
-												A aspiração profunda utiliza aspiradores de alta
-												potência para retirar sujidade, areia, restos de
-												alimentos e poeiras até nas zonas mais difíceis (como
-												frestas dos bancos e carpetes), melhorando a higiene e
-												aparência.
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="flush-headingFour">
-											<button
-												class="accordion-button collapsed"
-												type="button"
-												data-bs-toggle="collapse"
-												data-bs-target="#flush-collapseFour"
-												aria-expanded="false"
-												aria-controls="flush-collapseFour"
-											>
-												O que faz o polimento automotivo?
-											</button>
-										</h2>
-										<div
-											id="flush-collapseFour"
-											class="accordion-collapse collapse"
-											aria-labelledby="flush-headingFour"
-											data-bs-parent="#accordionFlushExample"
-										>
-											<div class="accordion-body">
-												O polimento elimina micro riscos, marcas de lavagem e
-												oxidação superficial. Recupera o brilho da pintura e
-												prepara a superfície para receber a vitrificação.
-											</div>
-										</div>
-									</div>
-									<div class="accordion-item">
-										<h2 class="accordion-header" id="flush-headingFour">
-											<button
-												class="accordion-button collapsed"
-												type="button"
-												data-bs-toggle="collapse"
-												data-bs-target="#flush-collapseFour"
-												aria-expanded="false"
-												aria-controls="flush-collapseFour"
-											>
-												O que é vitrificação cerâmica?
-											</button>
-										</h2>
-										<div
-											id="flush-collapseFour"
-											class="accordion-collapse collapse"
-											aria-labelledby="flush-headingFour"
-											data-bs-parent="#accordionFlushExample"
-										>
-											<div class="accordion-body">
-												Vitrificação é uma camada protetora de alta tecnologia
-												que cria um escudo transparente sobre a pintura,
-												repelindo água, sujidade e facilitando futuras limpezas
-												— mantendo o carro bonito por mais tempo.
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</section>
-					<section class="featured-section section-padding">
-						<div class="section-overlay"></div>
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-10 col-12 mx-auto">
-									<h2 class="mb-3">Parcele em até 4x o seu tratamento</h2>
-									<p>
-										Serviços acima de 100€, permitimos ao nosso cliente o
-										conforto de pagar em 2, 3 ou ate 4x, sem necessidade de
-										aprovações de crédito ou de cartões especiais. Basta
-										solicitar no ato da marcação do serviço. Sem burocrácias!
-									</p>
-									<strong
-										>Ex: Pack Brilho e Proteção: Desde 62,50€ em 4 prestações
-									</strong>
-								</div>
-							</div>
-						</div>
-					</section>
-					<section class="services-section section-padding" id="section_3">
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-12 col-12">
-									<h2 class="mb-5">Serviços</h2>
-								</div>
-
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#lavagem-completa"
-									>
-										<img
-											src="images/wash/brian-lundquist-bhRTtuNTHCE-unsplash.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Lavagem Básica</h4>
-											<strong class="services-thumb-price">25€</strong>
-										</div>
-									</div>
-									<!-- Modal Lavagem Básica-->
-									<div
-										class="modal fade"
-										id="lavagem-completa"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Lavagem Básica
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/brian-lundquist-bhRTtuNTHCE-unsplash.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														Inclui:
-													</p>
-													<ul>
-														<li>Pré Lavagem</li>
-														<li>Lavagem manual exterior</li>
-														<li>Lavagem das Jantes</li>
-														<li>Lavagem do Depósito de combustível</li>
-														<li>Lavagem das Cavas da Porta</li>
-														<li>Lavagem da cava do porta mala</li>
-														<li>Secagem do veículo</li>
-														<li>Aspiração dos Tapetes</li>
-														<li>Aspiração básica</li>
-														<li>Limpeza dos plásticos e tablier</li>
-														<li>Hidratação dos plásticos</li>
-														<li>Limpeza dos vidros</li>
-														<li>Brilho nos pneus</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#interior"
-									>
-										<img
-											src="images/wash/higienizacao-interior.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Higienização Interior</h4>
-											<strong class="services-thumb-price">30€</strong>
-										</div>
-									</div>
-									<!-- Modal Higienização Interior-->
-									<div
-										class="modal fade"
-										id="interior"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Higienização Interior
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/higienizacao-interior.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														Inclui:
-													</p>
-													<ul>
-														<li>Aspiração Profunda</li>
-														<li>Aspiração dos Tapetes</li>
-														<li>Lavagem dos plásticos e Tablier</li>
-														<li>Hidratação dos plásticos</li>
-														<li>Tratamento de Ozono</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#higienizacao"
-									>
-										<img
-											src="images/wash/higienizacao.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Higienização Standard</h4>
-											<strong class="services-thumb-price">40€</strong>
-										</div>
-									</div>
-									<!-- Modal Higienização-->
-									<div
-										class="modal fade"
-										id="higienizacao"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack Higienização Standard
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/higienizacao.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">Serviço inclui:</p>
-													<ul>
-														<li>Pré Lavagem</li>
-														<li>Lavagem Manual Exterior</li>
-														<li>Descontaminação Ferrosa (Quando necessário)</li>
-														<li>Aspiração Profunda c/ compressor de ar</li>
-														<li>Lavagem das Jantes</li>
-														<li>Lavagem do Depósito de combustível</li>
-														<li>Lavagem das Cavas da Porta</li>
-														<li>Lavagem da cava do porta mala</li>
-														<li>Lavagem dos Pedais e do descanso</li>
-														<li>Secagem do Veículo</li>
-														<li>
-															Higienização a Vapor dos plásticos interiores e
-															hidratação
-														</li>
-														<li>Lavagem do Volante</li>
-														<li>Limpeza dos Tapetes</li>
-														<li>Tratamento de Ozono ou Aplicação de Cera</li>
-														<li>Abrilhantador de Pneus</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#estofo"
-									>
-										<img
-											src="images/wash/estofo.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Higienização Premium</h4>
-											<strong class="services-thumb-price">100€</strong>
-										</div>
-									</div>
-									<!-- Modal Lavagem Estofos-->
-									<div
-										class="modal fade"
-										id="estofo"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack Higienização Premium
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/estofo.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														<strong>Inclui:</strong>
-													</p>
-													<ul>
-														<li>Pré Lavagem</li>
-														<li>Lavagem Manual Exterior</li>
-														<li>Aspiração Profunda</li>
-														<li>Lavagem das Jantes</li>
-														<li>Lavagem do Depósito de combustível</li>
-														<li>Lavagem das Cavas da Porta e do porta mala</li>
-														<li>Lavagem dos Pedais e do descanso</li>
-														<li>Secagem do Veículo</li>
-														<li>
-															Higienização a Vapor dos plásticos interiores e
-															hidratação
-														</li>
-														<li>Lavagem do Volante</li>
-														<li>Lavagem dos Estofos (sem remover os bancos)</li>
-														<li>Desinfecção Premium por Ozono ou Aplicação de Cera</li>
-														<li>
-															Restauro e Proteção dos Plásticos Interiores (até
-															6 meses)
-														</li>
-														<li>
-															Restauro e Proteção dos Plásticos Exteriores (até
-															60 dias)
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#cera"
-									>
-										<img
-											src="images/wash/auto_lavagem_o_kleber_1_.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Luxo e Conforto</h4>
-											<strong class="services-thumb-price">75€</strong>
-										</div>
-									</div>
-									<!-- Modal Luxo e conforto-->
-									<div
-										class="modal fade"
-										id="cera"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack de Luxo e Conforto
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/auto_lavagem_o_kleber_1_.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														<strong>Inclui:</strong>
-													</p>
-													<ul>
-														<li>Pré Lavagem</li>
-														<li>Lavagem Manual Exterior</li>
-														<li>Aspiração Básica</li>
-														<li>Lavagem das Jantes</li>
-														<li>Lavagem do Depósito de combustível</li>
-														<li>Lavagem das Cavas da Porta</li>
-														<li>Lavagem da cava do porta mala</li>
-														<li>Lavagem dos Pedais e do descanso</li>														
-														<li>Limpeza dos vidros</li>
-														<li>Lavagem dos Tapetes</li>
-														<li>Secagem</li>
-														<li>Lavagem de Estofos</li>
-														<li>Tratamento de Ozono</li>
-														<li>Abrilhantador de pneus</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#zerokm"
-									>
-										<img
-											src="images/wash/carpete-de-carros-2048x1367.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Zero KM</h4>
-											<strong class="services-thumb-price">130€</strong>
-										</div>
-									</div>
-									<!-- Modal Polimento-->
-									<div
-										class="modal fade"
-										id="zerokm"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack Zero KM
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/carpete-de-carros-2048x1367.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-													<strong>Inclui:</strong>
-													<ul>
-														<li>Pré Lavagem</li>
-														<li>Lavagem Manual Exterior</li>
-														<li>Descontaminação ferrosa da carroçaria (quando necessário)</li>
-														<li>Aspiração profunda</li>
-														<li>Lavagem das Jantes</li>
-														<li>Lavagem das cavas de roda</li>
-														<li>Lavagem do Depósito de combustível</li>
-														<li>Lavagem das Cavas da Porta e do porta mala</li>
-														<li>Lavagem dos Pedais e do descanso</li>
-														<li>Lavagem do Volante</li>
-														<li>Lavagem da Alcatifa</li>
-														<li>Lavagem do Teto</li>
-														<li>Lavagem dos cintos de segurança</li>
-														<li>Lavagem das palas de sol</li>
-														<li>Secagem do Veículo</li>
-														<li>
-															Higienização a Vapor dos plásticos interiores e
-															hidratação
-														</li>
-														<li>Restauro e proteção dos plásticos interiores (durabilidade de até 6 meses)</li>
-														<li>Restauro e proteção dos plásticos exteriores (durabilidade até 60 dias)</li>
-														<li>Desinfecção Premium por Ozono (Elimina microrganismos, bactérias e partículas orgânicas que provocam odores) ou Aplicação de Cera</li>
-														<li>Limpeza / Lavagem dos tapetes</li>
-													</ul>
-													</p>
-													
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#polimento"
-									>
-										<img
-											src="images/wash/deniz-demirci-yeMjSP7UGlo-unsplash.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Polimento</h4>
-											<strong class="services-thumb-price"
-												>Perante avaliação</strong
-											>
-										</div>
-									</div>
-									<!-- Modal Polimento-->
-									<div
-										class="modal fade"
-										id="polimento"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Polimento
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/deniz-demirci-yeMjSP7UGlo-unsplash.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">Valor desde 140€ a 160€
-													</p>
-													<ul>
-														<li>Polimento com remoção dos micro riscos</li>
-														<li>Devolve brilho à pintura</li>
-														<li>Elimina marcas superficiais</li>
-														<li>Ideal para revitalizar a aparência do seu veículo</li>
-														<li>Traz um brilho poderoso</li>
-													</ul>
-													
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#brilho-e-protecao"
-									>
-										<img
-											src="images/wash/polimento-automotivo-1.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Brilho e Proteçao 1 ano</h4>
-											<strong class="services-thumb-price">240-270€</strong>
-										</div>
-									</div>
-									<!-- Modal Brilho e Proteção 1 ano -->
-									<div
-										class="modal fade"
-										id="brilho-e-protecao"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack Brilho e Proteção 1 ano
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/deniz-demirci-yeMjSP7UGlo-unsplash.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														(Orçamento a ser dado presencialmente - Entre 240 a 270€)
-													</p>
-													<ul>
-														<li>Polimento + vitrificação cerâmica com proteção de até 12 meses.</li>
-														<li>Restaura o brilho e protege a pintura contra sujidade, raios UV e químicos leves.</li>
-														<li>(Ideal para carros do dia a dia com manutenção regular)</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#diamante"
-									>
-										<img
-											src="images/wash/polishing-car-after-painting-detailing-car-from-outside-device-polishing-hands2.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Diamante</h4>
-											<strong class="services-thumb-price">300-330€</strong>
-										</div>
-									</div>
-									<!-- Modal Diamante -->
-									<div
-										class="modal fade"
-										id="diamante"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack Diamante
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/polishing-car-after-painting-detailing-car-from-outside-device-polishing-hands2.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														(Orçamento a ser dado presencialmente . Entre 300-330€)
-													</p>
-													<ul>
-													<li>Polimento + vitrificação nano cerâmica profissional com durabilidade de até 2 anos</li>
-													<li>Acabamento de alto brilho e proteção duradoura contra riscos leves e sujidade</li>
-													<li>Proteção contra agressões ambientais</li>
-													<li>Indicado para quem procura o máximo cuidado e preservação da pintura</li>
-													
-												</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#diamante-plus"
-									>
-										<img
-											src="images/wash/cquartz.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Diamante Plus</h4>
-											<strong class="services-thumb-price">360€</strong>
-										</div>
-									</div>
-									<!-- Modal Diamante + Higienização Premium -->
-									<div
-										class="modal fade"
-										id="diamante-plus"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack Diamante Plus
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/cquartz.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														Serviços Incluídos:
-													</p>
-													<ul>
-														<li>Polimento + vitrificação nano cerâmica profissional com durabilidade de até 2 anos</li>
-														<li>Acabamento de alto brilho e proteção duradoura contra riscos leves e sujidade</li>
-														<li>Proteção contra agressões ambientais</li>
-														<li>Higienização Premium Incluída</li>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#diamante-exclusive"
-									>
-										<img
-											src="images/wash/unnamed.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Diamante Exclusive</h4>
-											<strong class="services-thumb-price">400€</strong>
-										</div>
-									</div>
-									<!-- Modal Diamante + Higienização Premium -->
-									<div
-										class="modal fade"
-										id="diamante-exclusive"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack Diamante Exclusive
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/unnamed.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														Serviços Incluídos:
-													</p>
-													<ul>
-														<li>Polimento + vitrificação nano cerâmica profissional com durabilidade de até 2 anos</li>
-														<li>Acabamento de alto brilho e proteção duradoura contra riscos leves e sujidade</li>
-														<li>Proteção contra agressões ambientais</li>
-														<li>Pack Zero KM Incluída</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#elite"
-									>
-										<img
-											src="images/wash/ceramic.png"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Pack Elite &amp; Proteção 4 anos</h4>
-											<strong class="services-thumb-price">470 - 500€</strong>
-										</div>
-									</div>
-									<!-- Modal Pack Elite -->
-									<div
-										class="modal fade"
-										id="elite"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Pack Elite &amp; Proteção 4 anos
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/cquartz.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														Serviços Incluídos:
-													</p>
-													<ul>
-														<li>Polimento + vitrificação nano cerâmica profissional com durabilidade de até 4 anos</li>
-														<li>Propriedades anti-estáticas que repelem pó e sujidade</li>
-														<li>Acabamento de alto brilho e proteção duradoura contra riscos leves</li>
-														<li>Proteção contra agressões ambientais, raios UV e químicos</li>
-														<li>Indicado para quem procura a máxima proteção e longevidade da pintura</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-								<div class="col-lg-6 col-12 mb-4">
-									<div
-										class="services-thumb"
-										data-bs-toggle="modal"
-										data-bs-target="#polimento-opticas"
-									>
-										<img
-											src="images/wash/car-wash-detailing-station-scaled.jpg"
-											class="services-image img-fluid"
-											alt=""
-										/>
-										<div class="services-info d-flex align-items-end">
-											<h4 class="mb-0">Polimento de Ópticas</h4>
-											<strong class="services-thumb-price">40€</strong>
-										</div>
-									</div>
-									<!-- Modal Polimento-->
-									<div
-										class="modal fade"
-										id="polimento-opticas"
-										tabindex="-1"
-										aria-labelledby="exampleModalLabel"
-										aria-hidden="true"
-									>
-										<div class="modal-dialog modal-fullscreen-sm-down">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">
-														Polimento de Ópticas
-													</h5>
-													<button
-														type="button"
-														class="btn-close"
-														data-bs-dismiss="modal"
-														aria-label="Close"
-													></button>
-												</div>
-												<div class="modal-body">
-													<img
-														src="images/wash/car-wash-detailing-station-scaled.jpg"
-														class="services-image img-fluid"
-														alt=""
-													/>
-													<p class="mt-3">
-														Utilizamos uma polidora para aumentar o brilho da
-														sua viatura.
-													</p>
-													<ul>
-														<li>
-															Polimento e recuperação do brilho com remoção de
-															até 50% dos riscos
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Fim Modal -->
-								</div>
-							</div>
-						</div>
-					</section>
-					<!-- Tabela de Preços Avulsos -->
-				<section class="precos-avulsos-section section-padding">
-					<div class="container">
-						<div class="row">
-							<div class="col-lg-12 col-12 mb-4">
-								<h2 class="mb-2">Serviços Avulsos</h2>
-								<p class="precos-avulsos-subtitulo">Serviços individuais disponíveis sem necessidade de pack.</p>
-							</div>
-							<div class="col-lg-10 col-12 mx-auto">
-								<table class="table precos-avulsos-table">
-									<thead>
-										<tr>
-											<th>Serviço</th>
-											<th class="text-end">Preço</th>
-										</tr>
-									</thead>
-															<tbody>
-							<tr class="categoria-row">
-								<td colspan="2">Vitrificações</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Vitrificação Cerâmica 1 ano</span>
-									<span class="precos-avulsos-desc">Camada protetora com repelência de água e proteção UV</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">200€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Vitrificação Nano-Cerâmica 2 anos</span>
-									<span class="precos-avulsos-desc">Proteção de alto desempenho contra riscos leves e agressões ambientais</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">280€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Aplicação de Cera</span>
-									<span class="precos-avulsos-desc">Camada protetora de cera com brilho imediato</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">20€</td>
-							</tr>
-							<tr class="categoria-row">
-								<td colspan="2">Vidros</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Pack Cristalização &amp; Proteção Completa</span>
-									<span class="precos-avulsos-desc">Todos os vidros + proteção nano-diamante</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">139€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Pack Cristalização + Proteção (Parabrisas)</span>
-									<span class="precos-avulsos-desc">Cristalização e proteção nano-diamante apenas no parabrisas</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">89€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Proteção Vidros (4 vidros)</span>
-									<span class="precos-avulsos-desc">Revestimento nano-diamante em todos os vidros</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">99€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Proteção Vidros (Parabrisas)</span>
-									<span class="precos-avulsos-desc">Revestimento nano-diamante apenas no parabrisas</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">59€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Revitalização do Vidro</span>
-									<span class="precos-avulsos-desc">Remoção de contaminantes e marcas de chuva ácida</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">50€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Remoção Marcas D’água (Vidros)</span>
-									<span class="precos-avulsos-desc">Remoção de calcário e depósitos minerais nos vidros</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">25€</td>
-							</tr>
-							<tr class="categoria-row">
-								<td colspan="2">Plásticos</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Nível 1 — Renovação Essencial</span>
-									<span class="precos-avulsos-desc">Restauro básico de plásticos exteriores (durabilidade 2–5 meses)</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">30€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Nível 2 — Proteção e Estética</span>
-									<span class="precos-avulsos-desc">Revestimento cerâmico com camada hidrófoba (durabilidade 9–12 meses)</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">50–70€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Nível 3 — Proteção Cerâmica Avançada</span>
-									<span class="precos-avulsos-desc">Cerâmica de alto desempenho com proteção UV (durabilidade 24–36 meses)</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">90–110€</td>
-							</tr>
-							<tr class="categoria-row">
-								<td colspan="2">Estofos</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Lavagem de Estofo</span>
-									<span class="precos-avulsos-desc">Higienização profunda dos bancos sem remoção</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">65€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Lavagem de Estofo — Comerciais</span>
-									<span class="precos-avulsos-desc">Para veículos comerciais e de transporte</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">40€</td>
-							</tr>
-							<tr class="categoria-row">
-								<td colspan="2">Motas</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Lavagem de Mota (até 125cc)</span>
-									<span class="precos-avulsos-desc">Lavagem completa com detalhe de jantes e plásticos</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">25€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Lavagem de Mota (acima 125cc)</span>
-									<span class="precos-avulsos-desc">Lavagem completa para motos de maior cilindrada</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">30€</td>
-							</tr>
-							<tr class="categoria-row">
-								<td colspan="2">Outros</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Tratamento de Ozono</span>
-									<span class="precos-avulsos-desc">Desinfeção interior por ozono — elimina odores e bactérias</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">20€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Remoção Marcas D’água (Carroçaria)</span>
-									<span class="precos-avulsos-desc">Remoção de calcário e depósitos minerais na carroçaria</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">35€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Descontaminação Ferrosa</span>
-									<span class="precos-avulsos-desc">Remoção de partículas de ferro e insetos da carroçaria</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">15€</td>
-							</tr>
-							<tr class="categoria-row">
-								<td colspan="2">Serviços Adicionais</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Aspiração Interior</span>
-									<span class="precos-avulsos-desc">Aspiração do interior do veículo</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">15€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Lavagem Apenas Exterior</span>
-									<span class="precos-avulsos-desc">Lavagem exterior sem serviços adicionais</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">15€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Higienização do Teto</span>
-									<span class="precos-avulsos-desc">Lavagem antibacteriana da forra do teto</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">30€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Higienização da Alcatifa</span>
-									<span class="precos-avulsos-desc">Lavagem antibacteriana da alcatifa do habitáculo</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">30€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Tratamento Específico Jantes</span>
-									<span class="precos-avulsos-desc">Limpeza profunda das jantes</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">15€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Limpeza dos Vidros (interior)</span>
-									<span class="precos-avulsos-desc">Limpeza interior dos vidros</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">10€</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Lavagem dos Tapetes</span>
-									<span class="precos-avulsos-desc">Lavagem individual por unidade</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">5€<span class="precos-avulsos-unidade">/unidade</span></td>
-							</tr>
-							<tr>
-								<td>
-									<span class="precos-avulsos-nome">Manutenção de Vitrificação</span>
-									<span class="precos-avulsos-desc">Aplicação de produto de manutenção para vitrificação existente</span>
-								</td>
-								<td class="text-end precos-avulsos-valor">10€</td>
-							</tr>
-						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="2" class="precos-avulsos-nota">
-									<i class="bi bi-info-circle-fill me-2"></i>
-									<strong>Taxa SUV / Carrinha / Monovolume:</strong> +2,50€ em serviços avulsos &nbsp;·&nbsp; +5€ em packs
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" class="precos-avulsos-nota" style="border-top:none !important;">
-									<i class="bi bi-truck me-2"></i>
-									<strong>Recolha &amp; Entrega:</strong> 5€ + 2,50€/km (acima de 2km) &nbsp;·&nbsp; <strong>Taxa Sujidade Extrema:</strong> a partir de 5€
-								</td>
-							</tr>
-						</tfoot>
-								</table>
-							</div>
+						<div class="d-flex align-items-center gap-3 pb-3 pb-xl-0">
+							<a class="nav-phone" href="tel:+351964455006"><i class="bi bi-telephone"></i> 96 44 550 06</a>
+							<a class="btn btn-gold rounded-pill" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener">Marcar lavagem</a>
 						</div>
 					</div>
-				</section>
-
-				<section class="cardiagnose-section section-padding" id="section_4">
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-12 col-12">
-									<h2 class="mb-4">Diagnóstico de Veículo</h2>
-								</div>
-							</div>
-							<div id="cardiagnose-root"></div>
-						</div>
-					</section>
-					<section class="contact-section" id="section_5">
-						<div class="section-padding section-bg">
-							<div class="container">
-								<div class="row">
-									<div class="col-lg-8 col-12 mx-auto">
-										<h2 class="text-center">Envie-nos uma Mensagem!!!</h2>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="section-padding">
-							<div class="container">
-								<div class="row">
-									<div class="col-lg-6 col-12">
-										<h5 class="mb-3"><strong>Contato</strong></h5>
-										<p class="d-flex mb-1">
-											<a href="tel:+351964455006" class="site-footer-link">
-												+351 96 44 550 06
-											</a>
-										</p>
-										<p class="d-flex mb-1">
-											<a href="tel:+351916406516" class="site-footer-link">
-												+351 91 64 065 16
-											</a>
-										</p>
-										<!-- <p class="d-flex">
-											<a
-												href="mailto:imperiodalavagemauto@gmail.com"
-												class="site-footer-link"
-											>
-												imperiodalavagemauto@gmail.com
-											</a>
-										</p> -->
-										<ul class="social-icon">
-											<!-- <li class="social-icon-item">
-                                            <a href="#" class="social-icon-link bi-facebook">
-                                            </a>
-                                        </li>
-                                        <li class="social-icon-item">
-                                            <a href="#" class="social-icon-link bi-twitter">
-                                            </a>
-                                        </li> -->
-											<li class="social-icon-item">
-												<a
-													href="https://instagram.com/imperiodalavagem.auto"
-													class="social-icon-link bi-instagram"
-												>
-												</a>
-											</li>
-											<!-- <li class="social-icon-item">
-                                            <a href="#" class="social-icon-link bi-youtube">
-                                            </a>
-                                        </li> -->
-											<li class="social-icon-item">
-												<a
-													href="https://wa.me/351964455006"
-													class="social-icon-link bi-whatsapp"
-												>
-												</a>
-											</li>
-										</ul>
-									</div>
-									<div
-										class="col-lg-5 col-12 contact-block-wrap mt-5 mt-lg-0 pt-4 pt-lg-0 mx-auto"
-									>
-										<div class="contact-block">
-											<h6 class="mb-0">
-												<i class="custom-icon bi-shop me-3"></i>
-												<strong>Horário de Funcionamento</strong>
-												<span class="ms-auto">9h - 18h30</span>
-											</h6>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</section>
-					<section class="site-footer" id="section_6">
-						<div class="container">
-							<div class="row">
-								<div class="col-lg-12 col-12">
-									<h5 class="site-footer-title mb-4">Onde Estamos?</h5>
-								</div>
-								<div class="col-lg-8 col-md-6 col-12">
-									<div class="site-footer-thumb">
-										<strong class="mb-1">São João da Madeira</strong>
-										<p>Rua Angola, 525 - 3700-036 São João da Madeira</p>
-										<iframe
-											src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24127.86735489987!2d-8.527424965234374!3d40.89417859999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd23818d286b69e5%3A0x3c33262c47997ef2!2sR.%20de%20Angola%20525%2C%203700-036%20S%C3%A3o%20Jo%C3%A3o%20da%20Madeira!5e0!3m2!1spt-BR!2spt!4v1723560791601!5m2!1spt-BR!2spt"
-											width="100%"
-											height="450"
-											style="border: 0; display: block; max-width: 100%;"
-											allowfullscreen=""
-											loading="lazy"
-											referrerpolicy="no-referrer-when-downgrade"
-										></iframe>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="site-footer-bottom">
-							<div class="container">
-								<div class="row align-items-center">
-									<div class="col-lg-8 col-12 mt-4">
-										<p class="copyright-text mb-0">
-											Todos os direitos Reservados &COPY;
-											<a href="https://julionabor.netlify.app">Júlio Nabor</a>
-										</p>
-									</div>
-									<div class="col-lg-2 col-md-3 col-3 mt-lg-4 ms-auto">
-										<a
-											href="#section_1"
-											class="back-top-icon smoothscroll"
-											title="Back Top"
-										>
-											<i class="bi-arrow-up-circle"></i>
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</section>
 				</div>
+			</nav>
+		</header>
+
+		<main id="conteudo">
+			<!-- Hero -->
+			<section class="hero" id="inicio">
+				<div class="container-xl">
+					<span class="pill-alert"><span class="pill-alert__dot"></span>Corra! A nossa agenda já está quase lotada</span>
+					<h1 class="hero__title">Império da Lavagem <span class="text-gold">Auto</span></h1>
+					<p class="hero__lead">
+						Onde o seu carro é tratado como realeza. Lavagem manual, higienização, polimento e
+						vitrificação cerâmica em São João da Madeira.
+					</p>
+					<div class="hero__actions">
+						<a class="btn btn-gold btn-lg rounded-pill" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener">
+							Marque a sua lavagem <i class="bi bi-arrow-right ms-1"></i>
+						</a>
+						<a class="btn btn-outline-light btn-lg rounded-pill" href="#diagnostico">Diagnosticar o meu carro</a>
+						<a class="btn btn-outline-light btn-lg rounded-pill d-none d-md-inline-block" href="#servicos">O que fazemos</a>
+					</div>
+					<div class="hero__facts">
+						<div class="fact"><i class="bi bi-clock"></i><div><strong>Aberto 9h – 18h30</strong><span>Marcação online</span></div></div>
+						<div class="fact"><i class="bi bi-credit-card"></i><div><strong>Pague em até 4x</strong><span>Serviços acima de 100€</span></div></div>
+						<div class="fact"><i class="bi bi-geo-alt"></i><div><strong>Recolha &amp; entrega</strong><span>5€ até 2 km · +2,50€/km acima</span></div></div>
+					</div>
+				</div>
+			</section>
+
+			<!-- CarDiagnose -->
+			<section class="section" id="diagnostico">
+				<div class="container-xl">
+					<div class="section-head">
+						<span class="eyebrow">CarDiagnose</span>
+						<h2>O que o seu carro precisa hoje?</h2>
+						<p>
+							Escolha a sua principal preocupação. Em poucas perguntas encontramos o pack ideal, já
+							com o preço para o seu tipo de veículo.
+						</p>
+					</div>
+					<div id="cardiagnose-root"></div>
+				</div>
+			</section>
+
+			<!-- Serviços & preçário -->
+			<section class="section section--dark" id="servicos">
+				<div class="container-xl">
+					<div class="section-head">
+						<span class="eyebrow eyebrow--gold">Serviços &amp; preçário</span>
+						<h2>Escolha o seu veículo e veja o preço certo</h2>
+						<p>Todos os preços atualizam conforme o tipo de veículo selecionado.</p>
+					</div>
+
+					<div id="vehicle-picker" class="carousel-block vehicle-picker" data-carousel role="radiogroup" aria-label="Tipo de veículo">
+						<div class="carousel-viewport"><div class="carousel-track vehicle-track"></div></div>
+						<div class="carousel-controls" aria-label="Navegar tipos de veículo">
+							<button type="button" class="carousel-btn" data-dir="-1" aria-label="Anterior"><i class="bi bi-chevron-left"></i></button>
+							<div class="carousel-dots"></div>
+							<span class="carousel-counter"></span>
+							<button type="button" class="carousel-btn" data-dir="1" aria-label="Seguinte"><i class="bi bi-chevron-right"></i></button>
+						</div>
+					</div>
+
+					<p class="vehicle-status" id="vehicle-status" role="status" aria-live="polite"></p>
+
+					<nav class="category-nav" aria-label="Categorias de serviço">
+						<a href="#lavagem">Lavagem &amp; Higienização</a>
+						<a href="#polimento">Polimento &amp; Vitrificação</a>
+						<a href="#avulsos">Serviços avulsos</a>
+						<a href="#taxas">Taxas &amp; extras</a>
+					</nav>
+
+					<div id="service-groups"></div>
+
+					<div class="service-group" id="avulsos">
+						<div class="service-group__head">
+							<h3>Serviços avulsos</h3>
+							<span>Serviços individuais, sem necessidade de pack</span>
+						</div>
+						<div class="extras-grid" id="extras-grid"></div>
+					</div>
+
+					<div class="service-group" id="taxas">
+						<div class="service-group__head"><h3>Taxas &amp; extras</h3></div>
+						<div class="fees-grid">
+							<div class="fee-card">
+								<strong>Taxa SUV / 7 lugares / Monovolume / Carrinha / Comercial</strong>
+								<div class="fee-card__value">+5€ <small>em todos os packs</small></div>
+								<p>Já aplicada nos preços acima quando escolhe um destes veículos. Os restantes serviços não têm taxa.</p>
+							</div>
+							<div class="fee-card">
+								<strong>Recolha &amp; Entrega</strong>
+								<div class="fee-card__value">5€</div>
+								<p>
+									Para sua comodidade, recolhemos e/ou entregamos o carro. Cada intervenção custa 5€
+									até 2 km da loja; acima de 2 km acresce 2,50€ por km.
+								</p>
+							</div>
+							<div class="fee-card fee-card--wide">
+								<strong>Taxa Sujidade Extrema</strong>
+								<div class="fee-card__value">a partir de 5€</div>
+								<p>Avaliada no momento, antes da lavagem. Aplica-se, entre outros, a:</p>
+								<ul class="check-list check-list--sm check-list--2col" id="dirt-list"></ul>
+							</div>
+						</div>
+					</div>
+					<noscript><p>Ative o JavaScript para ver o preçário completo, ou consulte-o em <a href="https://imperiodalavagemauto.buk.pt/">imperiodalavagemauto.buk.pt</a>.</p></noscript>
+				</div>
+			</section>
+
+			<!-- Pagamento em 4x -->
+			<section class="installments">
+				<div class="container-xl">
+					<div class="installments__card">
+						<div>
+							<h2>Parcele em até 4x o seu tratamento</h2>
+							<p>
+								Em serviços acima de 100€ pode pagar em 2, 3 ou até 4x, sem necessidade de aprovações
+								de crédito ou de cartões especiais. Basta solicitar no ato da marcação. Sem burocracias!
+							</p>
+						</div>
+						<div class="installments__example">
+							<span>Ex.: Pack Brilho e Proteção, desde</span>
+							<strong>4 × 62,50€</strong>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Perguntas frequentes -->
+			<section class="section" id="faq">
+				<div class="container-xl">
+					<div class="row g-5">
+						<div class="col-lg-4">
+							<span class="eyebrow">Perguntas frequentes</span>
+							<h2 class="section-title">Escolha o pack certo, sem dúvidas</h2>
+							<p class="text-muted-2">
+								Higienização, polimento com vitrificação e pagamento em prestações — as respostas de que
+								precisa antes de marcar.
+							</p>
+							<a class="btn btn-gold rounded-pill mt-2" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener">Marcar lavagem</a>
+							<img class="faq-img d-none d-lg-block" src="images/wash/washing-car-1397382_1280.jpg" alt="Lavagem manual de um carro com esponja" loading="lazy" />
+						</div>
+						<div class="col-lg-8">
+							<div class="accordion faq-accordion" id="faqAccordion">
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
+											Porque é que o Pack Higienização Standard é o mais procurado?
+										</button>
+									</h3>
+									<div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p>Porque por <strong>40€</strong> resolve o carro por dentro e por fora numa só marcação — feito à mão, não em rolos de bomba.</p>
+											<ul class="faq-list">
+											<li>Pré-lavagem e lavagem manual exterior, jantes e cavas</li>
+											<li>Descontaminação ferrosa quando necessário</li>
+											<li>Aspiração profunda com compressor de ar</li>
+											<li>Higienização a vapor e hidratação dos plásticos interiores, volante, pedais e tapetes</li>
+											<li>Tratamento de ozono ou aplicação de cera, e abrilhantador de pneus</li>
+											</ul>
+											<p>Sai limpo, desinfetado e sem cheiros. É o ponto de partida ideal para manter o carro sempre impecável.</p>
+											<a class="faq-cta" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener">Marcar o Pack Standard <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+											Standard ou Premium: qual compensa para o meu carro?
+										</button>
+									</h3>
+									<div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p><strong>Standard (40€)</strong> para a manutenção regular. <strong>Premium (100€)</strong> quando há manchas nos estofos, animais, crianças ou cheiros que não saem.</p>
+											<p>Por mais 60€, o Premium acrescenta ao Standard:</p>
+											<ul class="faq-list">
+											<li>Lavagem dos estofos, sem remover os bancos</li>
+											<li>Desinfeção premium por ozono — elimina microrganismos, bactérias e partículas que provocam odores</li>
+											<li>Lavagem do volante, dos cintos de segurança e das palas de sol</li>
+											<li>Proteção dos plásticos interiores (até 6 meses) e exteriores (até 60 dias)</li>
+											</ul>
+											<p>E como chega aos 100€, pode pagá-lo em <strong>4 × 25€</strong>.</p>
+											<a class="faq-cta" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener">Marcar o Pack Premium <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+											O ozono acaba mesmo com o cheiro a tabaco, animais ou mofo?
+										</button>
+									</h3>
+									<div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p>Sim — porque atua na origem, não disfarça. O ozono elimina até <strong>99% de bactérias, vírus e odores</strong> (fumo, mofo, comida), desinfetando o ar e todas as superfícies sem deixar cheiro químico.</p>
+											<p>Já vem incluído no Pack Standard. Se o cheiro está entranhado, escolha o <strong>Pack Higienização Premium</strong>: junta o ozono premium à lavagem dos estofos, que é onde o cheiro fica retido.</p>
+											<a class="faq-cta" href="#lavagem">Ver packs de higienização <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">
+											Porque devo vitrificar depois de polir o carro?
+										</button>
+									</h3>
+									<div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p>O polimento remove micro-riscos e devolve o brilho — mas deixa a pintura exposta. Sem proteção, o sol, a chuva, o pólen e as fezes das aves voltam a atacar o verniz e o brilho perde-se.</p>
+											<p>A vitrificação sela esse resultado com uma camada transparente e hidrofóbica: a água escorre, a sujidade agarra menos e as lavagens ficam mais rápidas. É por isso que os nossos packs fazem <strong>as duas coisas no mesmo serviço</strong> — polir e proteger.</p>
+											<a class="faq-cta" href="#polimento">Ver packs de polimento e vitrificação <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false" aria-controls="faq5">
+											Brilho &amp; Proteção, Diamante ou Elite — qual escolher?
+										</button>
+									</h3>
+									<div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p>Depende de quanto tempo quer manter o carro a brilhar. Quanto mais longa a proteção, <strong>menor o custo por ano</strong>:</p>
+											<div class="faq-compare">
+											<div><strong>Brilho &amp; Proteção</strong><span>240–270€ · 1 ano</span><small>Para o carro do dia a dia com manutenção regular</small></div>
+											<div class="is-featured"><strong>Diamante</strong><span>300–330€ · até 2 anos</span><small>Desde 150€ por ano. Preserva a pintura e o valor do carro</small></div>
+											<div><strong>Elite</strong><span>470–500€ · até 4 anos</span><small>Desde 117,50€ por ano. Anti-estática: repele o pó</small></div>
+											</div>
+											<p>Os três incluem o polimento e são parceláveis em até 4x. Nos packs Brilho e Diamante o valor final é confirmado presencialmente.</p>
+											<a class="faq-cta" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener">Marcar avaliação <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6" aria-expanded="false" aria-controls="faq6">
+											Vale a pena o Diamante Plus ou o Diamante Exclusive?
+										</button>
+									</h3>
+									<div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p>Se o interior também precisa de atenção, sim — sai mais barato do que marcar em separado:</p>
+											<ul class="faq-list">
+											<li><strong>Diamante Plus (360€)</strong> = Pack Diamante + Higienização Premium. Em separado custariam pelo menos 400€: <strong>poupa 40€ ou mais</strong>.</li>
+											<li><strong>Diamante Exclusive (400€)</strong> = Pack Diamante + Pack Zero KM. Em separado, pelo menos 430€: <strong>poupa 30€ ou mais</strong> e leva a renovação total do interior.</li>
+											</ul>
+											<p>Pintura protegida até 2 anos e interior como novo, numa só marcação. Também em 4 prestações.</p>
+											<a class="faq-cta" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener">Marcar o Diamante Plus ou Exclusive <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7" aria-expanded="false" aria-controls="faq7">
+											Posso pagar em prestações? Como funciona?
+										</button>
+									</h3>
+									<div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p>Sim. Em qualquer serviço acima de 100€ paga em <strong>2, 3 ou 4 vezes, sem juros</strong> — sem aprovação de crédito, sem cartões especiais e sem burocracias. Basta pedir no ato da marcação.</p>
+											<div class="faq-compare">
+											<div><strong>Higienização Premium</strong><span>4 × 25€</span></div>
+											<div><strong>Brilho &amp; Proteção</strong><span>desde 4 × 62,50€</span></div>
+											<div><strong>Pack Diamante</strong><span>desde 4 × 75€</span></div>
+											</div>
+											<p>Ou seja: protege o carro já hoje e divide o valor pelos próximos meses.</p>
+											<a class="faq-cta" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener">Marcar e pedir prestações <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8" aria-expanded="false" aria-controls="faq8">
+											Quanto tempo dura a vitrificação e como a mantenho?
+										</button>
+									</h3>
+									<div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p>Conforme o pack: <strong>1 ano</strong> (Brilho &amp; Proteção), <strong>até 2 anos</strong> (Diamante, Plus e Exclusive) ou <strong>até 4 anos</strong> (Elite).</p>
+											<p>Para prolongar o efeito, temos a <strong>Manutenção de Vitrificação</strong> (10€, com 5€ de desconto quando marcada com um pack), que preserva a camada nano-cerâmica aplicada.</p>
+											<a class="faq-cta" href="#avulsos">Ver serviços avulsos <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h3 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9" aria-expanded="false" aria-controls="faq9">
+											Não sei qual é o pack ideal. Podem ajudar?
+										</button>
+									</h3>
+									<div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+										<div class="accordion-body">
+											<p>Claro. Use o <strong>CarDiagnose</strong>: responde a umas perguntas rápidas sobre o seu carro e recebe a recomendação do pack, já com o preço para o seu tipo de veículo e o valor em prestações.</p>
+											<p>Prefere falar com alguém? Envie-nos uma mensagem pelo <a href="https://wa.me/351964455006" target="_blank" rel="noopener">WhatsApp</a> ou ligue para o <a href="tel:+351964455006">96 44 550 06</a>.</p>
+											<a class="faq-cta" href="#diagnostico">Fazer o diagnóstico <i class="bi bi-arrow-right"></i></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Contacto & localização -->
+			<section class="section pt-0" id="contacto">
+				<div class="container-xl">
+					<div class="row g-4">
+						<div class="col-lg-6">
+							<div class="contact-card h-100">
+								<h2>Envie-nos uma mensagem</h2>
+								<div class="contact-hours">
+									<i class="bi bi-shop"></i>
+									<div><span>Horário de funcionamento</span><strong>9h – 18h30</strong></div>
+								</div>
+								<div class="contact-links">
+									<a class="contact-link contact-link--whatsapp" href="https://wa.me/351964455006" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
+									<a class="contact-link" href="https://instagram.com/imperiodalavagem.auto" target="_blank" rel="noopener"><i class="bi bi-instagram"></i> @imperiodalavagem.auto</a>
+									<a class="contact-link" href="tel:+351964455006"><i class="bi bi-telephone"></i> +351 96 44 550 06</a>
+									<a class="contact-link" href="tel:+351916406516"><i class="bi bi-telephone"></i> +351 91 64 065 16</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6" id="onde-estamos">
+							<div class="location-card h-100">
+								<iframe
+									title="Mapa — Rua Angola, 525, São João da Madeira"
+									src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24127.86735489987!2d-8.527424965234374!3d40.89417859999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd23818d286b69e5%3A0x3c33262c47997ef2!2sR.%20de%20Angola%20525%2C%203700-036%20S%C3%A3o%20Jo%C3%A3o%20da%20Madeira!5e0!3m2!1spt-BR!2spt!4v1723560791601!5m2!1spt-BR!2spt"
+									allowfullscreen=""
+									loading="lazy"
+									referrerpolicy="no-referrer-when-downgrade"
+								></iframe>
+								<div class="location-card__body">
+									<div>
+										<h2 class="h5">Onde estamos?</h2>
+										<p><strong>São João da Madeira</strong><br />Rua Angola, 525 — 3700-036 São João da Madeira</p>
+									</div>
+									<a class="btn btn-navy rounded-pill" href="https://maps.google.com/?q=Rua+de+Angola+525+3700-036+S%C3%A3o+Jo%C3%A3o+da+Madeira" target="_blank" rel="noopener">Abrir no mapa</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer class="site-footer">
+			<div class="container-xl site-footer__inner">
+				<img src="images/logo.png" alt="Império da Lavagem Auto" height="40" />
+				<a class="complaints-badge" href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener" aria-label="Livro de Reclamações Eletrónico">
+					<i class="bi bi-journal-text"></i>
+					<span><strong>Livro de Reclamações</strong><small>Eletrónico</small></span>
+				</a>
+				<p class="mb-0">Todos os direitos reservados © <span id="year">2026</span> <a href="https://julionabor.netlify.app/" target="_blank" rel="noopener">Júlio Nabor</a></p>
 			</div>
-		</div>
-		<script src="js/jquery.min.js"></script>
+		</footer>
+
+		<!-- Ações rápidas -->
+		<a class="whatsapp-fab d-none d-md-flex" href="https://wa.me/351964455006" target="_blank" rel="noopener" aria-label="Falar no WhatsApp"><i class="bi bi-whatsapp"></i></a>
+		<nav class="mobile-actions d-md-none" aria-label="Ações rápidas">
+			<a href="tel:+351964455006"><i class="bi bi-telephone"></i>Ligar</a>
+			<a href="https://wa.me/351964455006" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i>WhatsApp</a>
+			<a class="is-primary" href="https://imperiodalavagemauto.buk.pt/" target="_blank" rel="noopener"><i class="bi bi-calendar-check"></i>Marcar</a>
+		</nav>
+
 		<script src="js/bootstrap.min.js"></script>
-		<script src="js/main1.js"></script>
-		<script src="js/main2.js"></script>
+		<script src="js/services-data.js"></script>
+		<script src="js/site.js"></script>
 		<script type="module" src="cardiagnose/app.js"></script>
 	</body>
 </html>

@@ -244,12 +244,15 @@ export const PAIN_CATEGORIES = [
 ];
 
 export const VEHICLE_TYPES = [
-  { id: 'citadino',   label: 'Citadino / Hatch',    modelFile: 'models/citadino.glb',   surcharge: 0,    isMoto: false },
-  { id: 'berlina',    label: 'Berlina / Sedan',      modelFile: 'models/berlina.glb',    surcharge: 0,    isMoto: false },
-  { id: 'suv',        label: 'SUV / 4×4',            modelFile: 'models/suv.glb',        surcharge: 5.00, isMoto: false },
-  { id: 'carrinha',   label: 'Carrinha / Break',     modelFile: 'models/carrinha.glb',   surcharge: 5.00, isMoto: false },
-  { id: 'monovolume', label: 'Monovolume / 7 Lug.', modelFile: 'models/monovolume.glb', surcharge: 5.00, isMoto: false },
-  { id: 'mota',       label: 'Mota',                 modelFile: 'models/mota.glb',       surcharge: 0,    isMoto: true  },
+  { id: 'pequeno_citadino', label: 'Pequeno citadino',      img: 'images/categorias/pequeno_citadino.jpg', silhouette: 'citadino',  surcharge: 0,    isMoto: false },
+  { id: 'citadinos',        label: 'Citadino',              img: 'images/categorias/citadinos.jpg',        silhouette: 'citadino',  surcharge: 0,    isMoto: false },
+  { id: 'utilitario',       label: 'Utilitário',            img: 'images/categorias/utilitario.jpg',       silhouette: 'citadino',  surcharge: 0,    isMoto: false },
+  { id: 'sedan',            label: 'Sedan / Berlina',       img: 'images/categorias/sedan.jpg',            silhouette: 'berlina',   surcharge: 0,    isMoto: false },
+  { id: 'coupe',            label: 'Coupé',                 img: 'images/categorias/coupe.jpg',            silhouette: 'berlina',   surcharge: 0,    isMoto: false },
+  { id: 'suv',              label: 'SUV / 7 lugares',       img: 'images/categorias/suv.jpg',              silhouette: 'suv',       surcharge: 5.00, isMoto: false },
+  { id: 'carrinha',         label: 'Carrinha / Monovolume', img: 'images/categorias/carrinha.jpg',         silhouette: 'carrinha',  surcharge: 5.00, isMoto: false },
+  { id: 'comerciais',       label: 'Comercial',             img: 'images/categorias/comerciais.jpg',       silhouette: 'carrinha',  surcharge: 5.00, isMoto: false },
+  { id: 'mota',             label: 'Mota',                  icon: 'icons/mota.svg',                        silhouette: 'mota',      surcharge: 0,    isMoto: true  },
 ];
 
 export const COLOR_PALETTE = [

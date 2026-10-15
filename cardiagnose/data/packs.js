@@ -9,11 +9,11 @@ const BOOKING_URL = 'https://imperiodalavagemauto.buk.pt';
 export const PACKS = {
   diamanteExclusive: {
     id: 'diamanteExclusive',
+    isPack: true,
     name: 'Pack Diamante Exclusive',
     priceMin: 400,
     priceMax: 400,
     tier: 'principal',
-    excludesSurcharge: true,
     includedItems: [
       'Polimento profissional completo',
       'Vitrificação nano-cerâmica 2 anos',
@@ -26,11 +26,11 @@ export const PACKS = {
   },
   diamantePlus: {
     id: 'diamantePlus',
+    isPack: true,
     name: 'Pack Diamante Plus',
     priceMin: 360,
     priceMax: 360,
     tier: 'principal',
-    excludesSurcharge: true,
     includedItems: [
       'Polimento profissional',
       'Vitrificação nano-cerâmica 2 anos',
@@ -42,11 +42,11 @@ export const PACKS = {
   },
   diamante: {
     id: 'diamante',
+    isPack: true,
     name: 'Pack Diamante',
     priceMin: 300,
     priceMax: 330,
     tier: 'principal',
-    excludesSurcharge: true,
     includedItems: [
       'Polimento profissional',
       'Vitrificação nano-cerâmica 2 anos',
@@ -59,6 +59,7 @@ export const PACKS = {
   },
   higienizacaoPremium: {
     id: 'higienizacaoPremium',
+    isPack: true,
     name: 'Higienização Premium',
     priceMin: 100,
     priceMax: 100,
@@ -75,6 +76,7 @@ export const PACKS = {
   },
   higienizacaoStandard: {
     id: 'higienizacaoStandard',
+    isPack: true,
     name: 'Higienização Standard',
     priceMin: 40,
     priceMax: 40,
@@ -91,11 +93,11 @@ export const PACKS = {
   },
   brilhoProtecao: {
     id: 'brilhoProtecao',
+    isPack: true,
     name: 'Pack Brilho & Proteção 1 ano',
     priceMin: 240,
     priceMax: 270,
     tier: 'secundario',
-    excludesSurcharge: true,
     includedItems: [
       'Polimento suave',
       'Vitrificação 1 ano',
@@ -111,7 +113,6 @@ export const PACKS = {
     priceMin: 140,
     priceMax: 160,
     tier: 'secundario',
-    excludesSurcharge: true,
     includedItems: [
       'Polimento profissional por secções',
       'Remoção de micro-riscos',
@@ -122,6 +123,7 @@ export const PACKS = {
   },
   packZeroKm: {
     id: 'packZeroKm',
+    isPack: true,
     name: 'Pack Zero Km',
     priceMin: 130,
     priceMax: 130,
@@ -179,8 +181,8 @@ export const PACKS = {
   vitrificacao: {
     id: 'vitrificacao',
     name: 'Vitrificação 1 ano',
-    priceMin: 160,
-    priceMax: 160,
+    priceMin: 200,
+    priceMax: 200,
     tier: 'secundario',
     includedItems: [
       'Vitrificação 1 ano',
@@ -276,26 +278,29 @@ export const MOTO_INCLUDES = [
  * @returns {{ primaryPack, alternativePack, finalPrice, surchargeApplied, justification, installmentAmount }}
  */
 export function recommend(painCategoryId, totalScore, vehicleTypeId) {
-  const surchargeTypes = ['suv', 'carrinha', 'monovolume'];
-  const baseSurcharge = surchargeTypes.includes(vehicleTypeId) ? 5.00 : 0;
+  // Taxa de veículo grande: +5€ apenas em packs; os restantes serviços não têm taxa
+  const bigVehicleTypes = ['suv', 'carrinha', 'comerciais'];
+  const isBig = bigVehicleTypes.includes(vehicleTypeId);
+  const surchargeFor = (pack) => (isBig && pack.isPack ? 5.00 : 0);
 
   const treeResult = DECISION_TREE[painCategoryId]?.(totalScore);
   if (!treeResult) {
     // Fallback — should never happen with valid input
     const fb = PACKS.higienizacaoStandard;
-    const fbSurcharge = fb.excludesSurcharge ? 0 : baseSurcharge;
+    const fbSurcharge = surchargeFor(fb);
     return {
       primaryPack: fb,
       alternativePack: PACKS.lavagBasica,
       finalPrice: fb.priceMin + fbSurcharge,
       surchargeApplied: fbSurcharge > 0,
+      surchargeAmount: fbSurcharge,
       justification: 'Com base nas tuas respostas, o Standard é o pack ideal para ti.',
       installmentAmount: null,
     };
   }
 
   const { primary, alt } = treeResult;
-  const effectiveSurcharge = primary.excludesSurcharge ? 0 : baseSurcharge;
+  const effectiveSurcharge = surchargeFor(primary);
   const finalPrice = primary.priceMin + effectiveSurcharge;
   const justification = JUSTIFICATIONS[painCategoryId]?.[primary.id]
     ?? `O ${primary.name} é o pack ideal para o teu caso.`;
@@ -308,6 +313,7 @@ export function recommend(painCategoryId, totalScore, vehicleTypeId) {
     alternativePack: alt,
     finalPrice,
     surchargeApplied: effectiveSurcharge > 0,
+    surchargeAmount: effectiveSurcharge,
     justification,
     installmentAmount,
   };

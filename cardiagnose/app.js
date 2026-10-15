@@ -9,6 +9,14 @@
 import { PAIN_CATEGORIES, VEHICLE_TYPES, COLOR_PALETTE } from './data/questions.js';
 import { recommend, MOTO_OPTIONS, MOTO_INCLUDES } from './data/packs.js';
 
+// ─── Asset paths ─────────────────────────────────────────────────────────────
+// Ícones vivem em cardiagnose/, fotos das categorias na raiz do site.
+// Resolve a partir deste módulo para funcionar embebido em index.html ou isolado.
+const WIDGET_BASE = new URL('./', import.meta.url);
+const SITE_BASE = new URL('../', import.meta.url);
+const widgetAsset = (p) => new URL(p, WIDGET_BASE).href;
+const siteAsset = (p) => new URL(p, SITE_BASE).href;
+
 // ─── Car silhouette SVGs ──────────────────────────────────────────────────────
 // Body fill uses currentColor — set `color` CSS prop on #car-preview to repaint.
 
@@ -152,13 +160,85 @@ function fmt(price) {
 
 function applyCarColor(hex) {
   const panel = document.getElementById('car-preview');
-  if (panel) panel.style.color = hex;
+  if (!panel) return;
+  panel.style.color = hex; // pinta a silhueta SVG (mota)
+  const canvas = panel.querySelector('canvas.cd-car-photo__canvas');
+  if (canvas) paintCarPhoto(canvas, hex);
+}
+
+// ─── Foto real pintada ──────────────────────────────────────────────────────
+// Multiplica cada píxel da foto (carro prateado, fundo transparente) pela cor
+// escolhida. As sombras e zonas escuras mantêm-se escuras e o alfa original é
+// preservado, por isso não aparece halo colorido à volta do carro.
+
+const carPhotoCache = new Map(); // src → { width, height, data: Uint8ClampedArray }
+
+function loadCarPhoto(src) {
+  if (carPhotoCache.has(src)) return Promise.resolve(carPhotoCache.get(src));
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const base = { width: c.width, height: c.height, data: ctx.getImageData(0, 0, c.width, c.height).data };
+      carPhotoCache.set(src, base);
+      resolve(base);
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function paintCarPhoto(canvas, hex) {
+  const base = carPhotoCache.get(canvas.dataset.src);
+  if (!base) return;
+  const [r, g, b] = hexToRgb(hex).map(v => Math.max(v, 18) / 255); // mínimo para manter detalhe em preto
+  if (canvas.width !== base.width) { canvas.width = base.width; canvas.height = base.height; }
+  const ctx = canvas.getContext('2d');
+  const out = ctx.createImageData(base.width, base.height);
+  const src = base.data;
+  const dst = out.data;
+  for (let i = 0; i < src.length; i += 4) {
+    dst[i] = src[i] * r;
+    dst[i + 1] = src[i + 1] * g;
+    dst[i + 2] = src[i + 2] * b;
+    dst[i + 3] = src[i + 3];
+  }
+  ctx.putImageData(out, 0, 0);
 }
 
 function showCarSilhouette(vehicleTypeId) {
   const panel = document.getElementById('car-preview');
   if (!panel) return;
-  panel.innerHTML = CAR_SVGS[vehicleTypeId] || '';
+  const vt = VEHICLE_TYPES.find(v => v.id === vehicleTypeId);
+  if (vt?.img) {
+    // Foto real da categoria (WebP com fundo transparente), pintada em canvas.
+    const src = siteAsset(vt.img);
+    panel.innerHTML = `
+      <div class="cd-car-photo">
+        <canvas class="cd-car-photo__canvas" data-src="${src}" role="img"
+                aria-label="${vt.label}"></canvas>
+      </div>`;
+    const canvas = panel.querySelector('canvas');
+    loadCarPhoto(src)
+      .then(() => {
+        // o utilizador pode ter mudado de veículo entretanto
+        if (canvas.isConnected) paintCarPhoto(canvas, state.vehicleColor);
+      })
+      .catch(() => { panel.innerHTML = CAR_SVGS[vt.silhouette] || ''; });
+  } else {
+    // Sem foto (ex.: mota) — mantém a silhueta desenhada
+    panel.innerHTML = CAR_SVGS[vt?.silhouette || vehicleTypeId] || '';
+  }
   applyCarColor(state.vehicleColor);
   updateCarLabel();
 }
@@ -247,7 +327,7 @@ function renderStep1() {
              data-id="${cat.id}" role="button" tabindex="0"
              aria-pressed="${state.painCategory === cat.id}">
           <img class="cd-pain-card__icon"
-               src="${cat.iconFile}" alt="${cat.title}"
+               src="${widgetAsset(cat.iconFile)}" alt=""
                onerror="this.style.display='none'">
           <span class="cd-pain-card__title">${cat.title}</span>
           <span class="cd-pain-card__desc">${cat.description}</span>
@@ -294,9 +374,10 @@ function renderStep2() {
         <div class="cd-vehicle-card ${state.vehicleType === vt.id ? 'selected' : ''}"
              data-id="${vt.id}" role="button" tabindex="0"
              aria-pressed="${state.vehicleType === vt.id}">
-          <img class="cd-vehicle-card__icon"
-               src="icons/${vt.id}.svg" alt="${vt.label}"
-               onerror="this.style.display='none'">
+          ${vt.img
+            ? `<img class="cd-vehicle-card__photo" src="${siteAsset(vt.img)}" alt="" loading="lazy">`
+            : `<img class="cd-vehicle-card__icon" src="${widgetAsset(vt.icon)}" alt=""
+                 onerror="this.style.display='none'">`}
           <span class="cd-vehicle-card__label">${vt.label}</span>
         </div>
       `).join('')}
@@ -499,10 +580,10 @@ function renderStep5() {
   const rec = state.recommendation;
   if (!rec) return;
   const container = document.getElementById('step-5');
-  const { primaryPack: p, alternativePack: alt, finalPrice, surchargeApplied,
+  const { primaryPack: p, alternativePack: alt, finalPrice, surchargeApplied, surchargeAmount,
           justification, installmentAmount } = rec;
   const priceRange = p.priceMax > p.priceMin
-    ? `${fmt(finalPrice)} a ${fmt(p.priceMax + (surchargeApplied ? 5 : 0))}`
+    ? `${fmt(finalPrice)} a ${fmt(p.priceMax + (surchargeAmount || 0))}`
     : fmt(finalPrice);
 
   container.innerHTML = `
@@ -515,7 +596,7 @@ function renderStep5() {
       <span class="cd-result-badge gold">🏆 Recomendação Principal</span>
       <div class="cd-result-pack-name">${p.name}</div>
       <div class="cd-result-price">${priceRange}</div>
-      ${surchargeApplied ? `<div class="cd-result-surcharge">Inclui taxa SUV/Carrinha +5,00 €</div>` : ''}
+      ${surchargeApplied ? `<div class="cd-result-surcharge">Inclui taxa SUV / 7 lugares / Carrinha / Comercial +${fmt(surchargeAmount)}</div>` : ''}
       <ul class="cd-result-items">
         ${p.includedItems.map(item => `<li>${item}</li>`).join('')}
       </ul>
