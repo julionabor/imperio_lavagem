@@ -24,6 +24,7 @@ export interface VehicleListFilter {
   status?: VehicleStatus[];
   // admin only
   withoutImages?: boolean;
+  search?: string;
 }
 
 export type VehicleSortKey = 'NEWEST' | 'PRICE_ASC' | 'MONTHLY_ASC' | 'KM_ASC';
@@ -56,6 +57,12 @@ const vehicleInclude = {
       ],
     },
     select: { id: true },
+  },
+  equipment: {
+    select: { equipmentItemId: true },
+  },
+  _count: {
+    select: { leads: true },
   },
 } satisfies Prisma.VehicleInclude;
 
@@ -97,6 +104,14 @@ function buildWhere(filter: VehicleListFilter): Prisma.VehicleWhereInput {
   }
   if (filter.withoutImages) {
     where.images = { none: {} };
+  }
+  if (filter.search) {
+    const s = filter.search;
+    where.OR = [
+      { brand: { name: { contains: s, mode: 'insensitive' } } },
+      { model: { name: { contains: s, mode: 'insensitive' } } },
+      { version: { contains: s, mode: 'insensitive' } },
+    ];
   }
 
   return where;

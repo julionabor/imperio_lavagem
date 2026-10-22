@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { FastifyInstance } from 'fastify';
+import { marked } from 'marked';
 import * as repo from './content.repository.ts';
 import { notFound, forbidden, problemFromZod } from '../../shared/errors.ts';
 import { prisma } from '../../shared/prisma-client.ts';
@@ -74,7 +75,20 @@ export async function contentRoutes(app: FastifyInstance): Promise<void> {
     const { slug } = req.params as { slug: string };
     const page = await repo.findLegalPageBySlug(slug);
     if (!page) return notFound(rep);
-    return rep.header('Cache-Control', 'public, max-age=300').send(page);
+    const bodyHtml = await marked.parse(page.body, { async: true });
+    return rep
+      .header('Cache-Control', 'public, max-age=300')
+      .send({ ...page, bodyHtml });
+  });
+
+  // GET /public/sitemap-data — slugs das viaturas publicadas para o sitemap.xml
+  app.get('/public/sitemap-data', async (_req, rep) => {
+    const vehicles = await prisma.vehicle.findMany({
+      where: { status: { in: ['PUBLISHED', 'RESERVED'] } },
+      select: { slug: true, updatedAt: true },
+      orderBy: { updatedAt: 'desc' },
+    });
+    return rep.header('Cache-Control', 'public, max-age=300').send({ vehicles });
   });
 
   // ── Admin — HomeContent ────────────────────────────────────────────────

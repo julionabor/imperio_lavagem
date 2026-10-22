@@ -31,6 +31,11 @@ const TYPE_LABELS: Record<string, string> = {
           <div class="shrink-0 w-72 rounded-xl bg-ink-900 h-48 animate-pulse"></div>
         }
       </div>
+    } @else if (stages().length === 0) {
+      <div class="flex flex-col items-center gap-3 py-16 text-center text-ink-500">
+        <p class="text-h3 font-display">Sem etapas de pipeline</p>
+        <p class="text-sm">Configure as etapas em Definições → Pipeline.</p>
+      </div>
     } @else {
       <div cdkDropListGroup class="flex gap-4 overflow-x-auto pb-6 items-start">
         @for (stage of stages(); track stage.id) {

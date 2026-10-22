@@ -242,30 +242,41 @@ type Tab = 'dados' | 'preco' | 'equipamento' | 'fotos' | 'financiamento' | 'seo'
             @if (!isNew()) {
               <pm-uploader (filesSelected)="onUpload($event)" />
 
+              @if (store.current()?.images?.length) {
+                <p class="text-xs text-ink-500">Arrasta para reordenar · a primeira com "Capa" é a imagem principal</p>
+              }
               <div
                 cdkDropList
                 (cdkDropListDropped)="onPhotoDrop($event)"
                 class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
               >
                 @for (img of store.current()?.images ?? []; track img.id; let i = $index) {
-                  <div cdkDrag class="group relative rounded-xl overflow-hidden border border-ink-800 cursor-grab active:cursor-grabbing">
+                  <div cdkDrag class="relative rounded-xl overflow-hidden border border-ink-800 cursor-grab active:cursor-grabbing bg-ink-900">
                     <img [src]="img.variants.card" [alt]="img.alt ?? ''" class="aspect-video w-full object-cover" />
                     @if (img.isCover) {
                       <span class="absolute top-1 left-1 rounded-full bg-red-500 px-2 py-0.5 text-xs font-medium text-white">Capa</span>
                     }
-                    <div class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 gap-1">
+                    <!-- actions always visible -->
+                    <div class="flex flex-col gap-1 p-2 bg-ink-900/95 border-t border-ink-800">
                       @if (!img.isCover) {
-                        <button type="button" (click)="onSetCover(img.id)" class="rounded bg-white/20 px-2 py-1 text-xs text-white hover:bg-white/30">Definir capa</button>
+                        <button type="button" (click)="onSetCover(img.id)"
+                          class="rounded bg-ink-700 px-2 py-1 text-xs text-ink-200 hover:bg-ink-600 transition-colors text-left">
+                          ★ Definir capa
+                        </button>
                       }
                       <input
                         type="text"
                         [value]="img.alt ?? ''"
-                        placeholder="Texto alternativo"
+                        placeholder="Texto alternativo (SEO)"
                         (change)="onUpdateAlt(img.id, $any($event.target).value)"
                         (click)="$event.stopPropagation()"
-                        class="rounded bg-black/50 px-2 py-1 text-xs text-white placeholder-white/50 focus:outline-none"
+                        class="rounded bg-ink-800 border border-ink-700 px-2 py-1 text-xs text-ink-200
+                               placeholder-ink-600 focus:outline-none focus:border-red-500"
                       />
-                      <button type="button" (click)="onDeleteImage(img.id)" class="rounded bg-error/80 px-2 py-1 text-xs text-white hover:bg-error">Eliminar</button>
+                      <button type="button" (click)="onDeleteImage(img.id)"
+                        class="rounded bg-ink-800 px-2 py-1 text-xs text-red-400 hover:bg-red-500 hover:text-white transition-colors text-left">
+                        ✕ Eliminar foto
+                      </button>
                     </div>
                   </div>
                 }

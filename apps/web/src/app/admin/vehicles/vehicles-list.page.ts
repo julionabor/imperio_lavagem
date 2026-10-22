@@ -55,6 +55,19 @@ const STATUS_LABELS: Record<VehicleStatus, string> = {
         />
       </div>
 
+      @if (store.loading()) {
+        <div class="mt-4 space-y-2 animate-pulse">
+          @for (i of [1,2,3,4,5]; track i) {
+            <div class="h-14 rounded-lg bg-ink-900"></div>
+          }
+        </div>
+      } @else if (store.items().length === 0) {
+        <div class="mt-16 flex flex-col items-center gap-3 text-center text-ink-500">
+          <p class="text-h3 font-display">Nenhuma viatura encontrada</p>
+          <p class="text-sm">Crie a primeira viatura ou ajuste os filtros.</p>
+        </div>
+      }
+
       @if (!store.loading() && store.items().length > 0) {
         <div class="mt-4 overflow-x-auto rounded-xl border border-ink-800">
           <table class="w-full text-sm">

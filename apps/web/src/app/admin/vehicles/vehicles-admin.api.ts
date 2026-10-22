@@ -7,6 +7,8 @@ export interface VehicleListItem {
   id: string;
   slug: string;
   title: string;
+  brand: string;
+  model: string;
   brandName: string;
   modelName: string;
   year: number;

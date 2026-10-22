@@ -105,6 +105,7 @@ export async function vehicleRoutes(app: FastifyInstance): Promise<void> {
       bodyType: q['bodyType'] ? q['bodyType'].split(',') : undefined,
       status: q['status'] ? q['status'].split(',') as never[] : undefined,
       withoutImages: q['withoutImages'] === 'true',
+      search: q['search'] || q['q'] || undefined,
     };
 
     const { items, total } = await repo.listAdminVehicles(

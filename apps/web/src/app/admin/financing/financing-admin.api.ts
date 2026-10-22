@@ -50,7 +50,7 @@ export interface SimulateResponse {
 export class FinancingAdminApi {
   private readonly http = inject(HttpClient);
 
-  list() { return this.http.get<{ data: FinancingProductAdmin[] }>('/api/v1/admin/financing-products'); }
+  list() { return this.http.get<FinancingProductAdmin[]>('/api/v1/admin/financing-products'); }
   get(id: string) { return this.http.get<FinancingProductAdmin>(`/api/v1/admin/financing-products/${id}`); }
   create(data: Partial<FinancingProductAdmin>) { return this.http.post<FinancingProductAdmin>('/api/v1/admin/financing-products', data); }
   update(id: string, data: Partial<FinancingProductAdmin>) { return this.http.patch<FinancingProductAdmin>(`/api/v1/admin/financing-products/${id}`, data); }

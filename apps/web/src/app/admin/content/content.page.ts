@@ -340,11 +340,17 @@ export class ContentPage implements OnInit, OnDestroy {
   protected readonly homeFields = [
     { key: 'heroTitle', label: 'Título do hero' },
     { key: 'heroSubtitle', label: 'Subtítulo do hero' },
-    { key: 'stockLine', label: 'Linha de stock' },
+    { key: 'stockTagline', label: 'Linha de stock' },
+    { key: 'searchPlaceholder', label: 'Placeholder da pesquisa' },
+    { key: 'modeCarLabel', label: 'Botão "por carro"' },
+    { key: 'modeBudgetLabel', label: 'Botão "por prestação"' },
+    { key: 'featuredTitle', label: 'Título dos destaques' },
+    { key: 'featuredSubtitle', label: 'Subtítulo dos destaques' },
     { key: 'advantagesTitle', label: 'Título das vantagens' },
     { key: 'testimonialsTitle', label: 'Título dos testemunhos' },
-    { key: 'assistantTitle', label: 'Título do assistente' },
-    { key: 'assistantSubtitle', label: 'Subtítulo do assistente' },
+    { key: 'assistantCtaTitle', label: 'Título do CTA assistente' },
+    { key: 'assistantCtaText', label: 'Texto do CTA assistente' },
+    { key: 'assistantCtaButton', label: 'Botão do CTA assistente' },
   ];
 
   ngOnInit() {

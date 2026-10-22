@@ -26,8 +26,8 @@ describe('GET /api/v1/public/site', () => {
   it('devolve dados do site', async () => {
     const res = await app.inject({ method: 'GET', url: '/api/v1/public/site' });
     expect(res.statusCode).toBe(200);
-    const body = res.json<{ vehicleCount: number; parserDictionary: unknown }>();
-    expect(typeof body.vehicleCount).toBe('number');
+    const body = res.json<{ stockCount: number; parserDictionary: unknown }>();
+    expect(typeof body.stockCount).toBe('number');
     expect(body.parserDictionary).toBeDefined();
   });
 });

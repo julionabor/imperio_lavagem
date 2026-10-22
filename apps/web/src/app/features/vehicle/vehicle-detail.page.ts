@@ -9,8 +9,8 @@ import {
 } from '@angular/core';
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { Title, Meta } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
+import { SeoService } from '../../core/services/seo.service';
 import type { VehicleDetail, VehicleListItem } from '../search/data-access/vehicles.api';
 import { VehiclesApi } from '../search/data-access/vehicles.api';
 import { SiteStore } from '../search/data-access/site.store';
@@ -137,6 +137,36 @@ const BODY_LABELS: Record<string, string> = {
                                  rounded-md bg-ink-800/90 text-white text-[11px] font-medium
                                  backdrop-blur-sm">
                       Garantia {{ v.warrantyMonths }}m
+                    </span>
+                  }
+                  <!-- setas carrossel -->
+                  @if (v.images.length > 1) {
+                    <button
+                      type="button"
+                      (click)="prevImg(v.images.length)"
+                      aria-label="Foto anterior"
+                      class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full
+                             bg-black/50 text-white flex items-center justify-center
+                             hover:bg-black/70 transition-colors backdrop-blur-sm">
+                      <svg viewBox="0 0 20 20" class="w-5 h-5" fill="none">
+                        <path d="M12 15l-5-5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="nextImg(v.images.length)"
+                      aria-label="Próxima foto"
+                      class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full
+                             bg-black/50 text-white flex items-center justify-center
+                             hover:bg-black/70 transition-colors backdrop-blur-sm">
+                      <svg viewBox="0 0 20 20" class="w-5 h-5" fill="none">
+                        <path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <!-- contador -->
+                    <span class="absolute bottom-3 right-3 rounded-full bg-black/50 px-2 py-0.5
+                                 text-white text-xs backdrop-blur-sm">
+                      {{ selectedImg() + 1 }} / {{ v.images.length }}
                     </span>
                   }
                 </div>
@@ -426,8 +456,7 @@ export class VehicleDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly vehiclesApi = inject(VehiclesApi);
   private readonly http = inject(HttpClient);
-  private readonly pageTitle = inject(Title);
-  private readonly meta = inject(Meta);
+  private readonly seo = inject(SeoService);
 
   private readonly platformId = inject(PLATFORM_ID);
 
@@ -460,6 +489,14 @@ export class VehicleDetailPage implements OnInit {
     return v.images[this.selectedImg()] ?? v.images[0];
   });
 
+  protected prevImg(total: number) {
+    this.selectedImg.update((i) => (i - 1 + total) % total);
+  }
+
+  protected nextImg(total: number) {
+    this.selectedImg.update((i) => (i + 1) % total);
+  }
+
   protected readonly formatEur = formatEur;
   protected readonly formatKm = formatKm;
 
@@ -472,11 +509,31 @@ export class VehicleDetailPage implements OnInit {
       next: (v) => {
         this.vehicle.set(v);
         this.loading.set(false);
-        const t = v.seoTitle ?? `${v.brand} ${v.model} ${v.version} (${v.year}) | Private Motors`;
-        this.pageTitle.setTitle(t);
-        if (v.seoDescription) {
-          this.meta.updateTag({ name: 'description', content: v.seoDescription });
-        }
+        const title = v.seoTitle ?? `${v.brand} ${v.model} ${v.version} (${v.year}) | Private Motors`;
+        const description = v.seoDescription ?? `${v.brand} ${v.model} ${v.version}, ${v.year}, ${v.mileageKm.toLocaleString('pt-PT')} km — Private Motors`;
+        const image = v.images[0]?.variants.full ?? null;
+        this.seo.set({ title, description, path: `/viaturas/${v.slug}`, image, type: 'website' });
+        this.seo.setJsonLd({
+          '@context': 'https://schema.org',
+          '@type': 'Car',
+          name: `${v.brand} ${v.model} ${v.version}`,
+          description,
+          image: image ? [image] : undefined,
+          brand: { '@type': 'Brand', name: v.brand },
+          model: v.model,
+          modelDate: String(v.year),
+          mileageFromOdometer: { '@type': 'QuantitativeValue', value: v.mileageKm, unitCode: 'KMT' },
+          fuelType: v.fuel,
+          vehicleTransmission: v.transmission,
+          ...(v.powerHp ? { vehicleEngine: { '@type': 'EngineSpecification', enginePower: { '@type': 'QuantitativeValue', value: v.powerHp, unitCode: 'BHP' } } } : {}),
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'EUR',
+            price: (v.priceCents / 100).toFixed(2),
+            availability: 'https://schema.org/InStock',
+            url: `https://privatemotors.pt/viaturas/${v.slug}`,
+          },
+        });
       },
       error: () => {
         this.error.set('Não foi possível carregar os dados da viatura.');

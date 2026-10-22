@@ -37,10 +37,49 @@ function isHashedAsset(pathname: string): boolean {
 }
 
 const port = Number(process.env['PORT'] ?? 4000);
+const API_URL = process.env['API_URL'] ?? 'http://localhost:3000';
+const SITE_URL = process.env['SITE_URL'] ?? 'https://privatemotors.pt';
+
+async function handleSitemap(res: import('node:http').ServerResponse) {
+  try {
+    const r = await fetch(`${API_URL}/api/v1/public/sitemap-data`);
+    const data = (await r.json()) as { vehicles: Array<{ slug: string; updatedAt: string }> };
+    const today = new Date().toISOString().split('T')[0];
+
+    const staticUrls = ['/', '/privacidade', '/cookies', '/termos'].map((path) => {
+      const priority = path === '/' ? '1.0' : '0.3';
+      const freq = path === '/' ? 'daily' : 'monthly';
+      return `  <url><loc>${SITE_URL}${path}</loc><lastmod>${today}</lastmod><changefreq>${freq}</changefreq><priority>${priority}</priority></url>`;
+    });
+
+    const vehicleUrls = data.vehicles.map((v) => {
+      const date = new Date(v.updatedAt).toISOString().split('T')[0];
+      return `  <url><loc>${SITE_URL}/viaturas/${v.slug}</loc><lastmod>${date}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`;
+    });
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticUrls, ...vehicleUrls].join('\n')}\n</urlset>`;
+
+    res.writeHead(200, {
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=300',
+    });
+    res.end(xml);
+  } catch {
+    res.writeHead(500, { 'Content-Type': 'text/plain' });
+    res.end('Erro ao gerar sitemap');
+  }
+}
 
 if (isMainModule(import.meta.url)) {
   createServer(async (req, res) => {
     const url = new URL(req.url ?? '/', `http://localhost:${port}`);
+
+    // Sitemap dinâmico
+    if (url.pathname === '/sitemap.xml') {
+      await handleSitemap(res);
+      return;
+    }
+
     const filePath = join(browserDistFolder, decodeURIComponent(url.pathname));
 
     // Static files

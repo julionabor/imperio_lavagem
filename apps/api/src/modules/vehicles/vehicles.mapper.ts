@@ -205,6 +205,11 @@ export function toPublicDetail(
 
 /** DTO para o admin (inclui campos internos). */
 export function toAdminVehicle(vehicle: VehicleWithRelations): Record<string, unknown> {
+  const cover = vehicle.images.find((i) => i.isCover) ?? vehicle.images[0] ?? null;
+  const daysInStock = vehicle.publishedAt
+    ? Math.floor((Date.now() - vehicle.publishedAt.getTime()) / (24 * 60 * 60 * 1000))
+    : 0;
+
   return {
     id: vehicle.id,
     slug: vehicle.slug,
@@ -214,6 +219,13 @@ export function toAdminVehicle(vehicle: VehicleWithRelations): Record<string, un
     modelId: vehicle.modelId,
     brand: vehicle.brand.name,
     model: vehicle.model.name,
+    // Convenience fields used by the admin list
+    title: `${vehicle.brand.name} ${vehicle.model.name} ${vehicle.version}`,
+    brandName: vehicle.brand.name,
+    modelName: vehicle.model.name,
+    coverUrl: cover ? (cover.variants as { thumb: string }).thumb : null,
+    daysInStock,
+    leadCount: vehicle._count.leads,
     version: vehicle.version,
     registrationDate: vehicle.registrationDate.toISOString(),
     year: vehicle.registrationDate.getFullYear(),
@@ -243,11 +255,13 @@ export function toAdminVehicle(vehicle: VehicleWithRelations): Record<string, un
     soldAt: vehicle.soldAt?.toISOString() ?? null,
     viewCount: vehicle.viewCount,
     favoriteCount: vehicle.favoriteCount,
+    equipment: vehicle.equipment.map((e) => e.equipmentItemId),
     images: vehicle.images.map((img) => ({
       id: img.id,
       position: img.position,
       isCover: img.isCover,
       alt: img.alt,
+      storageKey: img.storageKey,
       variants: img.variants,
     })),
     createdAt: vehicle.createdAt.toISOString(),

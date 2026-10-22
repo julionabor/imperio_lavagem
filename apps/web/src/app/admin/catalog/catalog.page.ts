@@ -36,7 +36,8 @@ type CatalogType = 'marcas' | 'modelos' | 'equipamento' | 'sinonimos';
           <div class="flex gap-2">
             <input
               type="text"
-              [(ngModel)]="parseQuery"
+              [ngModel]="parseQuery()"
+              (ngModelChange)="parseQuery.set($event)"
               placeholder="ex.: SUV diesel até 250€/mês"
               class="flex-1 rounded-xl border border-ink-700 bg-ink-850 px-3 py-2 text-sm text-ink-100 placeholder-ink-500 focus:border-red-400 focus:outline-none"
             />

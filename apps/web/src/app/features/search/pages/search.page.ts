@@ -8,12 +8,13 @@ import {
   effect,
 } from '@angular/core';
 import { catchError, EMPTY } from 'rxjs';
-import { Title, Meta } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { SeoService } from '../../../core/services/seo.service';
 import { SiteStore } from '../data-access/site.store';
 import { SearchStore, type SortKey } from '../data-access/search.store';
 import { FavoritesStore } from '../data-access/favorites.store';
 import { VehiclesApi } from '../data-access/vehicles.api';
+import { SiteApi } from '../data-access/site.api';
 import { PmHeader } from '../../../core/layout/pm-header/pm-header';
 import { PmFooter } from '../../../core/layout/pm-footer/pm-footer';
 import { PmSmartSearch } from '../ui/pm-smart-search/pm-smart-search';
@@ -153,12 +154,84 @@ import type { ActiveFilters } from '../data-access/search.store';
         </div>
       </section>
 
+      <!-- DESTAQUES (above results, hidden when filters/search active) -->
+      @defer (on idle) {
+        @if (featured().length > 0 && searchStore.activeFilterCount() === 0 && !searchStore.query()) {
+          <section class="py-10 border-t border-ink-800/50
+                          bg-[radial-gradient(60%_80%_at_50%_0%,rgb(208_22_31_/_0.08),transparent_70%)]">
+            <div class="max-w-[--container-page] mx-auto grid gap-5">
+
+              <!-- header -->
+              <div class="px-6 flex items-center justify-between gap-3 flex-wrap">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-1 h-7 rounded-full bg-red-500 shrink-0"></span>
+                    <h2 class="m-0 font-display font-bold text-h2 tracking-[-0.03em]">
+                      {{ siteStore.homeContent()?.featuredTitle ?? 'Em destaque' }}
+                    </h2>
+                  </div>
+                  <span class="text-[14px] text-ink-400">
+                    {{ siteStore.homeContent()?.featuredSubtitle ?? 'Escolhidas pela equipa esta semana' }}
+                  </span>
+                </div>
+                @if (featured().length > 1) {
+                  <div class="flex gap-2">
+                    <button type="button"
+                            (click)="carouselEl.scrollBy({left: -460, behavior: 'smooth'})"
+                            aria-label="Anterior"
+                            class="w-9 h-9 rounded-full flex items-center justify-center
+                                   bg-ink-800 hover:bg-ink-700 border border-ink-700
+                                   text-ink-300 hover:text-white transition-colors">
+                      <svg viewBox="0 0 20 20" class="w-4 h-4" fill="none">
+                        <path d="M12 4l-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <button type="button"
+                            (click)="carouselEl.scrollBy({left: 460, behavior: 'smooth'})"
+                            aria-label="Seguinte"
+                            class="w-9 h-9 rounded-full flex items-center justify-center
+                                   bg-ink-800 hover:bg-ink-700 border border-ink-700
+                                   text-ink-300 hover:text-white transition-colors">
+                      <svg viewBox="0 0 20 20" class="w-4 h-4" fill="none">
+                        <path d="M8 4l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                }
+              </div>
+
+              <!-- carousel -->
+              <div #carouselEl
+                   class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth
+                          px-6 pb-4
+                          [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                @for (v of featured(); track v.id; let first = $first) {
+                  <div class="snap-start shrink-0 w-[min(88vw,440px)]">
+                    <pm-vehicle-card
+                      [vehicle]="v"
+                      [financingProduct]="siteStore.financingProduct()"
+                      variant="featured"
+                      [priority]="first"
+                    />
+                  </div>
+                }
+              </div>
+
+            </div>
+          </section>
+        }
+      }
+
       <!-- RESULTADOS -->
       <section class="py-2 pb-16">
         <div class="max-w-[--container-page] mx-auto px-6">
           <!-- barra de ordenação + filtros -->
           <div class="flex flex-wrap items-center gap-3 gap-x-4 py-4">
-            <h2 class="m-0 font-display font-semibold text-[22px] tracking-[-0.02em] tabular-nums">
+            <h2
+              class="m-0 font-display font-semibold text-[22px] tracking-[-0.02em] tabular-nums"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               @if (searchStore.loading() && !searchStore.initialized()) {
                 A carregar...
               } @else {
@@ -313,34 +386,6 @@ import type { ActiveFilters } from '../data-access/search.store';
         </div>
       </section>
 
-      <!-- DESTAQUES -->
-      @defer (on idle) {
-        @if (featured().length > 0) {
-          <section class="py-12 bg-gradient-to-b from-ink-950 to-[#0d0d10]">
-            <div class="max-w-[--container-page] mx-auto px-6 grid gap-6">
-              <div class="flex items-baseline justify-between gap-4 flex-wrap">
-                <h2 class="m-0 font-display font-bold text-h2 tracking-[-0.03em]">
-                  {{ siteStore.homeContent()?.featuredTitle ?? 'Em destaque' }}
-                </h2>
-                <span class="text-[14px] text-ink-400">
-                  {{ siteStore.homeContent()?.featuredSubtitle ?? 'Escolhidas pela equipa esta semana' }}
-                </span>
-              </div>
-              <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,520px),1fr))] gap-5">
-                @for (v of featured(); track v.id; let first = $first) {
-                  <pm-vehicle-card
-                    [vehicle]="v"
-                    [financingProduct]="siteStore.financingProduct()"
-                    variant="featured"
-                    [priority]="first"
-                  />
-                }
-              </div>
-            </div>
-          </section>
-        }
-      }
-
       <!-- VANTAGENS -->
       @defer (on idle) {
         @if (siteStore.advantages().length > 0) {
@@ -463,9 +508,9 @@ export class SearchPage implements OnInit {
   protected readonly searchStore = inject(SearchStore);
   private readonly favStore = inject(FavoritesStore);
   private readonly vehiclesApi = inject(VehiclesApi);
+  private readonly siteApi = inject(SiteApi);
   private readonly route = inject(ActivatedRoute);
-  private readonly titleService = inject(Title);
-  private readonly metaService = inject(Meta);
+  private readonly seo = inject(SeoService);
 
   protected readonly filterPanelOpen = signal(false);
   protected readonly featured = signal<VehicleListItem[]>([]);
@@ -513,11 +558,41 @@ export class SearchPage implements OnInit {
   constructor() {
     effect(() => {
       const content = this.siteStore.homeContent();
-      if (content) {
-        this.titleService.setTitle(
-          (this.siteStore.settings()?.companyName ?? 'Private Motors') + ' — Stock de viaturas usadas',
-        );
-        this.metaService.updateTag({ name: 'description', content: content.heroSubtitle ?? '' });
+      const settings = this.siteStore.settings();
+      if (!content) return;
+      const name = settings?.companyName ?? 'Private Motors';
+      const desc = content.heroSubtitle ?? 'Pesquise viaturas usadas por marca, modelo ou prestação mensal.';
+      this.seo.set({
+        title: `${name} — Stock de viaturas usadas`,
+        description: desc,
+        path: '/',
+        image: settings?.logoUrl ?? null,
+      });
+      if (settings) {
+        this.seo.setJsonLd({
+          '@context': 'https://schema.org',
+          '@type': 'AutoDealer',
+          name: settings.companyName,
+          url: 'https://privatemotors.pt',
+          ...(settings.address ? {
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: settings.address,
+              postalCode: settings.postalCode,
+              addressLocality: settings.locality,
+              addressCountry: 'PT',
+            },
+          } : {}),
+          ...(settings.phones?.length ? { telephone: settings.phones[0] } : {}),
+          ...(settings.email ? { email: settings.email } : {}),
+          ...(settings.googleRating ? {
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: settings.googleRating,
+              reviewCount: settings.googleReviewCount ?? undefined,
+            },
+          } : {}),
+        });
       }
     });
   }
@@ -531,10 +606,10 @@ export class SearchPage implements OnInit {
   }
 
   private loadFeatured() {
-    this.vehiclesApi.list({ pageSize: 2, sort: 'NEWEST' }).pipe(
+    this.siteApi.getFeatured('HOME_FEATURED').pipe(
       catchError(() => EMPTY),
-    ).subscribe((result) => {
-      this.featured.set(result.data);
+    ).subscribe((items) => {
+      this.featured.set(items);
     });
   }
 

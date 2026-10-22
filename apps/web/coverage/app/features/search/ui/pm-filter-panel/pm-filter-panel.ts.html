@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/275</span>
+                <span class='fraction'>0/274</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/275</span>
+                <span class='fraction'>0/274</span>
             </div>
         
             
@@ -337,9 +337,7 @@
 <a name='L272'></a><a href='#L272'>272</a>
 <a name='L273'></a><a href='#L273'>273</a>
 <a name='L274'></a><a href='#L274'>274</a>
-<a name='L275'></a><a href='#L275'>275</a>
-<a name='L276'></a><a href='#L276'>276</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L275'></a><a href='#L275'>275</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -628,7 +626,6 @@
 <span class="cstat-no" title="statement not covered" >import type { FacetCounts } from '../../data-access/vehicles.api';</span>
 <span class="cstat-no" title="statement not covered" >import { PmSelect } from '../../../../shared/ui/pm-select/pm-select';</span>
 <span class="cstat-no" title="statement not covered" >import { PmSlider } from '../../../../shared/ui/pm-slider/pm-slider';</span>
-<span class="cstat-no" title="statement not covered" >import { PmFilterChip } from '../../../../shared/ui/pm-filter-chip/pm-filter-chip';</span>
 <span class="cstat-no" title="statement not covered" >import { formatEur, formatKm } from '../../../../shared/util/format';</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >interface PillOption {</span>
@@ -641,7 +638,7 @@
 <span class="cstat-no" title="statement not covered" >  selector: 'pm-filter-panel',</span>
 <span class="cstat-no" title="statement not covered" >  standalone: true,</span>
 <span class="cstat-no" title="statement not covered" >  changeDetection: ChangeDetectionStrategy.OnPush,</span>
-<span class="cstat-no" title="statement not covered" >  imports: [PmSelect, PmSlider, PmFilterChip],</span>
+<span class="cstat-no" title="statement not covered" >  imports: [PmSelect, PmSlider],</span>
 <span class="cstat-no" title="statement not covered" >  template: `</span>
 <span class="cstat-no" title="statement not covered" >    &lt;!-- bottom sheet drag handle (mobile) --&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div class="lg:hidden w-10 h-1 rounded-full bg-ink-600 mx-auto mb-3"&gt;&lt;/div&gt;</span>
@@ -712,7 +709,7 @@
 <span class="cstat-no" title="statement not covered" >          @for (p of yearPills(); track p.value) {</span>
 <span class="cstat-no" title="statement not covered" >            &lt;button</span>
 <span class="cstat-no" title="statement not covered" >              type="button"</span>
-<span class="cstat-no" title="statement not covered" >              (click)="filterChanged.emit({ key: 'yearMin', value: p.active ? undefined : Number(p.value) })"</span>
+<span class="cstat-no" title="statement not covered" >              (click)="filterChanged.emit({ key: 'yearMin', value: p.active ? undefined : +p.value })"</span>
 <span class="cstat-no" title="statement not covered" >              class="min-h-[36px] px-3 rounded-md text-label transition-colors</span>
 <span class="cstat-no" title="statement not covered" >                     focus:outline-none focus:ring-2 focus:ring-red-500/40"</span>
 <span class="cstat-no" title="statement not covered" >              [class]="p.active ? 'bg-red-500 text-white' : 'bg-ink-800 border border-ink-700 text-ink-300 hover:border-ink-500'"</span>
@@ -728,7 +725,7 @@
 <span class="cstat-no" title="statement not covered" >          @for (p of kmPills(); track p.value) {</span>
 <span class="cstat-no" title="statement not covered" >            &lt;button</span>
 <span class="cstat-no" title="statement not covered" >              type="button"</span>
-<span class="cstat-no" title="statement not covered" >              (click)="filterChanged.emit({ key: 'kmMax', value: p.active ? undefined : Number(p.value) })"</span>
+<span class="cstat-no" title="statement not covered" >              (click)="filterChanged.emit({ key: 'kmMax', value: p.active ? undefined : +p.value })"</span>
 <span class="cstat-no" title="statement not covered" >              class="min-h-[36px] px-3 rounded-md text-label transition-colors</span>
 <span class="cstat-no" title="statement not covered" >                     focus:outline-none focus:ring-2 focus:ring-red-500/40"</span>
 <span class="cstat-no" title="statement not covered" >              [class]="p.active ? 'bg-red-500 text-white' : 'bg-ink-800 border border-ink-700 text-ink-300 hover:border-ink-500'"</span>
@@ -839,7 +836,7 @@
 <span class="cstat-no" title="statement not covered" >      { value: '100000', label: '100 000 km' },</span>
 <span class="cstat-no" title="statement not covered" >      { value: '150000', label: '150 000 km' },</span>
 <span class="cstat-no" title="statement not covered" >      { value: '200000', label: '200 000 km' },</span>
-<span class="cstat-no" title="statement not covered" >    ].map((p) =&gt; ({ ...p, active: this.filters().kmMax === Number(p.value) })),</span>
+<span class="cstat-no" title="statement not covered" >    ].map((p) =&gt; ({ ...p, active: this.filters().kmMax === +p.value })),</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  protected readonly fuelPills = computed((): PillOption[] =&gt;</span>
@@ -895,7 +892,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-10-08T22:30:27.182Z
+                at 2026-10-22T17:20:52.858Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

@@ -206,7 +206,7 @@ export class FinancingFormPage implements OnInit {
   protected readonly formatEur = formatEur;
   protected readonly formatBp = formatBp;
 
-  protected readonly allTerms = [24, 36, 48, 60, 72, 84, 96];
+  protected readonly allTerms = [24, 36, 48, 60, 72, 84, 96, 108, 120];
   protected readonly selectedTerms = signal(new Set([24, 36, 48, 60, 72, 84, 96]));
 
   protected readonly form = this.fb.nonNullable.group({

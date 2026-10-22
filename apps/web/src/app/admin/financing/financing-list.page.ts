@@ -70,7 +70,7 @@ export class FinancingListPage implements OnInit {
     this.loading.set(true);
     try {
       const res = await firstValueFrom(this.api.list());
-      this.products.set(res.data);
+      this.products.set(res);
     } finally {
       this.loading.set(false);
     }

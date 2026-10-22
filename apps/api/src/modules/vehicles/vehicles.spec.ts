@@ -54,8 +54,8 @@ describe('GET /api/v1/public/vehicles', () => {
   it('devolve lista vazia quando não há viaturas publicadas', async () => {
     const res = await app.inject({ method: 'GET', url: '/api/v1/public/vehicles' });
     expect(res.statusCode).toBe(200);
-    const body = res.json<{ data: unknown[]; meta: { total: number } }>();
-    expect(body.meta.total).toBe(0);
+    const body = res.json<{ data: unknown[]; total: number }>();
+    expect(body.total).toBe(0);
     expect(body.data).toHaveLength(0);
   });
 });

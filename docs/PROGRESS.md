@@ -9,9 +9,45 @@
 | 5. Site: homepage | Concluída | Homepage SSR + smart search + filtros + cards + stores + header/footer |
 | 6. Site: restantes páginas | Concluída | Página de detalhe da viatura + galeria + specs + simulador + lead form + viaturas semelhantes |
 | 7. Leads, CRM, conteúdo e assistente | Concluída | CRM API + admin pages (pipeline, contactos, tarefas, relatórios) + conteúdo + definições + utilizadores + auditoria + assistente guiado no site |
-| 8. Lançamento | Por começar | |
+| 8. Lançamento | **Concluída** | robots.txt, sitemap.xml dinâmico, SeoService (OG + canonical), JSON-LD Car + AutoDealer, banner de cookies, páginas legais, 404, aria-live, MANUAL-ADMIN.md |
 
 ## Decisões tomadas durante a implementação
+
+**2026-10-22 · Correções pós-fase 8**
+
+Corrigido:
+- `apps/web/src/app/admin/content/content.page.ts`: homeFields com chaves erradas (`stockLine`→`stockTagline`, `assistantTitle`→`assistantCtaTitle`, `assistantSubtitle`→`assistantCtaText`); adicionados campos em falta (`searchPlaceholder`, `modeCarLabel`, `modeBudgetLabel`, `featuredTitle`, `featuredSubtitle`, `assistantCtaButton`)
+- `apps/api/src/modules/vehicles/vehicles.repository.ts`: adicionado `equipment` e `_count.leads` ao `vehicleInclude`
+- `apps/api/src/modules/vehicles/vehicles.mapper.ts`: `toAdminVehicle` agora inclui `title`, `brandName`, `modelName`, `coverUrl`, `daysInStock`, `leadCount`, `equipment` (campos que o admin frontend esperava mas não recebia)
+- `apps/web/src/app/admin/vehicles/vehicles-admin.api.ts`: `VehicleListItem` alargado com `brand`/`model` (strings) para consistência com a API
+- `apps/web/src/app/features/search/pages/search.page.ts`: secção de destaques movida para **acima** da grelha de resultados; exibida só quando não há filtros/pesquisa ativos; redesenhada com barra vermelha lateral, fundo com gradiente e grid de cards maiores
+
+**Nota de operações**: para popular o produto de financiamento e as etapas de pipeline, correr `pnpm --filter api seed`.
+
+**2026-10-22 · Fase 8 — Lançamento**
+
+Implementado:
+- `apps/web/public/robots.txt`: `Disallow: /admin/`, `Sitemap: https://privatemotors.pt/sitemap.xml`
+- `apps/web/server.ts`: endpoint `/sitemap.xml` dinâmico — consome `/api/v1/public/sitemap-data` e gera XML com URLs estáticas + viaturas publicadas
+- `apps/api/src/modules/content/content.routes.ts`: endpoint `GET /public/sitemap-data` com slugs e updatedAt; endpoint `GET /public/pages/:slug` com campo `bodyHtml` (Markdown → HTML via `marked`)
+- `apps/web/src/app/core/services/seo.service.ts`: `set()` (title, description, OG, Twitter Card, canonical), `setJsonLd()` (script `application/ld+json`)
+- `apps/web/src/app/features/search/pages/search.page.ts`: `SeoService.set()` + JSON-LD `AutoDealer` na homepage; `aria-live="polite"` no contador de resultados
+- `apps/web/src/app/features/vehicle/vehicle-detail.page.ts`: `SeoService.set()` + JSON-LD `schema.org/Car` com `Offer`, `mileageFromOdometer`, `vehicleEngine`
+- `apps/web/src/app/features/legal/legal.page.ts`: página das políticas (`/privacidade`, `/cookies`, `/termos`) que busca conteúdo da API e renderiza HTML com `DomSanitizer`
+- `apps/web/src/app/features/not-found/not-found.page.ts`: página 404 real com `SeoService.set()` e CTA para o stock
+- `apps/web/src/app/shared/ui/pm-cookie-banner/pm-cookie-banner.ts`: banner de consentimento com `localStorage`; opções "Aceitar tudo" / "Apenas essenciais"
+- `apps/web/src/app/app.ts`: `<pm-cookie-banner>` global, escondido no `/admin`
+- `apps/web/src/app/app.routes.ts`: rotas `/privacidade`, `/cookies`, `/termos` e rota `**` → `NotFoundPage`
+- `docs/MANUAL-ADMIN.md`: guia completo de utilização do backoffice para a equipa do stand
+
+**Decisão: sitemap dinâmico no server.ts (não estático)**
+O sitemap é gerado em runtime pelo servidor SSR, consultando a API para obter os slugs e datas de atualização das viaturas. Evita rebuild do site quando o catálogo muda.
+
+**Decisão: SeoService injetável em vez de directivas de título/meta diretas**
+Centraliza a lógica de title + meta + OG + canonical + JSON-LD. Os componentes chamam `seo.set()` e `seo.setJsonLd()` sem conhecer a implementação.
+
+**Decisão: catchError(() => EMPTY) nas subscrições SSR**
+`loadFeatured()` e `loadSuggestions()` na homepage usam `catchError(() => EMPTY)` para que erros de API durante o build SSR não causem crash (HTTP 500 em `pnpm build`).
 
 **2026-10-09 · Fase 7 — Leads, CRM, conteúdo e assistente**
 

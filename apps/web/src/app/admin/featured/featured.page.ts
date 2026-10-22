@@ -227,7 +227,7 @@ export class FeaturedPage implements OnInit, OnDestroy {
     const q = (e.target as HTMLInputElement).value;
     this.searchQ.set(q);
     if (!q.trim()) { this.searchResults.set([]); return; }
-    this.http.get<{ data: VehicleSearch[] }>(`/api/v1/admin/vehicles?q=${encodeURIComponent(q)}&pageSize=8`).subscribe({
+    this.http.get<{ data: VehicleSearch[] }>(`/api/v1/admin/vehicles?search=${encodeURIComponent(q)}&pageSize=8&status=PUBLISHED,RESERVED`).subscribe({
       next: (r) => this.searchResults.set(
         r.data.filter((v) => !this.items().some((i) => i.vehicle.id === v.id)),
       ),

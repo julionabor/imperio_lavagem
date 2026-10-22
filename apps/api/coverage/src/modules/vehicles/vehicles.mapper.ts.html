@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.17% </span>
+                <span class="strong">33.7% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/169</span>
+                <span class='fraction'>61/181</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>1/6</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.17% </span>
+                <span class="strong">33.7% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>51/169</span>
+                <span class='fraction'>61/181</span>
             </div>
         
             
@@ -319,7 +319,21 @@
 <a name='L254'></a><a href='#L254'>254</a>
 <a name='L255'></a><a href='#L255'>255</a>
 <a name='L256'></a><a href='#L256'>256</a>
-<a name='L257'></a><a href='#L257'>257</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -528,6 +542,19 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -565,6 +592,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -782,6 +810,11 @@ export <span class="fstat-no" title="function not covered" >function toPublicDet
 &nbsp;
 /** DTO para o admin (inclui campos internos). */
 export function toAdminVehicle(vehicle: VehicleWithRelations): Record&lt;string, unknown&gt; {
+  const cover = vehicle.images.find((i) =&gt; i.isCover) ?? vehicle.images[0] ?? null;
+  const daysInStock = vehicle.<span class="branch-0 cbranch-no" title="branch not covered" >publishedAt</span>
+<span class="cstat-no" title="statement not covered" >    ? Math.floor((Date.now() - vehicle.publishedAt.getTime()) / (24 * 60 * 60 * 1000))</span>
+    : 0;
+&nbsp;
   return {
     id: vehicle.id,
     slug: vehicle.slug,
@@ -791,6 +824,13 @@ export function toAdminVehicle(vehicle: VehicleWithRelations): Record&lt;string,
     modelId: vehicle.modelId,
     brand: vehicle.brand.name,
     model: vehicle.model.name,
+    // Convenience fields used by the admin list
+    title: `${vehicle.brand.name} ${vehicle.model.name} ${vehicle.version}`,
+    brandName: vehicle.brand.name,
+    modelName: vehicle.model.name,
+    coverUrl: <span class="branch-0 cbranch-no" title="branch not covered" >cover ? (cover.variants as { thumb: string }).thumb : n</span>ull,
+    daysInStock,
+    leadCount: vehicle._count.leads,
     version: vehicle.version,
     registrationDate: vehicle.registrationDate.toISOString(),
     year: vehicle.registrationDate.getFullYear(),
@@ -820,11 +860,13 @@ export function toAdminVehicle(vehicle: VehicleWithRelations): Record&lt;string,
     soldAt: vehicle.<span class="branch-0 cbranch-no" title="branch not covered" >soldAt?.toISOString()</span> ?? null,
     viewCount: vehicle.viewCount,
     favoriteCount: vehicle.favoriteCount,
+    equipment: vehicle.equipment.map((e) =&gt; e.equipmentItemId),
     images: vehicle.images.map((img) =&gt; ({
 <span class="cstat-no" title="statement not covered" >      id: img.id,</span>
 <span class="cstat-no" title="statement not covered" >      position: img.position,</span>
 <span class="cstat-no" title="statement not covered" >      isCover: img.isCover,</span>
 <span class="cstat-no" title="statement not covered" >      alt: img.alt,</span>
+<span class="cstat-no" title="statement not covered" >      storageKey: img.storageKey,</span>
 <span class="cstat-no" title="statement not covered" >      variants: img.variants,</span>
     })),
     createdAt: vehicle.createdAt.toISOString(),
@@ -838,7 +880,7 @@ export function toAdminVehicle(vehicle: VehicleWithRelations): Record&lt;string,
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-10-08T22:30:50.859Z
+                at 2026-10-22T20:16:02.528Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

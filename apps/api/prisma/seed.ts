@@ -252,16 +252,16 @@ async function main() {
 
   // Vantagens
   const advantages = [
-    { icon: 'shield-check',    title: 'Garantia incluída',       text: 'Todas as viaturas têm garantia mínima de 12 meses.' },
-    { icon: 'currency-eur',    title: 'Financiamento na hora',   text: 'Resposta de crédito no próprio dia, sem burocracia.' },
-    { icon: 'file-text',       title: 'Tudo por escrito',        text: 'Contrato claro, sem letras pequenas nem surpresas.' },
-    { icon: 'headset',         title: 'Apoio pós-venda',         text: 'A nossa equipa continua disponível depois da compra.' },
+    { icon: '🛡️',  title: 'Garantia incluída',       text: 'Todas as viaturas têm garantia mínima de 12 meses.' },
+    { icon: '💶',  title: 'Financiamento na hora',   text: 'Resposta de crédito no próprio dia, sem burocracia.' },
+    { icon: '📄',  title: 'Tudo por escrito',        text: 'Contrato claro, sem letras pequenas nem surpresas.' },
+    { icon: '🎧',  title: 'Apoio pós-venda',         text: 'A nossa equipa continua disponível depois da compra.' },
   ];
   for (let i = 0; i < advantages.length; i++) {
     const adv = advantages[i];
     await prisma.advantage.upsert({
       where: { id: `adv-${i + 1}` },
-      update: {},
+      update: { icon: adv.icon, title: adv.title, text: adv.text },
       create: { id: `adv-${i + 1}`, ...adv, position: i + 1 },
     });
   }
@@ -294,6 +294,24 @@ async function main() {
       create: { id: `example-${i + 1}`, text: examples[i], position: i + 1 },
     });
   }
+
+  // ── Pipeline stages ────────────────────────────────────────────────────
+
+  const pipelineStages = [
+    { id: 'stage-novo',        name: 'Novo',           position: 0, kind: 'OPEN' as const, color: 'blue' },
+    { id: 'stage-contacto',    name: 'Em contacto',    position: 1, kind: 'OPEN' as const, color: 'yellow' },
+    { id: 'stage-proposta',    name: 'Proposta',       position: 2, kind: 'OPEN' as const, color: 'purple' },
+    { id: 'stage-ganho',       name: 'Ganho',          position: 3, kind: 'WON'  as const, color: 'green' },
+    { id: 'stage-perdido',     name: 'Perdido',        position: 4, kind: 'LOST' as const, color: 'gray' },
+  ];
+  for (const stage of pipelineStages) {
+    await prisma.pipelineStage.upsert({
+      where: { id: stage.id },
+      update: {},
+      create: stage,
+    });
+  }
+  console.log(`✔ ${pipelineStages.length} pipeline stages criadas`);
 
   // Páginas legais (conteúdo provisório)
   const legalPages = [

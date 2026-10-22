@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { FinancingProduct } from '@pm/libs/contracts';
+import type { VehicleListItem } from './vehicles.api';
 
 // ── DTOs do endpoint /public/site ─────────────────────────────────────────
 
@@ -120,23 +121,6 @@ export interface SiteData {
   assistantSettings: AssistantSettings | null;
 }
 
-export interface FeaturedVehicle {
-  id: string;
-  slug: string;
-  brand: string;
-  model: string;
-  version: string;
-  year: number;
-  mileageKm: number;
-  fuel: string;
-  transmission: string;
-  powerHp: number | null;
-  priceCents: number;
-  monthlyFromCents: number | null;
-  coverImage: { card: string; full: string; alt: string } | null;
-  label: string | null;
-}
-
 @Injectable({ providedIn: 'root' })
 export class SiteApi {
   private readonly http = inject(HttpClient);
@@ -146,7 +130,7 @@ export class SiteApi {
   }
 
   getFeatured(placement: string) {
-    return this.http.get<{ data: FeaturedVehicle[] }>(
+    return this.http.get<VehicleListItem[]>(
       `/api/v1/public/featured?placement=${placement}`,
     );
   }

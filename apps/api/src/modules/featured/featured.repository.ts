@@ -52,7 +52,7 @@ export async function setFeaturedPlacement(
 
 export const listFeaturedAdmin = (placement?: PlacementZone) =>
   prisma.featuredPlacement.findMany({
-    where: placement ? { placement } : undefined,
+    where: { active: true, ...(placement ? { placement } : {}) },
     orderBy: [{ placement: 'asc' }, { position: 'asc' }],
     include: { vehicle: { include: vehicleInclude } },
   });

@@ -90,14 +90,10 @@ export async function listVehicles(query: ListQuery) {
 
   return {
     data: mappedItems,
-    meta: {
-      page,
-      pageSize,
-      total,
-      totalPages: Math.ceil(total / pageSize),
-      fitsCount: mappedItems.filter((i) => i.budgetStatus === 'FITS').length,
-      nearCount: mappedItems.filter((i) => i.budgetStatus === 'NEAR').length,
-    },
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
     facets,
   };
 }
