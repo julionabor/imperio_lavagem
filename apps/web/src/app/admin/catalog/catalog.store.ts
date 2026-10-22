@@ -35,10 +35,10 @@ export const CatalogStore = signalStore(
           firstValueFrom(api.getFinancingProducts()),
         ]);
         patchState(store, {
-          brands: brands.data,
-          models: models.data,
-          equipmentItems: equipment.data,
-          financingProducts: financing.data,
+          brands,
+          models,
+          equipmentItems: equipment,
+          financingProducts: financing,
           loading: false,
         });
       } catch {
@@ -47,8 +47,8 @@ export const CatalogStore = signalStore(
     },
 
     async loadSynonyms(): Promise<void> {
-      const res = await firstValueFrom(api.getSynonyms());
-      patchState(store, { synonyms: res.data });
+      const synonyms = await firstValueFrom(api.getSynonyms());
+      patchState(store, { synonyms });
     },
 
     async saveBrand(data: Partial<Brand>, id?: string): Promise<boolean> {

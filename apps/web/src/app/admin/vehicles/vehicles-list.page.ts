@@ -3,17 +3,15 @@ import {
   Component,
   inject,
   OnInit,
-  signal,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { VehiclesAdminStore } from './vehicles-admin.store';
-import { PmDataTable, type TableColumn } from '../../shared/ui/pm-data-table/pm-data-table';
 import { PmButton } from '../../shared/ui/pm-button/pm-button';
 import { PmBadge } from '../../shared/ui/pm-badge/pm-badge';
 import { ConfirmDialogService } from '../../shared/ui/pm-confirm-dialog/pm-confirm-dialog';
 import { formatEur } from '../../shared/util/format';
-import type { VehicleListItem, VehicleStatus } from './vehicles-admin.api';
+import type { VehicleStatus } from './vehicles-admin.api';
 
 const STATUS_LABELS: Record<VehicleStatus, string> = {
   DRAFT: 'Rascunho',
@@ -28,7 +26,7 @@ const STATUS_LABELS: Record<VehicleStatus, string> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [VehiclesAdminStore],
-  imports: [RouterLink, FormsModule, PmDataTable, PmButton, PmBadge],
+  imports: [RouterLink, FormsModule, PmButton, PmBadge],
   template: `
     <div class="mx-auto max-w-6xl">
       <div class="mb-6 flex items-center justify-between">
@@ -57,22 +55,6 @@ const STATUS_LABELS: Record<VehicleStatus, string> = {
         />
       </div>
 
-      <!-- Tabela -->
-      <pm-data-table
-        [columns]="columns"
-        [rows]="store.items()"
-        [loading]="store.loading()"
-        [total]="store.total()"
-        [page]="store.page()"
-        [pageSize]="20"
-        [hasActions]="true"
-        (rowClick)="onRowClick($event)"
-        (pageChange)="onPageChange($event)"
-      >
-        <!-- Ações são injetadas via ng-content mas precisamos de uma abordagem diferente -->
-      </pm-data-table>
-
-      <!-- Lista manual com ações (mais flexível que a tabela genérica para este caso) -->
       @if (!store.loading() && store.items().length > 0) {
         <div class="mt-4 overflow-x-auto rounded-xl border border-ink-800">
           <table class="w-full text-sm">
@@ -175,7 +157,6 @@ export class VehiclesListPage implements OnInit {
   protected readonly formatEur = formatEur;
 
   protected readonly statuses = Object.entries(STATUS_LABELS).map(([value, label]) => ({ value, label }));
-  protected readonly columns: TableColumn[] = [];
 
   protected formatKm(km: number) {
     return new Intl.NumberFormat('pt-PT').format(km) + '\u00a0km';
@@ -191,10 +172,6 @@ export class VehiclesListPage implements OnInit {
   }
 
   ngOnInit(): void { this.store.loadList(); }
-
-  protected onRowClick(v: VehicleListItem): void {
-    this.router.navigate(['/admin/viaturas', v.id]);
-  }
 
   protected onPageChange(page: number): void {
     this.store.setPage(page);

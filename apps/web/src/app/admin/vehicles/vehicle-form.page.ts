@@ -8,7 +8,7 @@ import {
   computed,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 import { VehiclesAdminStore } from './vehicles-admin.store';
 import { CatalogStore } from '../catalog/catalog.store';
@@ -30,7 +30,7 @@ type Tab = 'dados' | 'preco' | 'equipamento' | 'fotos' | 'financiamento' | 'seo'
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [VehiclesAdminStore, CatalogStore],
   imports: [
-    RouterLink, ReactiveFormsModule,
+    RouterLink, ReactiveFormsModule, FormsModule,
     CdkDropList, CdkDrag,
     PmButton, PmInput, PmBadge, PmUploader,
   ],
@@ -41,7 +41,7 @@ type Tab = 'dados' | 'preco' | 'equipamento' | 'fotos' | 'financiamento' | 'seo'
         <div class="flex items-center gap-3">
           <a routerLink="/admin/viaturas" class="text-ink-400 hover:text-ink-200">←</a>
           <h1 class="font-display text-h2 font-semibold text-ink-100">
-            {{ isNew() ? 'Nova viatura' : (store.current()?.title ?? 'Editar viatura') }}
+            {{ isNew() ? 'Nova viatura' : (store.current()?.version ?? 'Editar viatura') }}
           </h1>
           @if (!isNew() && store.current()) {
             <pm-badge [variant]="statusVariant()">{{ statusLabel() }}</pm-badge>
@@ -183,7 +183,7 @@ type Tab = 'dados' | 'preco' | 'equipamento' | 'fotos' | 'financiamento' | 'seo'
                 placeholder="24900"
                 class="w-full rounded-xl border border-ink-700 bg-ink-900 px-3 py-2 text-sm text-ink-100 focus:border-red-400 focus:outline-none"
               />
-              <p class="mt-1 text-xs text-ink-500">{{ form.get('priceEur')?.value ? formatEur(+form.get('priceEur')!.value * 100) : '' }}</p>
+              <p class="mt-1 text-xs text-ink-500">{{ form.get('priceEur')?.value ? formatEur(+(form.get('priceEur')?.value ?? 0) * 100) : '' }}</p>
             </div>
 
             <div>

@@ -28,6 +28,30 @@ async function hashPassword(password: string): Promise<string> {
 
 // ── Dados do protótipo ─────────────────────────────────────────────────────
 
+// Mock photo URLs sourced from auto.dev API (real car listing photos)
+const MOCK_PHOTOS: Record<number, string> = {
+  1:  'https://www.auto.dev/images/forsale/2026/10/07/17/58/2025_mazda_cx-5-pic-6173638713676173950-1024x768.jpeg',
+  2:  'https://www.auto.dev/images/forsale/2026/07/01/06/45/2005_bmw_3_series-pic-702914914971340839-1024x768.jpeg',
+  3:  'https://www.auto.dev/images/forsale/2026/10/01/07/10/2018_honda_fit-pic-3933290362472830570-1024x768.jpeg',
+  4:  'https://www.auto.dev/images/forsale/2026/09/07/04/15/2021_mercedes-benz_a-class-pic-3464844964161337115-1024x768.jpeg',
+  5:  'https://www.auto.dev/images/forsale/2026/10/06/16/48/2015_volkswagen_golf-pic-2049630461123350001-1024x768.jpeg',
+  6:  'https://www.auto.dev/images/forsale/2026/07/14/01/16/2020_tesla_model_3-pic-5306277632956290616-1024x768.jpeg',
+  7:  'https://www.auto.dev/images/forsale/2026/08/18/04/43/2026_toyota_c-hr-pic-106301164670289340-1024x768.jpeg',
+  8:  'https://www.auto.dev/images/forsale/2026/10/08/08/12/2015_volkswagen_passat-pic-3409989380299353377-1024x768.jpeg',
+  9:  'https://www.auto.dev/images/forsale/2026/08/13/07/54/2020_audi_q3-pic-1356171755358416686-1024x768.jpeg',
+  10: 'https://www.auto.dev/images/forsale/2026/05/07/07/39/2024_volvo_xc40-pic-902626649805681119-1024x768.jpeg',
+  11: 'https://www.auto.dev/images/forsale/2026/09/22/08/15/2026_kia_sportage-pic-5500214502213152142-1024x768.jpeg',
+  12: 'https://www.auto.dev/images/forsale/2026/10/07/01/15/2012_mini_cooper-pic-8027694773585537330-1024x768.jpeg',
+  13: 'https://www.auto.dev/images/forsale/2026/10/06/17/15/2020_porsche_macan-pic-7258602584721929140-1024x768.jpeg',
+  14: 'https://www.auto.dev/images/forsale/2026/10/06/14/13/2017_jeep_renegade-pic-7893939999869005631-1024x768.jpeg',
+  15: 'https://www.auto.dev/images/forsale/2026/09/21/10/06/2022_bmw_4_series-pic-7569050704251133964-1024x768.jpeg',
+  16: 'https://www.auto.dev/images/forsale/2026/09/30/19/32/2024_hyundai_tucson-pic-8714487987476978046-1024x768.jpeg',
+  17: 'https://picsum.photos/seed/fiat500e-2022/1024/768',
+  18: 'https://www.auto.dev/images/forsale/2026/03/28/23/11/2026_volkswagen_jetta-pic-4158324903239637191-1024x768.jpeg',
+  19: 'https://picsum.photos/seed/dacia-sandero-2020/1024/768',
+  20: 'https://picsum.photos/seed/renault-captur-2020/1024/768',
+};
+
 const CARS = [
   { id: 1,  brand: 'Peugeot',       model: 'Série 3008',          version: '1.5 BlueHDi GT Line EAT8',     year: 2021, km: 48200,  fuel: Fuel.DIESEL,   gear: Transmission.AUTOMATIC, body: BodyType.SUV,   priceEur: 26900, cv: 130, war: 18 },
   { id: 2,  brand: 'BMW',           model: 'Série 3 Touring',     version: '320d M Sport',                 year: 2020, km: 71500,  fuel: Fuel.DIESEL,   gear: Transmission.AUTOMATIC, body: BodyType.ESTATE, priceEur: 31500, cv: 190 },
@@ -126,11 +150,11 @@ async function main() {
   }
   console.log(`✔ ${Object.keys(modelMap).length} modelos criados`);
 
-  // ── Viaturas ────────────────────────────────────────────────────────────
+  // ── Viaturas + imagens mock ─────────────────────────────────────────────
 
   for (const car of CARS) {
     const vehicleSlug = `${slug(car.brand)}-${slug(car.model)}-${slug(car.version)}-${car.year}`;
-    await prisma.vehicle.upsert({
+    const vehicle = await prisma.vehicle.upsert({
       where: { slug: vehicleSlug },
       update: {},
       create: {
@@ -155,8 +179,27 @@ async function main() {
         updatedById: admin.id,
       },
     });
+
+    const photoUrl = MOCK_PHOTOS[car.id];
+    if (photoUrl) {
+      const storageKey = `mock-${car.id}`;
+      await prisma.vehicleImage.upsert({
+        where: { storageKey },
+        update: {},
+        create: {
+          vehicleId: vehicle.id,
+          storageKey,
+          variants: { thumb: photoUrl, card: photoUrl, full: photoUrl },
+          alt: `${car.brand} ${car.model} ${car.year}`,
+          position: 0,
+          isCover: true,
+          width: 1024,
+          height: 768,
+        },
+      });
+    }
   }
-  console.log(`✔ 20 viaturas criadas`);
+  console.log(`✔ 20 viaturas criadas com imagens mock`);
 
   // ── Conteúdo base ───────────────────────────────────────────────────────
 
@@ -221,6 +264,20 @@ async function main() {
       update: {},
       create: { id: `adv-${i + 1}`, ...adv, position: i + 1 },
     });
+  }
+
+  // Nav items (só cria se ainda não existir nenhum)
+  const navCount = await prisma.navItem.count();
+  if (navCount === 0) {
+    await prisma.navItem.createMany({
+      data: [
+        { label: 'Stock',         route: '/',   position: 1 },
+        { label: 'Financiamento', url: '#financiamento', position: 2 },
+        { label: 'Sobre nós',     url: '#sobre',    position: 3 },
+        { label: 'Contactos',     url: '#contactos', position: 4 },
+      ],
+    });
+    console.log('✔ 4 nav items criados');
   }
 
   // Frases de exemplo da pesquisa (do protótipo)

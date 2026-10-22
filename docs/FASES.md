@@ -83,10 +83,15 @@ Cada fase indica as secções da spec a ler, o âmbito, o critério de saída e 
 - Card 1a com gaveta de simulação, variantes destaque e compacto; estado vazio com sugestões e "Pedimos o carro por si".
 - Destaques, vantagens, testemunhos, CTA do assistente, favoritos.
 
+**Referências do design (três, cada uma com o seu papel)**
+- `docs/design/prototype-template.html` — estrutura e valores: hierarquia das secções, ordem dos elementos, espaçamentos, raios, sombras e estados. Os estilos estão inline: traduzir cada valor para o token equivalente do `theme.css` (ex.: `#D0161F` → `bg-red-500`, `border-radius:16px` → `rounded-lg`). Se um valor não tiver token, usar o mais próximo e registar em `docs/PROGRESS.md`.
+- `docs/design/prototype-logic.js` — comportamento: o que acontece a cada tecla, chip, slider e estado vazio.
+- `docs/design/Private_Motors.html` — aspeto final, aberto no browser por mim; envio capturas em 390 px e 1280 px quando pedires.
+
 **Sai quando:** o comportamento é igual ao protótipo em mobile e desktop (compare lado a lado no browser); qualquer pesquisa é reproduzível pelo URL; Lighthouse mobile ≥ 90.
 
 **Prompt**
-> Implementa a Fase 5 de `docs/FASES.md`. Vou enviar-te capturas do protótipo (`docs/design/Private_Motors.html`) em mobile e desktop como referência visual; replica layout, espaçamentos e estados com Tailwind e os tokens, sem valores arbitrários. A lógica vem de `@pm/libs`. Começa pelo `pm-vehicle-card` com `pm-finance-inline`, depois `pm-smart-search`, e só depois a página.
+> Implementa a Fase 5 de `docs/FASES.md`. Para cada componente, procura primeiro o bloco correspondente em `docs/design/prototype-template.html` (com grep, não leias o ficheiro inteiro) e o comportamento em `docs/design/prototype-logic.js`. Replica estrutura, espaçamentos e estados com classes Tailwind sobre os tokens do `theme.css`, sem valores arbitrários nem estilos inline. A lógica vem de `@pm/libs`. Começa pelo `pm-vehicle-card` com `pm-finance-inline`, depois `pm-smart-search`, e só depois a página. No fim de cada componente diz-me o que comparar e eu envio-te capturas do protótipo e da tua versão no mesmo tamanho de ecrã.
 
 ---
 
@@ -99,7 +104,7 @@ Cada fase indica as secções da spec a ler, o âmbito, o critério de saída e 
 **Sai quando:** o cliente aprova a revisão visual.
 
 **Prompt**
-> Implementa a Fase 6 de `docs/FASES.md`. Estas páginas não têm layout no protótipo: segue os tokens, componentes e padrões da homepage e do simulador 2a. Regista em `docs/PROGRESS.md` as decisões visuais que tomares.
+> Implementa a Fase 6 de `docs/FASES.md`. Estas páginas não têm layout no protótipo: segue os tokens, componentes e padrões da homepage. Para o simulador 2a e o assistente, usa os blocos correspondentes em `docs/design/prototype-template.html`. Regista em `docs/PROGRESS.md` as decisões visuais que tomares.
 
 ---
 

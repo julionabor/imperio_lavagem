@@ -11,11 +11,16 @@ const NAV: NavItem[] = [
   { label: 'Viaturas', route: '/admin/viaturas', icon: 'car' },
   { label: 'Catálogos', route: '/admin/catalogos/marcas', icon: 'books' },
   { label: 'Financiamento', route: '/admin/financiamento', icon: 'percent', roles: ['ADMIN', 'EDITOR'] },
+  { label: 'Destaques', route: '/admin/destaques/HOME_FEATURED', icon: 'star', roles: ['ADMIN', 'EDITOR'] },
+  { label: 'CRM — Pipeline', route: '/admin/crm', icon: 'users' },
+  { label: 'CRM — Contactos', route: '/admin/crm/contactos', icon: 'address-book' },
+  { label: 'CRM — Tarefas', route: '/admin/crm/tarefas', icon: 'check-square' },
+  { label: 'CRM — Relatórios', route: '/admin/crm/relatorios', icon: 'chart-bar', roles: ['ADMIN', 'EDITOR'] },
   { label: 'Conteúdo', route: '/admin/conteudo/home', icon: 'pencil-simple', roles: ['ADMIN', 'EDITOR'] },
-  { label: 'Leads', route: '/admin/crm', icon: 'users' },
-  { label: 'Destaques', route: '/admin/destaques/home', icon: 'star', roles: ['ADMIN', 'EDITOR'] },
+  { label: 'Assistente', route: '/admin/assistente', icon: 'robot', roles: ['ADMIN', 'EDITOR'] },
   { label: 'Definições', route: '/admin/definicoes', icon: 'gear', roles: ['ADMIN'] },
   { label: 'Utilizadores', route: '/admin/utilizadores', icon: 'user-circle', roles: ['ADMIN'] },
+  { label: 'Auditoria', route: '/admin/auditoria', icon: 'clipboard-text', roles: ['ADMIN'] },
 ];
 
 @Component({
@@ -94,6 +99,8 @@ export class AdminLayout {
   protected readonly iconMap: Record<string, string> = {
     'grid-four': '⊞', car: '🚗', books: '📚', percent: '%', pencil: '✏️',
     'pencil-simple': '✏️', users: '👥', star: '⭐', gear: '⚙️', 'user-circle': '👤',
+    'address-book': '📋', 'check-square': '☑️', 'chart-bar': '📊',
+    robot: '🤖', 'clipboard-text': '🗒️',
   };
 
   protected visibleNav() {

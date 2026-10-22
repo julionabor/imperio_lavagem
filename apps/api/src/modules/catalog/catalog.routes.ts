@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { FastifyInstance } from 'fastify';
 import * as repo from './catalog.repository.ts';
 import { notFound, forbidden, conflict, problemFromZod } from '../../shared/errors.ts';
+import { toSlug } from '../../shared/slug.ts';
 import { parse } from '@pm/libs/search-parser';
 
 function editorOrAbove(role: string) {
@@ -19,13 +20,14 @@ export async function catalogRoutes(app: FastifyInstance): Promise<void> {
     if (!editorOrAbove(req.user!.role)) return forbidden(rep);
     const schema = z.object({
       name: z.string().min(1),
-      slug: z.string().min(1),
+      slug: z.string().optional(),
       logoUrl: z.string().optional(),
       aliases: z.array(z.string()).default([]),
     });
     const p = schema.safeParse(req.body);
     if (!p.success) return problemFromZod(rep, p.error);
-    const brand = await repo.createBrand({ ...p.data, logoUrl: p.data.logoUrl ?? null, active: true }).catch(() => null);
+    const slug = p.data.slug || toSlug(p.data.name);
+    const brand = await repo.createBrand({ ...p.data, slug, logoUrl: p.data.logoUrl ?? null, active: true }).catch(() => null);
     if (!brand) return conflict(rep, 'Já existe uma marca com este slug.');
     return rep.status(201).send(brand);
   });
@@ -58,12 +60,13 @@ export async function catalogRoutes(app: FastifyInstance): Promise<void> {
     const schema = z.object({
       brandId: z.string().uuid(),
       name: z.string().min(1),
-      slug: z.string().min(1),
+      slug: z.string().optional(),
       aliases: z.array(z.string()).default([]),
     });
     const p = schema.safeParse(req.body);
     if (!p.success) return problemFromZod(rep, p.error);
-    const model = await repo.createModel({ ...p.data, active: true }).catch(() => null);
+    const slug = p.data.slug || toSlug(p.data.name);
+    const model = await repo.createModel({ ...p.data, slug, active: true }).catch(() => null);
     if (!model) return conflict(rep, 'Já existe um modelo com este slug nesta marca.');
     return rep.status(201).send(model);
   });

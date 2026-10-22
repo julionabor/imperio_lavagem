@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { NgClass } from '@angular/common';
 
 export interface TableColumn<T = unknown> {
   key: string;
@@ -15,7 +14,7 @@ export interface SortEvent { key: string; dir: 'asc' | 'desc'; }
   selector: 'pm-data-table',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass],
+  imports: [],
   template: `
     <div class="overflow-x-auto rounded-xl border border-ink-800">
       <table class="w-full text-sm text-ink-200">

@@ -7,7 +7,7 @@ import {
   computed,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { FinancingAdminApi, type SimulateResponse } from './financing-admin.api';
 import { PmButton } from '../../shared/ui/pm-button/pm-button';
@@ -19,7 +19,7 @@ import { formatEur, formatBp } from '../../shared/util/format';
   selector: 'pm-financing-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, ReactiveFormsModule, PmButton, PmInput],
+  imports: [RouterLink, ReactiveFormsModule, FormsModule, PmButton, PmInput],
   template: `
     <div class="mx-auto max-w-3xl">
       <div class="mb-6 flex items-center gap-3">

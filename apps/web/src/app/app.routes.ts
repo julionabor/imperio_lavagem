@@ -4,7 +4,12 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./home/home.page').then((m) => m.HomePage),
+      import('./features/search/pages/search.page').then((m) => m.SearchPage),
+  },
+  {
+    path: 'viaturas/:slug',
+    loadComponent: () =>
+      import('./features/vehicle/vehicle-detail.page').then((m) => m.VehicleDetailPage),
   },
   {
     path: 'admin',

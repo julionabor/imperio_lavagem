@@ -46,20 +46,26 @@ export async function contentRoutes(app: FastifyInstance): Promise<void> {
     });
     const synonyms = await prisma.searchSynonym.findMany({ where: { active: true } });
 
+    // Flatten brands → models for parser dictionary
+    const parserModels = brands.flatMap((b) =>
+      b.models.map((m) => ({ brandSlug: b.slug, name: m.name, slug: m.slug, aliases: m.aliases })),
+    );
+    const parserBrands = brands.map(({ models: _m, ...b }) => b);
+
     return rep
       .header('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
       .send({
         settings,
         homeContent,
-        navItems,
+        nav: navItems,
         advantages,
         testimonials,
         quickFilters,
         searchExamples,
-        vehicleCount,
-        defaultProduct,
+        stockCount: vehicleCount,
+        financingProduct: defaultProduct,
         assistantSettings,
-        parserDictionary: { brands, synonyms },
+        parserDictionary: { brands: parserBrands, models: parserModels, synonyms },
       });
   });
 

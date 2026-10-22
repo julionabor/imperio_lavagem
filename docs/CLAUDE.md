@@ -12,6 +12,7 @@ Site de stand automóvel (Portugal) com pesquisa inteligente, simulador de finan
 | `docs/FASES.md` | Ordem de implementação e critério de saída de cada fase. |
 | `docs/PROGRESS.md` | Estado das fases, decisões e checklist de testes manuais. Mantém-no atualizado. |
 | `docs/design/prototype-logic.js` | Lógica do protótipo: seed `CARS`, `parse()`, `pay()`/`fin()`, `recommend()`, sugestões do estado vazio, textos e tokens. Porta a lógica; não copies o estilo React/inline. |
+| `docs/design/prototype-template.html` | Markup legível do protótipo (estrutura das secções, CSS e estados). Usa-o para perceber a hierarquia e os valores visuais; os estilos estão inline e têm de ser **traduzidos para classes Tailwind sobre os tokens**, nunca copiados. É grande (300 KB): procura a secção que precisas com grep em vez de o ler inteiro. |
 | `docs/design/Private_Motors.html` | Protótipo visual (bundle de 5 MB). **Não o leias como texto**: é para abrir no browser. Se precisares de o ver, pede-me capturas de ecrã. |
 
 Antes de cada tarefa, lê as secções da spec indicadas em `docs/FASES.md`. Se a spec for omissa ou contraditória, pergunta antes de inventar. Nunca inventes valores de negócio (taxas, prazos, textos legais, contactos): usa os da spec ou do protótipo e marca-os como provisórios.

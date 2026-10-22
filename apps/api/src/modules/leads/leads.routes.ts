@@ -159,14 +159,51 @@ export async function leadsRoutes(app: FastifyInstance): Promise<void> {
   // PATCH /admin/leads/:id/status
   app.patch('/admin/leads/:id/status', { preValidation: [app.authenticate] }, async (req, rep) => {
     const { id } = req.params as { id: string };
-    const schema = z.object({ stageId: z.string().uuid().optional(), status: z.string().optional() });
+    const schema = z.object({
+      stageId: z.string().uuid().optional(),
+      status: z.string().optional(),
+      lostReason: z.enum(['PRICE', 'FINANCING_REJECTED', 'BOUGHT_ELSEWHERE', 'NO_RESPONSE', 'VEHICLE_SOLD', 'OTHER']).optional(),
+      wonVehicleId: z.string().uuid().optional(),
+    });
     const parsed = schema.safeParse(req.body);
     if (!parsed.success) return problemFromZod(rep, parsed.error);
 
+    // Quando passa para WON, marca viatura como SOLD se fornecida
+    if (parsed.data.status === 'WON' && parsed.data.wonVehicleId) {
+      await prisma.vehicle.update({
+        where: { id: parsed.data.wonVehicleId },
+        data: { status: 'SOLD', soldAt: new Date() },
+      });
+    }
+
     const updated = await prisma.lead.update({
       where: { id },
-      data: { ...(parsed.data.stageId ? { stageId: parsed.data.stageId } : {}) },
+      data: {
+        ...(parsed.data.stageId ? { stageId: parsed.data.stageId } : {}),
+        ...(parsed.data.status ? { status: parsed.data.status as never } : {}),
+        ...(parsed.data.lostReason ? { lostReason: parsed.data.lostReason } : {}),
+        ...(parsed.data.wonVehicleId ? { wonVehicleId: parsed.data.wonVehicleId } : {}),
+      },
     });
+
+    // Regista mudança de etapa como atividade
+    if (parsed.data.stageId) {
+      const lead = await prisma.lead.findUnique({ where: { id }, select: { contactId: true } });
+      if (lead) {
+        await prisma.activity.create({
+          data: {
+            contactId: lead.contactId,
+            leadId: id,
+            type: 'STAGE_CHANGE',
+            direction: 'OUT',
+            summary: `Lead movido de etapa`,
+            occurredAt: new Date(),
+            authorId: req.user!.id,
+          },
+        });
+      }
+    }
+
     return rep.send(updated);
   });
 

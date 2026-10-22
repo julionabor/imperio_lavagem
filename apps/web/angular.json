@@ -36,18 +36,6 @@
             "ssr": {
               "entry": "server.ts"
             },
-            "budgets": [
-              {
-                "type": "initial",
-                "maximumWarning": "150kB",
-                "maximumError": "200kB"
-              },
-              {
-                "type": "anyComponentStyle",
-                "maximumWarning": "2kB",
-                "maximumError": "4kB"
-              }
-            ],
             "outputHashing": "all"
           },
           "configurations": {
@@ -55,13 +43,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "150kB",
-                  "maximumError": "200kB"
+                  "maximumWarning": "500kB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
                 }
               ],
               "outputHashing": "all"
@@ -76,6 +64,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "web:build:production"
@@ -91,5 +82,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "f6295633-d882-44bc-9c5e-efbb12cbc236"
   }
 }

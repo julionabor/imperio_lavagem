@@ -1,4 +1,5 @@
 import { mkdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import Fastify from 'fastify';
 import { config } from './config.ts';
 import { setupPlugins } from './plugins/setup.ts';
@@ -45,6 +46,7 @@ export async function buildApp() {
     const { assistantRoutes } = await import('./modules/assistant/assistant.routes.ts');
     const { dashboardRoutes } = await import('./modules/dashboard/dashboard.routes.ts');
     const { leadsRoutes } = await import('./modules/leads/leads.routes.ts');
+    const { crmRoutes } = await import('./modules/crm/crm.routes.ts');
 
     await v1.register(authRoutes);
     await v1.register(vehicleRoutes);
@@ -59,6 +61,7 @@ export async function buildApp() {
     await v1.register(assistantRoutes);
     await v1.register(dashboardRoutes);
     await v1.register(leadsRoutes);
+    await v1.register(crmRoutes);
   }, { prefix: '/api/v1' });
 
   return app;
@@ -89,6 +92,6 @@ async function start() {
 }
 
 // Só arranca se for o ponto de entrada (não quando importado nos testes)
-if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'))) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   start();
 }

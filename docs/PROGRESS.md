@@ -6,12 +6,56 @@
 | 2. Primeiro deploy | Concluída | railway.json por serviço; build corrigido; DEPLOY.md escrito |
 | 3. API núcleo + autenticação | Concluída | 13 módulos, 57 ficheiros, testes com app.inject() |
 | 4. Backoffice de stock | Concluída | Angular admin: auth, dashboard, viaturas (form + fotos), catálogos, financiamento + simulador |
-| 5. Site: homepage | Por começar | |
-| 6. Site: restantes páginas | Por começar | |
-| 7. Leads, CRM, conteúdo e assistente | Por começar | |
+| 5. Site: homepage | Concluída | Homepage SSR + smart search + filtros + cards + stores + header/footer |
+| 6. Site: restantes páginas | Concluída | Página de detalhe da viatura + galeria + specs + simulador + lead form + viaturas semelhantes |
+| 7. Leads, CRM, conteúdo e assistente | Concluída | CRM API + admin pages (pipeline, contactos, tarefas, relatórios) + conteúdo + definições + utilizadores + auditoria + assistente guiado no site |
 | 8. Lançamento | Por começar | |
 
 ## Decisões tomadas durante a implementação
+
+**2026-10-09 · Fase 7 — Leads, CRM, conteúdo e assistente**
+
+Implementado:
+- `apps/api/src/modules/crm/crm.routes.ts`: CRUD completo de contacts, pipeline-stages, tags, activities, tasks, reports + export CSV
+- `apps/api/src/modules/leads/leads.routes.ts`: PATCH status enhanced (lostReason, wonVehicleId, activity log)
+- `apps/web/src/app/admin/crm/`: pipeline.page (kanban CDK), contacts-list.page, contact-detail.page (timeline), tasks.page, reports.page, crm.api.ts
+- `apps/web/src/app/admin/featured/featured.page.ts`: gestão de destaques por zona com drag-drop
+- `apps/web/src/app/admin/content/content.page.ts`: editor multi-secção (home, vantagens, testemunhos, nav, filtros rápidos, frases, páginas legais)
+- `apps/web/src/app/admin/settings/settings.page.ts`: configurações da empresa, morada, horário, SEO, redes sociais
+- `apps/web/src/app/admin/users/users.page.ts`: CRUD de utilizadores
+- `apps/web/src/app/admin/audit/audit.page.ts`: registo de auditoria com filtros
+- `apps/web/src/app/admin/assistant/assistant-admin.page.ts`: editor do assistente (settings + steps)
+- `apps/web/src/app/features/assistant/pm-assistant/pm-assistant.ts`: painel flutuante do assistente no site público
+- `apps/web/src/app/app.ts`: assistente injetado globalmente, escondido no `/admin`
+- `admin.routes.ts`: todas as rotas da fase 7 registadas
+
+**Decisão: CRM sem módulo separado no API**
+As rotas CRM ficaram em `modules/crm/crm.routes.ts` por clareza, registadas em `main.ts` ao mesmo nível dos outros módulos.
+
+**Decisão: Assistente no root da app**
+`pm-assistant` foi adicionado ao `app.ts` raiz com `@if (!isAdmin())` para aparecer em todas as páginas públicas sem repetição por página.
+
+**2026-10-08 · Fase 5 — Site público: homepage**
+
+Estrutura implementada:
+
+- `apps/web/src/app/features/search/data-access/`: `site.api.ts`, `vehicles.api.ts`, `site.store.ts`, `search.store.ts`, `favorites.store.ts`, `card-simulation.store.ts`
+- `apps/web/src/app/features/search/ui/`: `pm-smart-search`, `pm-budget-picker`, `pm-filter-panel`, `pm-vehicle-card`, `pm-finance-inline`, `pm-empty-state`
+- `apps/web/src/app/shared/ui/`: `pm-slider`, `pm-select`, `pm-filter-chip`, `pm-term-ticks`, `pm-cost-bar`, `pm-skeleton-card`
+- `apps/web/src/app/core/layout/`: `pm-header`, `pm-footer`
+- `apps/web/src/app/features/search/pages/search.page.ts`: homepage completa com SSR
+
+**Decisão: `@ngrx/operators` não disponível**
+Substituído `tapResponse` de `@ngrx/operators` por `tap` + `catchError` de RxJS. Não foi necessário instalar o pacote extra.
+
+**Decisão: `FilterState` vem de `@pm/libs/contracts`, não de `@pm/libs/search-parser`**
+O search-parser usa `FilterState` de contracts internamente mas não o re-exporta. Importar sempre de `@pm/libs/contracts`.
+
+**Decisão: `ActiveFilters` como interface concreta**
+O tsconfig do web app tem `noPropertyAccessFromIndexSignature: true`. Usar `Partial<OtroTipo>` cria index signatures que impedem acesso com `.`. A solução é definir `ActiveFilters` como interface com campos explícitos.
+
+**Decisão: `allowImportingTsExtensions: true` no tsconfig web**
+As libs usam `.ts` nas re-exportações dos index files. Necessário para que `tsc --noEmit` não falhe com TS5097. Adicionado ao `apps/web/tsconfig.json` (igual ao que já existia no `libs/tsconfig.json`).
 
 **2026-10-08 · Fase 4 — Backoffice de stock**
 
